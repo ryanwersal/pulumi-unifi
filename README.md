@@ -145,13 +145,29 @@ triggers `.github/workflows/release.yml`:
 
 The SDK is published via npm
 [trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC) — no
-`NPM_TOKEN`, and provenance is attached automatically. One-time setup on
-npmjs.com: under the `@ryanwersal/unifi` package's **Settings → Trusted
-publishing**, add this repo's `release.yml` workflow as a trusted publisher.
-(Trusted publishing can only be configured on a package that already exists, so
-the very first publish needs a one-off `npm publish` with a granular token —
-afterwards the workflow runs token-free.) The goreleaser job uses the default
-`GITHUB_TOKEN`.
+`NPM_TOKEN`, and provenance is attached automatically. The goreleaser job uses
+the default `GITHUB_TOKEN`.
+
+### First-time setup (one-time)
+
+Trusted publishing can only be configured on a package that already exists, so
+bootstrap the package once, then grant the workflow trust:
+
+```sh
+npm login                 # auth, only needed for this bootstrap publish
+mise run bootstrap        # publishes a throwaway 0.0.1 to register @ryanwersal/unifi, then deprecates it
+mise run trust            # npm trust github … — point trusted publishing at release.yml
+```
+
+After that every release runs token-free via `mise run release`.
+
+### Useful tasks
+
+```sh
+mise run snapshot         # local cross-platform release build (no publish) — sanity check before tagging
+mise run sdk:build        # compile the SDK into sdk/nodejs/bin
+mise run sdk:publish      # publish the SDK from a local checkout (manual escape hatch)
+```
 
 ## Caveats / risks
 

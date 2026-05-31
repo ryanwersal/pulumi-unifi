@@ -12,6 +12,7 @@
 # but their build cruft is not.
 /sdk/nodejs/bin/
 /sdk/nodejs/node_modules/
+/sdk/nodejs/package-lock.json
 
 # Local env
 .env

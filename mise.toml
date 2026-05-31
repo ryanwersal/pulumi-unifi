@@ -16,10 +16,21 @@ node = "24.15.0"
 PROVIDER_NAME = "unifi"
 # Where generated SDKs land.
 SDK_DIR = "sdk"
+# Published npm package name (see WithLanguageMap in provider/provider.go).
+NPM_PACKAGE = "@ryanwersal/unifi"
+# owner/repo, used for plugin downloads and npm trusted publishing.
+REPO = "ryanwersal/pulumi-unifi"
 
 [tasks.build]
-description = "Build the provider plugin binary (bin/pulumi-resource-unifi)"
-run = "go build -o bin/pulumi-resource-$PROVIDER_NAME ./cmd/pulumi-resource-$PROVIDER_NAME"
+description = "Build the provider plugin binary; set VERSION=x.y.z to stamp it"
+run = '''
+if [ -n "${VERSION:-}" ]; then
+    go build -ldflags "-X github.com/ryanwersal/pulumi-unifi/provider.Version=$VERSION" \
+        -o bin/pulumi-resource-$PROVIDER_NAME ./cmd/pulumi-resource-$PROVIDER_NAME
+else
+    go build -o bin/pulumi-resource-$PROVIDER_NAME ./cmd/pulumi-resource-$PROVIDER_NAME
+fi
+'''
 
 [tasks.schema]
 description = "Print the Pulumi schema derived from the Go types"
@@ -35,6 +46,42 @@ run = "pulumi package gen-sdk ./bin/pulumi-resource-$PROVIDER_NAME --language no
 description = "Fail if the committed Node.js SDK is stale vs. the current schema"
 depends = ["sdk:nodejs"]
 run = "git diff --exit-code -- $SDK_DIR"
+
+[tasks."sdk:build"]
+description = "Compile the Node.js SDK (tsc → sdk/nodejs/bin, ready to publish)"
+depends = ["sdk:nodejs"]
+dir = "{{ config_root }}/sdk/nodejs"
+run = ["npm install", "npm run build", "cp package.json README.md bin/"]
+
+[tasks."sdk:publish"]
+description = "Publish the Node.js SDK to npm from a local checkout (manual; CI publishes via OIDC)"
+depends = ["sdk:build"]
+dir = "{{ config_root }}/sdk/nodejs"
+run = "npm publish --access public ./bin"
+
+[tasks.bootstrap]
+description = "One-time: register $NPM_PACKAGE on npm at a throwaway 0.0.1 so trusted publishing can be set up"
+run = '''
+set -eu
+VERSION=0.0.1 mise run sdk:build
+cd "$SDK_DIR/nodejs"
+npm publish --access public ./bin
+npm deprecate "$NPM_PACKAGE@0.0.1" "bootstrap release; use >=0.1.0"
+cd - >/dev/null
+git checkout -- "$SDK_DIR"   # undo the throwaway 0.0.1 regen
+'''
+
+[tasks.trust]
+description = "One-time: configure npm trusted publishing (OIDC) for the release workflow"
+run = "npm trust github $NPM_PACKAGE --file release.yml --repo $REPO -y"
+
+[tasks.snapshot]
+description = "Local cross-platform release build, no publish — sanity check before tagging"
+run = "goreleaser release --snapshot --clean"
+
+[tasks.clean]
+description = "Remove build artifacts"
+run = "rm -rf bin dist $SDK_DIR/nodejs/bin $SDK_DIR/nodejs/node_modules"
 
 [tasks.test]
 description = "Run unit tests"
