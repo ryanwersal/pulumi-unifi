@@ -3,8 +3,10 @@ module github.com/ryanwersal/pulumi-unifi
 go 1.26.3
 
 require (
+	github.com/ClifHouck/unified v0.3.2
 	github.com/filipowm/go-unifi v1.8.1
 	github.com/pulumi/pulumi-go-provider v1.3.2
+	github.com/sirupsen/logrus v1.9.3
 )
 
 require (
@@ -30,6 +32,7 @@ require (
 	github.com/clipperhouse/displaywidth v0.11.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
 	github.com/cloudflare/circl v1.6.3 // indirect
+	github.com/coder/websocket v1.8.14 // indirect
 	github.com/cyphar/filepath-securejoin v0.4.1 // indirect
 	github.com/djherbis/times v1.5.0 // indirect
 	github.com/edsrzf/mmap-go v1.1.0 // indirect
@@ -91,7 +94,6 @@ require (
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/segmentio/encoding v0.3.5 // indirect
 	github.com/sergi/go-diff v1.4.0 // indirect
-	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/skeema/knownhosts v1.3.1 // indirect
 	github.com/spf13/cobra v1.10.2 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect

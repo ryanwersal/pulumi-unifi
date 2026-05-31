@@ -9,6 +9,7 @@ import (
 
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
 	"github.com/ryanwersal/pulumi-unifi/provider/network"
+	"github.com/ryanwersal/pulumi-unifi/provider/protect"
 )
 
 // Name is the Pulumi package/plugin name. It must match the
@@ -32,6 +33,7 @@ func New() (p.Provider, error) {
 		WithResources(
 			infer.Resource(network.Vlan{}),
 			infer.Resource(network.Wlan{}),
+			infer.Resource(protect.Camera{}),
 		).
 		Build()
 }
