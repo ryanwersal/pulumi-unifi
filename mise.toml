@@ -1,0 +1,39 @@
+# pulumi-unifi — toolchain + task orchestration
+# Docs: https://mise.jdx.dev
+
+[tools]
+# Pinned for reproducible builds. Bump deliberately.
+go = "1.26.3"
+pulumi = "3.241.0"
+
+[env]
+# Plugin name (Pulumi convention: the binary is pulumi-resource-<NAME>).
+PROVIDER_NAME = "unifi"
+# Where generated SDKs land.
+SDK_DIR = "sdk"
+
+[tasks.build]
+description = "Build the provider plugin binary (bin/pulumi-resource-unifi)"
+run = "go build -o bin/pulumi-resource-$PROVIDER_NAME ./cmd/pulumi-resource-$PROVIDER_NAME"
+
+[tasks.schema]
+description = "Print the Pulumi schema derived from the Go types"
+depends = ["build"]
+run = "pulumi package get-schema ./bin/pulumi-resource-$PROVIDER_NAME"
+
+[tasks."sdk:nodejs"]
+description = "Generate the Node.js/TypeScript SDK into sdk/nodejs"
+depends = ["build"]
+run = "pulumi package gen-sdk ./bin/pulumi-resource-$PROVIDER_NAME --language nodejs --out $SDK_DIR"
+
+[tasks.test]
+description = "Run unit tests"
+run = "go test ./..."
+
+[tasks.tidy]
+description = "go mod tidy"
+run = "go mod tidy"
+
+[tasks.check]
+description = "Pre-commit gate: vet + build"
+run = ["go vet ./...", "go build ./..."]

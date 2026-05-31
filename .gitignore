@@ -1,0 +1,14 @@
+# Build artifacts
+/bin/
+
+# Go
+*.test
+*.out
+
+# Generated SDKs are committed (so consumers can `bun add` a path/git dep),
+# but their build cruft is not.
+/sdk/nodejs/bin/
+/sdk/nodejs/node_modules/
+
+# Local env
+.env
