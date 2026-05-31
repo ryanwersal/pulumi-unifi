@@ -5,6 +5,11 @@
 # Pinned for reproducible builds. Bump deliberately.
 go = "1.26.3"
 pulumi = "3.241.0"
+golangci-lint = "2.11.3"
+goreleaser = "2.15.3"
+svu = "3.4.0"
+# Used to build/publish the generated TypeScript SDK.
+node = "24.15.0"
 
 [env]
 # Plugin name (Pulumi convention: the binary is pulumi-resource-<NAME>).
@@ -26,14 +31,82 @@ description = "Generate the Node.js/TypeScript SDK into sdk/nodejs"
 depends = ["build"]
 run = "pulumi package gen-sdk ./bin/pulumi-resource-$PROVIDER_NAME --language nodejs --out $SDK_DIR"
 
+[tasks."sdk:check"]
+description = "Fail if the committed Node.js SDK is stale vs. the current schema"
+depends = ["sdk:nodejs"]
+run = "git diff --exit-code -- $SDK_DIR"
+
 [tasks.test]
 description = "Run unit tests"
 run = "go test ./..."
+
+[tasks.vet]
+description = "Run go vet on all packages"
+run = "go vet ./..."
+
+[tasks.lint]
+description = "Run golangci-lint"
+run = "golangci-lint run ./..."
+
+[tasks.fmt]
+description = "Format all Go source files"
+run = "gofmt -w ."
+
+[tasks.fmt-check]
+description = "Check formatting (fails if unformatted)"
+run = "test -z \"$(gofmt -l .)\""
 
 [tasks.tidy]
 description = "go mod tidy"
 run = "go mod tidy"
 
 [tasks.check]
-description = "Pre-commit gate: vet + build"
-run = ["go vet ./...", "go build ./..."]
+description = "Pre-commit gate: lint + test + build"
+depends = ["lint", "test"]
+run = "go build ./..."
+
+[tasks.release]
+description = "Bump version (major|minor|patch), tag, and push — triggers the GH release + npm publish"
+usage = 'arg "<bump>" help="major, minor, or patch"'
+run = '''
+set -eu
+
+bump="$usage_bump"
+case "$bump" in
+    major|minor|patch) ;;
+    *)
+        echo "bump must be one of: major, minor, patch (got: $bump)" >&2
+        exit 1
+        ;;
+esac
+
+if [ -n "$(git status --porcelain)" ]; then
+    echo "Working tree is dirty. Commit or stash before releasing." >&2
+    exit 1
+fi
+
+branch=$(git rev-parse --abbrev-ref HEAD)
+if [ "$branch" != "main" ]; then
+    echo "Not on main (on $branch). Release from main." >&2
+    exit 1
+fi
+
+git fetch --tags origin main
+
+behind=$(git rev-list --count HEAD..origin/main)
+if [ "$behind" -gt 0 ]; then
+    echo "Local main is $behind commits behind origin/main. Pull first." >&2
+    exit 1
+fi
+
+latest=$(svu current 2>/dev/null || echo "v0.0.0")
+new=$(svu "$bump")
+
+printf '\nCurrent: %s\nNew:     %s\n\n' "$latest" "$new"
+
+git tag -a "$new" -m "Release $new"
+git push origin main "$new"
+
+printf '\nTag pushed. Release workflow running at:\n'
+printf '  https://github.com/ryanwersal/pulumi-unifi/actions\n'
+'''

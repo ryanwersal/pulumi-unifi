@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  # Cross-platform plugin binaries → GitHub Release assets. Pulumi's github://
+  # plugin resolver (pluginDownloadURL in the schema) installs these.
+  binaries:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: jdx/mise-action@v4
+
+      - run: goreleaser release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Generate the Node.js SDK at the tagged version and publish it to npm.
+  # respectSchemaVersion ties the package version to provider.Version, which we
+  # stamp from the tag here so the npm version matches the plugin release.
+  publish-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: jdx/mise-action@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Build plugin (version-stamped) and generate SDK
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          go build \
+            -ldflags "-X github.com/ryanwersal/pulumi-unifi/provider.Version=${VERSION}" \
+            -o bin/pulumi-resource-unifi ./cmd/pulumi-resource-unifi
+          pulumi package gen-sdk ./bin/pulumi-resource-unifi --language nodejs --out sdk
+
+      - name: Build and publish SDK
+        working-directory: sdk/nodejs
+        run: |
+          npm install
+          npm run build
+          # The compiled package lives in bin/ and loads ./package.json at
+          # runtime (see utilities.ts), so publish from there.
+          cp package.json README.md bin/
+          npm publish --access public ./bin
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -59,7 +59,7 @@ func (c *Config) Annotate(a infer.Annotator) {
 // process, after the receiver has been hydrated from inputs.
 func (c *Config) Configure(_ context.Context) error {
 	cc := &unifi.ClientConfig{URL: c.URL}
-	cc.VerifySSL = !(c.InsecureTLS != nil && *c.InsecureTLS)
+	cc.VerifySSL = c.InsecureTLS == nil || !*c.InsecureTLS
 
 	switch {
 	case c.APIKey != nil && *c.APIKey != "":

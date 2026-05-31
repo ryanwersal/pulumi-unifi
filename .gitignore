@@ -1,6 +1,9 @@
 # Build artifacts
 /bin/
 
+# goreleaser output
+/dist/
+
 # Go
 *.test
 *.out

@@ -47,36 +47,67 @@ resources require an API key (the integration API is API-key only).
 
 ## Toolchain
 
-Managed by [mise](https://mise.jdx.dev) (Go + Pulumi pinned in `mise.toml`).
+Managed by [mise](https://mise.jdx.dev) (Go, Pulumi, and the lint/release tools
+pinned in `mise.toml`).
 
 ```sh
-mise install            # Go + Pulumi
+mise install            # Go + Pulumi + golangci-lint + goreleaser + svu + node
 mise run build          # → bin/pulumi-resource-unifi
 mise run schema         # print the derived Pulumi schema
 mise run sdk:nodejs     # generate the TypeScript SDK into sdk/nodejs
-mise run check          # vet + build (pre-commit gate)
+mise run sdk:check      # fail if the committed SDK is stale vs. the schema
+mise run lint           # golangci-lint
+mise run test           # go test ./...
+mise run check          # lint + test + build (pre-commit gate)
 ```
 
-## Consuming from a TypeScript / Bun Pulumi program
+CI (`.github/workflows/ci.yml`) runs `go mod tidy` verification, `lint`, `test`,
+and `sdk:check` on every push and PR to `main`.
+
+## Consuming from another Pulumi program
 
 A native provider is **not** a dynamic provider, so the
 [`runtime: bun`](https://www.pulumi.com/blog/introducing-bun-as-a-runtime-for-pulumi/)
 limitation on dynamic providers does **not** apply — a Bun program consumes the
 generated SDK like any other package.
 
-1. Build the binary and generate the SDK (`mise run build && mise run sdk:nodejs`).
-2. Make the plugin discoverable, then add the SDK package:
+The SDK embeds a `pluginDownloadURL` pointing at this repo's GitHub Releases, so
+Pulumi auto-installs the matching plugin binary — consumers don't install the
+plugin separately.
 
-   ```sh
-   # from the consuming Pulumi project (e.g. atlas/pulumi)
-   pulumi package add /path/to/pulumi-unifi/bin/pulumi-resource-unifi
-   bun add @pulumi/unifi@../../pulumi-unifi/sdk/nodejs   # local path dep
-   ```
+### From a released version (recommended)
 
-3. Use it:
+Once a `v*` tag is released, the SDK is published to npm as
+[`@ryanwersal/unifi`](https://www.npmjs.com/package/@ryanwersal/unifi):
+
+```sh
+# from the consuming Pulumi project
+npm add @ryanwersal/unifi          # or: bun add / yarn add
+```
+
+The first `pulumi up` downloads the plugin from the GitHub Release automatically.
+To pre-install (e.g. in CI) or pin a specific version:
+
+```sh
+pulumi plugin install resource unifi 0.1.0 \
+  --server github://api.github.com/ryanwersal/pulumi-unifi
+```
+
+### From a local checkout (development)
+
+To consume an unreleased build, point at the local binary and SDK path:
+
+```sh
+mise run build && mise run sdk:nodejs
+# from the consuming Pulumi project (e.g. atlas/pulumi)
+pulumi package add /path/to/pulumi-unifi/bin/pulumi-resource-unifi
+bun add @ryanwersal/unifi@../../pulumi-unifi/sdk/nodejs   # local path dep
+```
+
+### Use it
 
    ```ts
-   import * as unifi from "@pulumi/unifi";
+   import * as unifi from "@ryanwersal/unifi";
 
    const lab = new unifi.network.Vlan("lab", {
      name: "lab",
@@ -97,6 +128,23 @@ generated SDK like any other package.
 
    Provider credentials come from config/secrets, e.g. via Doppler-injected env
    wired into a `unifi.Provider`.
+
+## Releasing
+
+Releases are tag-driven. `mise run release <major|minor|patch>` bumps the
+version with [`svu`](https://github.com/caarlos0/svu), tags, and pushes — which
+triggers `.github/workflows/release.yml`:
+
+- **goreleaser** cross-compiles the plugin (`darwin`/`linux`/`windows` ×
+  `amd64`/`arm64`, CGO-free) and uploads the
+  `pulumi-resource-unifi-v<ver>-<os>-<arch>.tar.gz` archives + checksums to the
+  GitHub Release. These are what the `github://` `pluginDownloadURL` resolves.
+- The **Node.js SDK** is regenerated at the tagged version (the binary is
+  version-stamped via `-ldflags`, and `respectSchemaVersion` carries it into the
+  package) and published to npm as `@ryanwersal/unifi`.
+
+The npm publish job needs an `NPM_TOKEN` repository secret with publish rights to
+the `@ryanwersal` scope. The goreleaser job uses the default `GITHUB_TOKEN`.
 
 ## Caveats / risks
 
