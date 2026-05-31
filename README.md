@@ -143,8 +143,15 @@ triggers `.github/workflows/release.yml`:
   version-stamped via `-ldflags`, and `respectSchemaVersion` carries it into the
   package) and published to npm as `@ryanwersal/unifi`.
 
-The npm publish job needs an `NPM_TOKEN` repository secret with publish rights to
-the `@ryanwersal` scope. The goreleaser job uses the default `GITHUB_TOKEN`.
+The SDK is published via npm
+[trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC) — no
+`NPM_TOKEN`, and provenance is attached automatically. One-time setup on
+npmjs.com: under the `@ryanwersal/unifi` package's **Settings → Trusted
+publishing**, add this repo's `release.yml` workflow as a trusted publisher.
+(Trusted publishing can only be configured on a package that already exists, so
+the very first publish needs a one-off `npm publish` with a granular token —
+afterwards the workflow runs token-free.) The goreleaser job uses the default
+`GITHUB_TOKEN`.
 
 ## Caveats / risks
 

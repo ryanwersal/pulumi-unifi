@@ -5,14 +5,13 @@ on:
     tags:
       - "v*"
 
-permissions:
-  contents: write
-
 jobs:
   # Cross-platform plugin binaries → GitHub Release assets. Pulumi's github://
   # plugin resolver (pluginDownloadURL in the schema) installs these.
   binaries:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the GitHub Release + upload assets
     steps:
       - uses: actions/checkout@v6
         with:
@@ -29,6 +28,9 @@ jobs:
   # stamp from the tag here so the npm version matches the plugin release.
   publish-npm:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # OIDC token for npm trusted publishing (no NPM_TOKEN)
     steps:
       - uses: actions/checkout@v6
 
@@ -38,6 +40,10 @@ jobs:
         with:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
+
+      # Trusted publishing needs npm >= 11.5.1 for OIDC; the bundled npm may be
+      # older. Provenance is attached automatically when publishing via OIDC.
+      - run: npm install -g npm@latest
 
       - name: Build plugin (version-stamped) and generate SDK
         run: |
@@ -56,5 +62,3 @@ jobs:
           # runtime (see utilities.ts), so publish from there.
           cp package.json README.md bin/
           npm publish --access public ./bin
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
