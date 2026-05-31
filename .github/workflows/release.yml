@@ -39,8 +39,6 @@ jobs:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
 
-      - run: npm install -g npm@latest # OIDC trusted publishing needs npm >= 11.5.1
-
       - name: Build plugin (version-stamped) and generate SDK
         run: |
           VERSION="${GITHUB_REF_NAME#v}"
