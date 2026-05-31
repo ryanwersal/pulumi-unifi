@@ -23,9 +23,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  # Generate the Node.js SDK at the tagged version and publish it to npm.
-  # respectSchemaVersion ties the package version to provider.Version, which we
-  # stamp from the tag here so the npm version matches the plugin release.
+  # Regenerate the Node.js SDK at the tagged version and publish it to npm.
   publish-npm:
     runs-on: ubuntu-latest
     permissions:
@@ -41,9 +39,7 @@ jobs:
           node-version: "24"
           registry-url: "https://registry.npmjs.org"
 
-      # Trusted publishing needs npm >= 11.5.1 for OIDC; the bundled npm may be
-      # older. Provenance is attached automatically when publishing via OIDC.
-      - run: npm install -g npm@latest
+      - run: npm install -g npm@latest # OIDC trusted publishing needs npm >= 11.5.1
 
       - name: Build plugin (version-stamped) and generate SDK
         run: |

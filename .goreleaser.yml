@@ -1,6 +1,6 @@
-# Releases the UniFi Pulumi plugin binary. The archive naming is load-bearing:
-# Pulumi's github:// plugin resolver (see pluginDownloadURL in provider.go)
-# fetches assets named pulumi-resource-unifi-v<ver>-<os>-<arch>.tar.gz.
+# The archive naming is load-bearing: Pulumi's github:// plugin resolver (see
+# pluginDownloadURL in provider.go) fetches assets named
+# pulumi-resource-unifi-v<ver>-<os>-<arch>.tar.gz with the binary at the root.
 version: 2
 
 builds:
@@ -8,8 +8,7 @@ builds:
     main: ./cmd/pulumi-resource-unifi
     binary: pulumi-resource-unifi
     env:
-      # Pure-Go provider — cross-compile freely without a C toolchain.
-      - CGO_ENABLED=0
+      - CGO_ENABLED=0 # pure-Go provider, cross-compiles freely
     goos:
       - darwin
       - linux
@@ -18,7 +17,6 @@ builds:
       - amd64
       - arm64
     ignore:
-      # No demand for Windows on ARM; drop it to keep the matrix lean.
       - goos: windows
         goarch: arm64
     ldflags:
@@ -28,10 +26,8 @@ builds:
 
 archives:
   - id: archive
-    # Must match what `pulumi plugin install` expects from a github:// source.
     name_template: "pulumi-resource-unifi-v{{ .Version }}-{{ .Os }}-{{ .Arch }}"
     formats: [tar.gz]
-    # Binary at the archive root (no nested dir) — the plugin loader expects it.
     wrap_in_directory: false
     files:
       - LICENSE

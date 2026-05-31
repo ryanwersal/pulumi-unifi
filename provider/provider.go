@@ -16,27 +16,16 @@ import (
 // `pulumi-resource-<Name>` binary and the generated SDK package.
 const Name = "unifi"
 
-// Version is the provider version, stamped into the schema and SDK. It is a
-// var (not a const) so release builds can override it via the linker:
-//
-//	-ldflags "-X github.com/ryanwersal/pulumi-unifi/provider.Version=<tag>"
-//
-// The default below is the local-dev/source version; goreleaser stamps the git
-// tag at release time. Because the nodejs SDK is generated with
-// respectSchemaVersion, this value also becomes the published npm package
-// version.
+// Version is a var (not a const) so release builds can stamp the git tag via
+// -ldflags; the default is the local-dev version. respectSchemaVersion (below)
+// carries it into the published npm package version too.
 var Version = "0.1.0"
 
-// pluginDownloadURL tells Pulumi where to fetch the plugin binary when a
-// consuming program references the SDK without a locally-installed plugin.
-// The github:// scheme resolves to release assets on the repo's GitHub
-// Releases (named pulumi-resource-unifi-v<ver>-<os>-<arch>.tar.gz), which the
-// release workflow publishes via goreleaser.
+// pluginDownloadURL points Pulumi at this repo's GitHub Releases to fetch the
+// plugin binary when a consuming program has no local install.
 const pluginDownloadURL = "github://api.github.com/ryanwersal/pulumi-unifi"
 
-// npmPackageName overrides the default @pulumi/unifi name (we don't own the
-// @pulumi npm scope) so the generated TypeScript SDK publishes under a scope
-// we control.
+// npmPackageName moves the SDK off the @pulumi scope (which we don't own).
 const npmPackageName = "@ryanwersal/unifi"
 
 // New builds the inferred provider. The infer layer derives the Pulumi schema
@@ -51,9 +40,6 @@ func New() (p.Provider, error) {
 		WithLicense("Apache-2.0").
 		WithPluginDownloadURL(pluginDownloadURL).
 		WithLanguageMap(map[string]any{
-			// respectSchemaVersion ties the SDK package version to the schema
-			// (i.e. Version above), so a tagged release publishes a matching
-			// npm version. packageName moves it off the @pulumi scope.
 			"nodejs": map[string]any{
 				"respectSchemaVersion": true,
 				"packageName":          npmPackageName,
