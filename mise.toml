@@ -66,7 +66,10 @@ set -eu
 VERSION=0.0.1 mise run sdk:build
 cd "$SDK_DIR/nodejs"
 npm publish --access public ./bin
-npm deprecate "$NPM_PACKAGE@0.0.1" "bootstrap release; use >=0.1.0"
+# Deprecate is cosmetic and can 404 on replication lag right after a fresh
+# publish — never fail the task over it once the publish itself succeeded.
+npm deprecate "$NPM_PACKAGE@0.0.1" "bootstrap release; use >=0.1.0" \
+    || echo "note: deprecate failed (registry lag?); retry: npm deprecate $NPM_PACKAGE@0.0.1 ..."
 cd - >/dev/null
 git checkout -- "$SDK_DIR"   # undo the throwaway 0.0.1 regen
 '''
