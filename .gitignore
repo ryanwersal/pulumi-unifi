@@ -14,5 +14,6 @@
 /sdk/nodejs/node_modules/
 /sdk/nodejs/package-lock.json
 
-# Local env
+# Local env / secrets
 .env
+.npmrc
