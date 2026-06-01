@@ -78,11 +78,11 @@ plugin separately.
 ### From a released version (recommended)
 
 Once a `v*` tag is released, the SDK is published to npm as
-[`@ryanwersal/unifi`](https://www.npmjs.com/package/@ryanwersal/unifi):
+[`@ryanwersal/pulumi-unifi`](https://www.npmjs.com/package/@ryanwersal/pulumi-unifi):
 
 ```sh
 # from the consuming Pulumi project
-npm add @ryanwersal/unifi          # or: bun add / yarn add
+npm add @ryanwersal/pulumi-unifi          # or: bun add / yarn add
 ```
 
 The first `pulumi up` downloads the plugin from the GitHub Release automatically.
@@ -101,13 +101,13 @@ To consume an unreleased build, point at the local binary and SDK path:
 mise run build && mise run sdk:nodejs
 # from the consuming Pulumi project (e.g. atlas/pulumi)
 pulumi package add /path/to/pulumi-unifi/bin/pulumi-resource-unifi
-bun add @ryanwersal/unifi@../../pulumi-unifi/sdk/nodejs   # local path dep
+bun add @ryanwersal/pulumi-unifi@../../pulumi-unifi/sdk/nodejs   # local path dep
 ```
 
 ### Use it
 
    ```ts
-   import * as unifi from "@ryanwersal/unifi";
+   import * as unifi from "@ryanwersal/pulumi-unifi";
 
    const lab = new unifi.network.Vlan("lab", {
      name: "lab",
@@ -141,7 +141,7 @@ triggers `.github/workflows/release.yml`:
   GitHub Release. These are what the `github://` `pluginDownloadURL` resolves.
 - The **Node.js SDK** is regenerated at the tagged version (the binary is
   version-stamped via `-ldflags`, and `respectSchemaVersion` carries it into the
-  package) and published to npm as `@ryanwersal/unifi`.
+  package) and published to npm as `@ryanwersal/pulumi-unifi`.
 
 The SDK is published via npm
 [trusted publishing](https://docs.npmjs.com/trusted-publishers) (OIDC) — no
@@ -155,7 +155,7 @@ bootstrap the package once, then grant the workflow trust:
 
 ```sh
 npm login                 # auth, only needed for this bootstrap publish
-mise run bootstrap        # publishes a throwaway 0.0.1 to register @ryanwersal/unifi, then deprecates it
+mise run bootstrap        # publishes a throwaway 0.0.1 to register @ryanwersal/pulumi-unifi, then deprecates it
 mise run trust            # npm trust github … — point trusted publishing at release.yml
 ```
 

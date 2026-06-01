@@ -25,8 +25,9 @@ var Version = "0.1.0"
 // plugin binary when a consuming program has no local install.
 const pluginDownloadURL = "github://api.github.com/ryanwersal/pulumi-unifi"
 
-// npmPackageName moves the SDK off the @pulumi scope (which we don't own).
-const npmPackageName = "@ryanwersal/unifi"
+// npmPackageName moves the SDK off the @pulumi scope (which we don't own). The
+// bare @ryanwersal scope carries no "pulumi" signal, so keep it in the name.
+const npmPackageName = "@ryanwersal/pulumi-unifi"
 
 // New builds the inferred provider. The infer layer derives the Pulumi schema
 // and gRPC server from the Go types referenced here.

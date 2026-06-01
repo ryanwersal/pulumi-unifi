@@ -17,7 +17,7 @@ PROVIDER_NAME = "unifi"
 # Where generated SDKs land.
 SDK_DIR = "sdk"
 # Published npm package name (see WithLanguageMap in provider/provider.go).
-NPM_PACKAGE = "@ryanwersal/unifi"
+NPM_PACKAGE = "@ryanwersal/pulumi-unifi"
 # owner/repo, used for plugin downloads and npm trusted publishing.
 REPO = "ryanwersal/pulumi-unifi"
 

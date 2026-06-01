@@ -1,5 +1,5 @@
 {
-    "name": "@ryanwersal/unifi",
+    "name": "@ryanwersal/pulumi-unifi",
     "version": "0.1.0",
     "homepage": "https://github.com/ryanwersal/pulumi-unifi",
     "repository": "https://github.com/ryanwersal/pulumi-unifi",
