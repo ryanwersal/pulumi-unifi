@@ -223,7 +223,7 @@ func (Camera) Create(ctx context.Context, req infer.CreateRequest[CameraArgs]) (
 	}
 	cam, err := pc.CameraPatch(id, req.Inputs.toPatch())
 	if err != nil {
-		return infer.CreateResponse[CameraState]{}, err
+		return infer.CreateResponse[CameraState]{}, wrap(fmt.Sprintf("create camera %q", req.Inputs.CameraId), err)
 	}
 	return infer.CreateResponse[CameraState]{ID: req.Inputs.CameraId, Output: stateFrom(cam, req.Inputs)}, nil
 }
@@ -238,7 +238,7 @@ func (Camera) Read(ctx context.Context, req infer.ReadRequest[CameraArgs, Camera
 		return infer.ReadResponse[CameraArgs, CameraState]{}, nil
 	}
 	if err != nil {
-		return infer.ReadResponse[CameraArgs, CameraState]{}, err
+		return infer.ReadResponse[CameraArgs, CameraState]{}, wrap(fmt.Sprintf("read camera %q", req.ID), err)
 	}
 	st := stateFrom(cam, req.State.CameraArgs)
 	return infer.ReadResponse[CameraArgs, CameraState]{ID: req.ID, Inputs: st.CameraArgs, State: st}, nil
@@ -254,7 +254,7 @@ func (Camera) Update(ctx context.Context, req infer.UpdateRequest[CameraArgs, Ca
 	}
 	cam, err := pc.CameraPatch(protecttypes.CameraID(req.ID), req.Inputs.toPatch())
 	if err != nil {
-		return infer.UpdateResponse[CameraState]{}, err
+		return infer.UpdateResponse[CameraState]{}, wrap(fmt.Sprintf("update camera %q", req.ID), err)
 	}
 	return infer.UpdateResponse[CameraState]{Output: stateFrom(cam, req.Inputs)}, nil
 }

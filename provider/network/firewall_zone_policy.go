@@ -2,6 +2,7 @@ package network
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/filipowm/go-unifi/unifi"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -572,7 +573,7 @@ func (FirewallZonePolicy) Create(ctx context.Context, req infer.CreateRequest[Fi
 	cfg := infer.GetConfig[config.Config](ctx)
 	created, err := cfg.Network().CreateFirewallZonePolicy(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(""))
 	if err != nil {
-		return infer.CreateResponse[FirewallZonePolicyState]{}, err
+		return infer.CreateResponse[FirewallZonePolicyState]{}, wrap(fmt.Sprintf("create firewall zone policy %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
 	return infer.CreateResponse[FirewallZonePolicyState]{ID: created.ID, Output: firewallZonePolicyStateFrom(created, req.Inputs)}, nil
 }
@@ -585,7 +586,7 @@ func (FirewallZonePolicy) Read(ctx context.Context, req infer.ReadRequest[Firewa
 		return infer.ReadResponse[FirewallZonePolicyArgs, FirewallZonePolicyState]{}, nil
 	}
 	if err != nil {
-		return infer.ReadResponse[FirewallZonePolicyArgs, FirewallZonePolicyState]{}, err
+		return infer.ReadResponse[FirewallZonePolicyArgs, FirewallZonePolicyState]{}, wrap(fmt.Sprintf("read firewall zone policy %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	st := firewallZonePolicyStateFrom(p, req.Inputs)
 	return infer.ReadResponse[FirewallZonePolicyArgs, FirewallZonePolicyState]{ID: req.ID, Inputs: st.FirewallZonePolicyArgs, State: st}, nil
@@ -599,7 +600,7 @@ func (FirewallZonePolicy) Update(ctx context.Context, req infer.UpdateRequest[Fi
 	cfg := infer.GetConfig[config.Config](ctx)
 	updated, err := cfg.Network().UpdateFirewallZonePolicy(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(req.ID))
 	if err != nil {
-		return infer.UpdateResponse[FirewallZonePolicyState]{}, err
+		return infer.UpdateResponse[FirewallZonePolicyState]{}, wrap(fmt.Sprintf("update firewall zone policy %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	return infer.UpdateResponse[FirewallZonePolicyState]{Output: firewallZonePolicyStateFrom(updated, req.Inputs)}, nil
 }
@@ -607,5 +608,9 @@ func (FirewallZonePolicy) Update(ctx context.Context, req infer.UpdateRequest[Fi
 // Delete removes the zone-based firewall policy.
 func (FirewallZonePolicy) Delete(ctx context.Context, req infer.DeleteRequest[FirewallZonePolicyState]) (infer.DeleteResponse, error) {
 	cfg := infer.GetConfig[config.Config](ctx)
-	return infer.DeleteResponse{}, cfg.Network().DeleteFirewallZonePolicy(ctx, cfg.ResolvedSite(), req.ID)
+	err := cfg.Network().DeleteFirewallZonePolicy(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.DeleteResponse{}, nil
+	}
+	return infer.DeleteResponse{}, wrap(fmt.Sprintf("delete firewall zone policy %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 }

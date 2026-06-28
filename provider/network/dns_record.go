@@ -2,6 +2,7 @@ package network
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/filipowm/go-unifi/unifi"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -118,7 +119,7 @@ func (DnsRecord) Create(ctx context.Context, req infer.CreateRequest[DnsRecordAr
 	cfg := infer.GetConfig[config.Config](ctx)
 	created, err := cfg.Network().CreateDNSRecord(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(""))
 	if err != nil {
-		return infer.CreateResponse[DnsRecordState]{}, err
+		return infer.CreateResponse[DnsRecordState]{}, wrap(fmt.Sprintf("create dns record %q (site %q)", req.Inputs.Key, cfg.ResolvedSite()), err)
 	}
 	return infer.CreateResponse[DnsRecordState]{ID: created.ID, Output: dnsRecordStateFrom(created, req.Inputs)}, nil
 }
@@ -131,7 +132,7 @@ func (DnsRecord) Read(ctx context.Context, req infer.ReadRequest[DnsRecordArgs, 
 		return infer.ReadResponse[DnsRecordArgs, DnsRecordState]{}, nil
 	}
 	if err != nil {
-		return infer.ReadResponse[DnsRecordArgs, DnsRecordState]{}, err
+		return infer.ReadResponse[DnsRecordArgs, DnsRecordState]{}, wrap(fmt.Sprintf("read dns record %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	st := dnsRecordStateFrom(r, req.Inputs)
 	return infer.ReadResponse[DnsRecordArgs, DnsRecordState]{ID: req.ID, Inputs: st.DnsRecordArgs, State: st}, nil
@@ -145,7 +146,7 @@ func (DnsRecord) Update(ctx context.Context, req infer.UpdateRequest[DnsRecordAr
 	cfg := infer.GetConfig[config.Config](ctx)
 	updated, err := cfg.Network().UpdateDNSRecord(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(req.ID))
 	if err != nil {
-		return infer.UpdateResponse[DnsRecordState]{}, err
+		return infer.UpdateResponse[DnsRecordState]{}, wrap(fmt.Sprintf("update dns record %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	return infer.UpdateResponse[DnsRecordState]{Output: dnsRecordStateFrom(updated, req.Inputs)}, nil
 }
@@ -153,5 +154,9 @@ func (DnsRecord) Update(ctx context.Context, req infer.UpdateRequest[DnsRecordAr
 // Delete removes the DNS record.
 func (DnsRecord) Delete(ctx context.Context, req infer.DeleteRequest[DnsRecordState]) (infer.DeleteResponse, error) {
 	cfg := infer.GetConfig[config.Config](ctx)
-	return infer.DeleteResponse{}, cfg.Network().DeleteDNSRecord(ctx, cfg.ResolvedSite(), req.ID)
+	err := cfg.Network().DeleteDNSRecord(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.DeleteResponse{}, nil
+	}
+	return infer.DeleteResponse{}, wrap(fmt.Sprintf("delete dns record %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 }

@@ -2,6 +2,7 @@ package network
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/filipowm/go-unifi/unifi"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -88,7 +89,7 @@ func (FirewallGroup) Create(ctx context.Context, req infer.CreateRequest[Firewal
 	cfg := infer.GetConfig[config.Config](ctx)
 	created, err := cfg.Network().CreateFirewallGroup(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(""))
 	if err != nil {
-		return infer.CreateResponse[FirewallGroupState]{}, err
+		return infer.CreateResponse[FirewallGroupState]{}, wrap(fmt.Sprintf("create firewall group %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
 	return infer.CreateResponse[FirewallGroupState]{ID: created.ID, Output: firewallGroupStateFrom(created, req.Inputs)}, nil
 }
@@ -101,7 +102,7 @@ func (FirewallGroup) Read(ctx context.Context, req infer.ReadRequest[FirewallGro
 		return infer.ReadResponse[FirewallGroupArgs, FirewallGroupState]{}, nil
 	}
 	if err != nil {
-		return infer.ReadResponse[FirewallGroupArgs, FirewallGroupState]{}, err
+		return infer.ReadResponse[FirewallGroupArgs, FirewallGroupState]{}, wrap(fmt.Sprintf("read firewall group %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	st := firewallGroupStateFrom(g, req.Inputs)
 	return infer.ReadResponse[FirewallGroupArgs, FirewallGroupState]{ID: req.ID, Inputs: st.FirewallGroupArgs, State: st}, nil
@@ -115,13 +116,18 @@ func (FirewallGroup) Update(ctx context.Context, req infer.UpdateRequest[Firewal
 	cfg := infer.GetConfig[config.Config](ctx)
 	updated, err := cfg.Network().UpdateFirewallGroup(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(req.ID))
 	if err != nil {
-		return infer.UpdateResponse[FirewallGroupState]{}, err
+		return infer.UpdateResponse[FirewallGroupState]{}, wrap(fmt.Sprintf("update firewall group %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	return infer.UpdateResponse[FirewallGroupState]{Output: firewallGroupStateFrom(updated, req.Inputs)}, nil
 }
 
-// Delete removes the firewall group.
+// Delete removes the firewall group. Already-gone objects are treated as a
+// successful no-op so deletes are idempotent.
 func (FirewallGroup) Delete(ctx context.Context, req infer.DeleteRequest[FirewallGroupState]) (infer.DeleteResponse, error) {
 	cfg := infer.GetConfig[config.Config](ctx)
-	return infer.DeleteResponse{}, cfg.Network().DeleteFirewallGroup(ctx, cfg.ResolvedSite(), req.ID)
+	err := cfg.Network().DeleteFirewallGroup(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.DeleteResponse{}, nil
+	}
+	return infer.DeleteResponse{}, wrap(fmt.Sprintf("delete firewall group %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 }

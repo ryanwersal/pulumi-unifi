@@ -2,6 +2,7 @@ package network
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/filipowm/go-unifi/unifi"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -199,7 +200,7 @@ func (PortForward) Create(ctx context.Context, req infer.CreateRequest[PortForwa
 	cfg := infer.GetConfig[config.Config](ctx)
 	created, err := cfg.Network().CreatePortForward(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(""))
 	if err != nil {
-		return infer.CreateResponse[PortForwardState]{}, err
+		return infer.CreateResponse[PortForwardState]{}, wrap(fmt.Sprintf("create port forward %q (site %q)", derefOr(req.Inputs.Name, ""), cfg.ResolvedSite()), err)
 	}
 	return infer.CreateResponse[PortForwardState]{ID: created.ID, Output: portForwardStateFrom(created, req.Inputs)}, nil
 }
@@ -212,7 +213,7 @@ func (PortForward) Read(ctx context.Context, req infer.ReadRequest[PortForwardAr
 		return infer.ReadResponse[PortForwardArgs, PortForwardState]{}, nil
 	}
 	if err != nil {
-		return infer.ReadResponse[PortForwardArgs, PortForwardState]{}, err
+		return infer.ReadResponse[PortForwardArgs, PortForwardState]{}, wrap(fmt.Sprintf("read port forward %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	st := portForwardStateFrom(pf, req.Inputs)
 	return infer.ReadResponse[PortForwardArgs, PortForwardState]{ID: req.ID, Inputs: st.PortForwardArgs, State: st}, nil
@@ -226,7 +227,7 @@ func (PortForward) Update(ctx context.Context, req infer.UpdateRequest[PortForwa
 	cfg := infer.GetConfig[config.Config](ctx)
 	updated, err := cfg.Network().UpdatePortForward(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(req.ID))
 	if err != nil {
-		return infer.UpdateResponse[PortForwardState]{}, err
+		return infer.UpdateResponse[PortForwardState]{}, wrap(fmt.Sprintf("update port forward %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	return infer.UpdateResponse[PortForwardState]{Output: portForwardStateFrom(updated, req.Inputs)}, nil
 }
@@ -234,5 +235,9 @@ func (PortForward) Update(ctx context.Context, req infer.UpdateRequest[PortForwa
 // Delete removes the port-forwarding rule.
 func (PortForward) Delete(ctx context.Context, req infer.DeleteRequest[PortForwardState]) (infer.DeleteResponse, error) {
 	cfg := infer.GetConfig[config.Config](ctx)
-	return infer.DeleteResponse{}, cfg.Network().DeletePortForward(ctx, cfg.ResolvedSite(), req.ID)
+	err := cfg.Network().DeletePortForward(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.DeleteResponse{}, nil
+	}
+	return infer.DeleteResponse{}, wrap(fmt.Sprintf("delete port forward %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 }

@@ -2,6 +2,7 @@ package network
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/filipowm/go-unifi/unifi"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -659,7 +660,7 @@ func (PortProfile) Create(ctx context.Context, req infer.CreateRequest[PortProfi
 	cfg := infer.GetConfig[config.Config](ctx)
 	created, err := cfg.Network().CreatePortProfile(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(""))
 	if err != nil {
-		return infer.CreateResponse[PortProfileState]{}, err
+		return infer.CreateResponse[PortProfileState]{}, wrap(fmt.Sprintf("create port profile %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
 	return infer.CreateResponse[PortProfileState]{ID: created.ID, Output: portProfileStateFrom(created, req.Inputs)}, nil
 }
@@ -672,7 +673,7 @@ func (PortProfile) Read(ctx context.Context, req infer.ReadRequest[PortProfileAr
 		return infer.ReadResponse[PortProfileArgs, PortProfileState]{}, nil
 	}
 	if err != nil {
-		return infer.ReadResponse[PortProfileArgs, PortProfileState]{}, err
+		return infer.ReadResponse[PortProfileArgs, PortProfileState]{}, wrap(fmt.Sprintf("read port profile %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	st := portProfileStateFrom(u, req.Inputs)
 	return infer.ReadResponse[PortProfileArgs, PortProfileState]{ID: req.ID, Inputs: st.PortProfileArgs, State: st}, nil
@@ -686,7 +687,7 @@ func (PortProfile) Update(ctx context.Context, req infer.UpdateRequest[PortProfi
 	cfg := infer.GetConfig[config.Config](ctx)
 	updated, err := cfg.Network().UpdatePortProfile(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(req.ID))
 	if err != nil {
-		return infer.UpdateResponse[PortProfileState]{}, err
+		return infer.UpdateResponse[PortProfileState]{}, wrap(fmt.Sprintf("update port profile %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	return infer.UpdateResponse[PortProfileState]{Output: portProfileStateFrom(updated, req.Inputs)}, nil
 }
@@ -694,5 +695,9 @@ func (PortProfile) Update(ctx context.Context, req infer.UpdateRequest[PortProfi
 // Delete removes the port profile.
 func (PortProfile) Delete(ctx context.Context, req infer.DeleteRequest[PortProfileState]) (infer.DeleteResponse, error) {
 	cfg := infer.GetConfig[config.Config](ctx)
-	return infer.DeleteResponse{}, cfg.Network().DeletePortProfile(ctx, cfg.ResolvedSite(), req.ID)
+	err := cfg.Network().DeletePortProfile(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.DeleteResponse{}, nil
+	}
+	return infer.DeleteResponse{}, wrap(fmt.Sprintf("delete port profile %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 }

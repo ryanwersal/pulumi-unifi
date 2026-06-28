@@ -2,6 +2,7 @@ package network
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/filipowm/go-unifi/unifi"
@@ -30,4 +31,13 @@ func notFound(err error) bool {
 		return se.StatusCode == http.StatusNotFound
 	}
 	return false
+}
+
+// wrap annotates a controller error with caller context (op should read like
+// `create vlan "lab" (site "default")`). Returns nil when err is nil.
+func wrap(op string, err error) error {
+	if err == nil {
+		return nil
+	}
+	return fmt.Errorf("%s: %w", op, err)
 }

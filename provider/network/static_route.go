@@ -2,6 +2,7 @@ package network
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/filipowm/go-unifi/unifi"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -138,7 +139,7 @@ func (StaticRoute) Create(ctx context.Context, req infer.CreateRequest[StaticRou
 	cfg := infer.GetConfig[config.Config](ctx)
 	created, err := cfg.Network().CreateRouting(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(""))
 	if err != nil {
-		return infer.CreateResponse[StaticRouteState]{}, err
+		return infer.CreateResponse[StaticRouteState]{}, wrap(fmt.Sprintf("create static route %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
 	return infer.CreateResponse[StaticRouteState]{ID: created.ID, Output: staticRouteStateFrom(created, req.Inputs)}, nil
 }
@@ -151,7 +152,7 @@ func (StaticRoute) Read(ctx context.Context, req infer.ReadRequest[StaticRouteAr
 		return infer.ReadResponse[StaticRouteArgs, StaticRouteState]{}, nil
 	}
 	if err != nil {
-		return infer.ReadResponse[StaticRouteArgs, StaticRouteState]{}, err
+		return infer.ReadResponse[StaticRouteArgs, StaticRouteState]{}, wrap(fmt.Sprintf("read static route %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	st := staticRouteStateFrom(r, req.Inputs)
 	return infer.ReadResponse[StaticRouteArgs, StaticRouteState]{ID: req.ID, Inputs: st.StaticRouteArgs, State: st}, nil
@@ -165,7 +166,7 @@ func (StaticRoute) Update(ctx context.Context, req infer.UpdateRequest[StaticRou
 	cfg := infer.GetConfig[config.Config](ctx)
 	updated, err := cfg.Network().UpdateRouting(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(req.ID))
 	if err != nil {
-		return infer.UpdateResponse[StaticRouteState]{}, err
+		return infer.UpdateResponse[StaticRouteState]{}, wrap(fmt.Sprintf("update static route %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	return infer.UpdateResponse[StaticRouteState]{Output: staticRouteStateFrom(updated, req.Inputs)}, nil
 }
@@ -173,5 +174,9 @@ func (StaticRoute) Update(ctx context.Context, req infer.UpdateRequest[StaticRou
 // Delete removes the static route.
 func (StaticRoute) Delete(ctx context.Context, req infer.DeleteRequest[StaticRouteState]) (infer.DeleteResponse, error) {
 	cfg := infer.GetConfig[config.Config](ctx)
-	return infer.DeleteResponse{}, cfg.Network().DeleteRouting(ctx, cfg.ResolvedSite(), req.ID)
+	err := cfg.Network().DeleteRouting(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.DeleteResponse{}, nil
+	}
+	return infer.DeleteResponse{}, wrap(fmt.Sprintf("delete static route %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 }

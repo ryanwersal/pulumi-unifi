@@ -2,6 +2,7 @@ package network
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/filipowm/go-unifi/unifi"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -196,7 +197,7 @@ func (User) Create(ctx context.Context, req infer.CreateRequest[UserArgs]) (infe
 	cfg := infer.GetConfig[config.Config](ctx)
 	created, err := cfg.Network().CreateUser(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(""))
 	if err != nil {
-		return infer.CreateResponse[UserState]{}, err
+		return infer.CreateResponse[UserState]{}, wrap(fmt.Sprintf("create user %q (site %q)", req.Inputs.Mac, cfg.ResolvedSite()), err)
 	}
 	return infer.CreateResponse[UserState]{ID: created.ID, Output: userStateFrom(created, req.Inputs)}, nil
 }
@@ -209,7 +210,7 @@ func (User) Read(ctx context.Context, req infer.ReadRequest[UserArgs, UserState]
 		return infer.ReadResponse[UserArgs, UserState]{}, nil
 	}
 	if err != nil {
-		return infer.ReadResponse[UserArgs, UserState]{}, err
+		return infer.ReadResponse[UserArgs, UserState]{}, wrap(fmt.Sprintf("read user %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	st := userStateFrom(u, req.Inputs)
 	return infer.ReadResponse[UserArgs, UserState]{ID: req.ID, Inputs: st.UserArgs, State: st}, nil
@@ -223,7 +224,7 @@ func (User) Update(ctx context.Context, req infer.UpdateRequest[UserArgs, UserSt
 	cfg := infer.GetConfig[config.Config](ctx)
 	updated, err := cfg.Network().UpdateUser(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(req.ID))
 	if err != nil {
-		return infer.UpdateResponse[UserState]{}, err
+		return infer.UpdateResponse[UserState]{}, wrap(fmt.Sprintf("update user %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	return infer.UpdateResponse[UserState]{Output: userStateFrom(updated, req.Inputs)}, nil
 }
@@ -233,5 +234,9 @@ func (User) Update(ctx context.Context, req infer.UpdateRequest[UserArgs, UserSt
 // is also available on the client but the REST delete matches the id we track.
 func (User) Delete(ctx context.Context, req infer.DeleteRequest[UserState]) (infer.DeleteResponse, error) {
 	cfg := infer.GetConfig[config.Config](ctx)
-	return infer.DeleteResponse{}, cfg.Network().DeleteUser(ctx, cfg.ResolvedSite(), req.ID)
+	err := cfg.Network().DeleteUser(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.DeleteResponse{}, nil
+	}
+	return infer.DeleteResponse{}, wrap(fmt.Sprintf("delete user %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 }

@@ -60,6 +60,8 @@ func (c *Config) Annotate(a infer.Annotator) {
 func (c *Config) Configure(_ context.Context) error {
 	cc := &unifi.ClientConfig{URL: c.URL}
 	cc.VerifySSL = c.InsecureTLS == nil || !*c.InsecureTLS
+	// Silence the go-unifi logger; provider diagnostics go through Pulumi.
+	cc.Logger = unifi.NewDefaultLogger(unifi.DisabledLevel)
 
 	switch {
 	case c.APIKey != nil && *c.APIKey != "":

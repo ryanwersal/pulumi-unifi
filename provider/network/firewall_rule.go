@@ -2,6 +2,7 @@ package network
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/filipowm/go-unifi/unifi"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -451,7 +452,7 @@ func (FirewallRule) Create(ctx context.Context, req infer.CreateRequest[Firewall
 	cfg := infer.GetConfig[config.Config](ctx)
 	created, err := cfg.Network().CreateFirewallRule(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(""))
 	if err != nil {
-		return infer.CreateResponse[FirewallRuleState]{}, err
+		return infer.CreateResponse[FirewallRuleState]{}, wrap(fmt.Sprintf("create firewall rule %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
 	return infer.CreateResponse[FirewallRuleState]{ID: created.ID, Output: firewallRuleStateFrom(created, req.Inputs)}, nil
 }
@@ -464,7 +465,7 @@ func (FirewallRule) Read(ctx context.Context, req infer.ReadRequest[FirewallRule
 		return infer.ReadResponse[FirewallRuleArgs, FirewallRuleState]{}, nil
 	}
 	if err != nil {
-		return infer.ReadResponse[FirewallRuleArgs, FirewallRuleState]{}, err
+		return infer.ReadResponse[FirewallRuleArgs, FirewallRuleState]{}, wrap(fmt.Sprintf("read firewall rule %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	st := firewallRuleStateFrom(u, req.Inputs)
 	return infer.ReadResponse[FirewallRuleArgs, FirewallRuleState]{ID: req.ID, Inputs: st.FirewallRuleArgs, State: st}, nil
@@ -478,7 +479,7 @@ func (FirewallRule) Update(ctx context.Context, req infer.UpdateRequest[Firewall
 	cfg := infer.GetConfig[config.Config](ctx)
 	updated, err := cfg.Network().UpdateFirewallRule(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(req.ID))
 	if err != nil {
-		return infer.UpdateResponse[FirewallRuleState]{}, err
+		return infer.UpdateResponse[FirewallRuleState]{}, wrap(fmt.Sprintf("update firewall rule %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	return infer.UpdateResponse[FirewallRuleState]{Output: firewallRuleStateFrom(updated, req.Inputs)}, nil
 }
@@ -486,5 +487,9 @@ func (FirewallRule) Update(ctx context.Context, req infer.UpdateRequest[Firewall
 // Delete removes the firewall rule.
 func (FirewallRule) Delete(ctx context.Context, req infer.DeleteRequest[FirewallRuleState]) (infer.DeleteResponse, error) {
 	cfg := infer.GetConfig[config.Config](ctx)
-	return infer.DeleteResponse{}, cfg.Network().DeleteFirewallRule(ctx, cfg.ResolvedSite(), req.ID)
+	err := cfg.Network().DeleteFirewallRule(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.DeleteResponse{}, nil
+	}
+	return infer.DeleteResponse{}, wrap(fmt.Sprintf("delete firewall rule %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 }

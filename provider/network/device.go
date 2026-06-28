@@ -1017,7 +1017,7 @@ func (Device) Create(ctx context.Context, req infer.CreateRequest[DeviceArgs]) (
 	req.Inputs.applyTo(d)
 	updated, err := cfg.Network().UpdateDevice(ctx, cfg.ResolvedSite(), d)
 	if err != nil {
-		return infer.CreateResponse[DeviceState]{}, err
+		return infer.CreateResponse[DeviceState]{}, wrap(fmt.Sprintf("create device %q (site %q)", req.Inputs.Mac, cfg.ResolvedSite()), err)
 	}
 	return infer.CreateResponse[DeviceState]{ID: updated.ID, Output: deviceStateFrom(updated, req.Inputs)}, nil
 }
@@ -1030,7 +1030,7 @@ func (Device) Read(ctx context.Context, req infer.ReadRequest[DeviceArgs, Device
 		return infer.ReadResponse[DeviceArgs, DeviceState]{}, nil
 	}
 	if err != nil {
-		return infer.ReadResponse[DeviceArgs, DeviceState]{}, err
+		return infer.ReadResponse[DeviceArgs, DeviceState]{}, wrap(fmt.Sprintf("read device %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	st := deviceStateFrom(d, req.State.DeviceArgs)
 	return infer.ReadResponse[DeviceArgs, DeviceState]{ID: req.ID, Inputs: st.DeviceArgs, State: st}, nil
@@ -1044,12 +1044,12 @@ func (Device) Update(ctx context.Context, req infer.UpdateRequest[DeviceArgs, De
 	cfg := infer.GetConfig[config.Config](ctx)
 	d, err := cfg.Network().GetDevice(ctx, cfg.ResolvedSite(), req.ID)
 	if err != nil {
-		return infer.UpdateResponse[DeviceState]{}, err
+		return infer.UpdateResponse[DeviceState]{}, wrap(fmt.Sprintf("get device %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	req.Inputs.applyTo(d)
 	updated, err := cfg.Network().UpdateDevice(ctx, cfg.ResolvedSite(), d)
 	if err != nil {
-		return infer.UpdateResponse[DeviceState]{}, err
+		return infer.UpdateResponse[DeviceState]{}, wrap(fmt.Sprintf("update device %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	return infer.UpdateResponse[DeviceState]{Output: deviceStateFrom(updated, req.Inputs)}, nil
 }

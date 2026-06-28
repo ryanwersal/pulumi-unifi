@@ -2,6 +2,7 @@ package network
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/filipowm/go-unifi/unifi"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -1358,7 +1359,7 @@ func (Wlan) Create(ctx context.Context, req infer.CreateRequest[WlanArgs]) (infe
 	cfg := infer.GetConfig[config.Config](ctx)
 	created, err := cfg.Network().CreateWLAN(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(""))
 	if err != nil {
-		return infer.CreateResponse[WlanState]{}, err
+		return infer.CreateResponse[WlanState]{}, wrap(fmt.Sprintf("create wlan %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
 	return infer.CreateResponse[WlanState]{ID: created.ID, Output: wlanStateFrom(created, req.Inputs)}, nil
 }
@@ -1370,7 +1371,7 @@ func (Wlan) Read(ctx context.Context, req infer.ReadRequest[WlanArgs, WlanState]
 		return infer.ReadResponse[WlanArgs, WlanState]{}, nil
 	}
 	if err != nil {
-		return infer.ReadResponse[WlanArgs, WlanState]{}, err
+		return infer.ReadResponse[WlanArgs, WlanState]{}, wrap(fmt.Sprintf("read wlan %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	st := wlanStateFrom(w, req.Inputs)
 	return infer.ReadResponse[WlanArgs, WlanState]{ID: req.ID, Inputs: st.WlanArgs, State: st}, nil
@@ -1383,12 +1384,16 @@ func (Wlan) Update(ctx context.Context, req infer.UpdateRequest[WlanArgs, WlanSt
 	cfg := infer.GetConfig[config.Config](ctx)
 	updated, err := cfg.Network().UpdateWLAN(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(req.ID))
 	if err != nil {
-		return infer.UpdateResponse[WlanState]{}, err
+		return infer.UpdateResponse[WlanState]{}, wrap(fmt.Sprintf("update wlan %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	return infer.UpdateResponse[WlanState]{Output: wlanStateFrom(updated, req.Inputs)}, nil
 }
 
 func (Wlan) Delete(ctx context.Context, req infer.DeleteRequest[WlanState]) (infer.DeleteResponse, error) {
 	cfg := infer.GetConfig[config.Config](ctx)
-	return infer.DeleteResponse{}, cfg.Network().DeleteWLAN(ctx, cfg.ResolvedSite(), req.ID)
+	err := cfg.Network().DeleteWLAN(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.DeleteResponse{}, nil
+	}
+	return infer.DeleteResponse{}, wrap(fmt.Sprintf("delete wlan %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 }

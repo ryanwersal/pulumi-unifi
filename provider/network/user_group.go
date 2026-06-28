@@ -2,6 +2,7 @@ package network
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/filipowm/go-unifi/unifi"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -76,7 +77,7 @@ func (UserGroup) Create(ctx context.Context, req infer.CreateRequest[UserGroupAr
 	cfg := infer.GetConfig[config.Config](ctx)
 	created, err := cfg.Network().CreateUserGroup(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(""))
 	if err != nil {
-		return infer.CreateResponse[UserGroupState]{}, err
+		return infer.CreateResponse[UserGroupState]{}, wrap(fmt.Sprintf("create user group %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
 	return infer.CreateResponse[UserGroupState]{ID: created.ID, Output: userGroupStateFrom(created, req.Inputs)}, nil
 }
@@ -89,7 +90,7 @@ func (UserGroup) Read(ctx context.Context, req infer.ReadRequest[UserGroupArgs, 
 		return infer.ReadResponse[UserGroupArgs, UserGroupState]{}, nil
 	}
 	if err != nil {
-		return infer.ReadResponse[UserGroupArgs, UserGroupState]{}, err
+		return infer.ReadResponse[UserGroupArgs, UserGroupState]{}, wrap(fmt.Sprintf("read user group %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	st := userGroupStateFrom(u, req.Inputs)
 	return infer.ReadResponse[UserGroupArgs, UserGroupState]{ID: req.ID, Inputs: st.UserGroupArgs, State: st}, nil
@@ -103,7 +104,7 @@ func (UserGroup) Update(ctx context.Context, req infer.UpdateRequest[UserGroupAr
 	cfg := infer.GetConfig[config.Config](ctx)
 	updated, err := cfg.Network().UpdateUserGroup(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(req.ID))
 	if err != nil {
-		return infer.UpdateResponse[UserGroupState]{}, err
+		return infer.UpdateResponse[UserGroupState]{}, wrap(fmt.Sprintf("update user group %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	return infer.UpdateResponse[UserGroupState]{Output: userGroupStateFrom(updated, req.Inputs)}, nil
 }
@@ -111,5 +112,9 @@ func (UserGroup) Update(ctx context.Context, req infer.UpdateRequest[UserGroupAr
 // Delete removes the user group.
 func (UserGroup) Delete(ctx context.Context, req infer.DeleteRequest[UserGroupState]) (infer.DeleteResponse, error) {
 	cfg := infer.GetConfig[config.Config](ctx)
-	return infer.DeleteResponse{}, cfg.Network().DeleteUserGroup(ctx, cfg.ResolvedSite(), req.ID)
+	err := cfg.Network().DeleteUserGroup(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.DeleteResponse{}, nil
+	}
+	return infer.DeleteResponse{}, wrap(fmt.Sprintf("delete user group %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 }

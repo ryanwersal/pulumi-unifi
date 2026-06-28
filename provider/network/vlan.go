@@ -2,6 +2,7 @@ package network
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/filipowm/go-unifi/unifi"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -1290,7 +1291,7 @@ func (Vlan) Create(ctx context.Context, req infer.CreateRequest[VlanArgs]) (infe
 	cfg := infer.GetConfig[config.Config](ctx)
 	created, err := cfg.Network().CreateNetwork(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(""))
 	if err != nil {
-		return infer.CreateResponse[VlanState]{}, err
+		return infer.CreateResponse[VlanState]{}, wrap(fmt.Sprintf("create network %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
 	return infer.CreateResponse[VlanState]{ID: created.ID, Output: vlanStateFrom(created, req.Inputs)}, nil
 }
@@ -1303,7 +1304,7 @@ func (Vlan) Read(ctx context.Context, req infer.ReadRequest[VlanArgs, VlanState]
 		return infer.ReadResponse[VlanArgs, VlanState]{}, nil
 	}
 	if err != nil {
-		return infer.ReadResponse[VlanArgs, VlanState]{}, err
+		return infer.ReadResponse[VlanArgs, VlanState]{}, wrap(fmt.Sprintf("read network %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	st := vlanStateFrom(n, req.Inputs)
 	return infer.ReadResponse[VlanArgs, VlanState]{ID: req.ID, Inputs: st.VlanArgs, State: st}, nil
@@ -1317,7 +1318,7 @@ func (Vlan) Update(ctx context.Context, req infer.UpdateRequest[VlanArgs, VlanSt
 	cfg := infer.GetConfig[config.Config](ctx)
 	updated, err := cfg.Network().UpdateNetwork(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(req.ID))
 	if err != nil {
-		return infer.UpdateResponse[VlanState]{}, err
+		return infer.UpdateResponse[VlanState]{}, wrap(fmt.Sprintf("update network %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
 	return infer.UpdateResponse[VlanState]{Output: vlanStateFrom(updated, req.Inputs)}, nil
 }
@@ -1325,5 +1326,9 @@ func (Vlan) Update(ctx context.Context, req infer.UpdateRequest[VlanArgs, VlanSt
 // Delete removes the network.
 func (Vlan) Delete(ctx context.Context, req infer.DeleteRequest[VlanState]) (infer.DeleteResponse, error) {
 	cfg := infer.GetConfig[config.Config](ctx)
-	return infer.DeleteResponse{}, cfg.Network().DeleteNetwork(ctx, cfg.ResolvedSite(), req.ID)
+	err := cfg.Network().DeleteNetwork(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.DeleteResponse{}, nil
+	}
+	return infer.DeleteResponse{}, wrap(fmt.Sprintf("delete network %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 }
