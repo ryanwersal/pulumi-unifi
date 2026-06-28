@@ -3,8 +3,13 @@
 package protect
 
 import (
+	"context"
 	"encoding/json"
 	"testing"
+
+	p "github.com/pulumi/pulumi-go-provider"
+	"github.com/pulumi/pulumi-go-provider/infer"
+	"github.com/pulumi/pulumi/sdk/v3/go/property"
 
 	"github.com/ryanwersal/pulumi-unifi/provider/internal/protectapi"
 )
@@ -16,7 +21,10 @@ func TestToAutomationDefaults(t *testing.T) {
 		Conditions:     []AlarmCondition{{Source: "person"}},
 		WebhookActions: []AlarmWebhookAction{{Url: "https://example.test/hook"}},
 	}
-	auto := args.toAutomation()
+	auto, err := args.toAutomation()
+	if err != nil {
+		t.Fatalf("toAutomation: %v", err)
+	}
 
 	if !auto.Enable {
 		t.Error("Enable should default to true")
@@ -55,8 +63,12 @@ func TestToAutomationSortsHeaders(t *testing.T) {
 			Headers: map[string]string{"X-B": "2", "X-A": "1"},
 		}},
 	}
+	auto, err := args.toAutomation()
+	if err != nil {
+		t.Fatalf("toAutomation: %v", err)
+	}
 	var md protectapi.HTTPRequestMetadata
-	if err := json.Unmarshal(args.toAutomation().Actions[0].Metadata, &md); err != nil {
+	if err := json.Unmarshal(auto.Actions[0].Metadata, &md); err != nil {
 		t.Fatal(err)
 	}
 	if len(md.Headers) != 2 || md.Headers[0].Key != "X-A" || md.Headers[1].Key != "X-B" {
@@ -80,7 +92,10 @@ func TestAlarmStateRoundTrip(t *testing.T) {
 		Cooldown: &AlarmCooldown{Enabled: true, TimeoutMs: 900000},
 	}
 
-	auto := args.toAutomation()
+	auto, err := args.toAutomation()
+	if err != nil {
+		t.Fatalf("toAutomation: %v", err)
+	}
 	auto.ID = "6746a0a203df5603e4001e3b"
 	st := alarmStateFrom(auto)
 
@@ -110,23 +125,47 @@ func TestAlarmStateFromSkipsNonHTTPActions(t *testing.T) {
 	}
 }
 
-func TestValidateRequiresConditionsAndActions(t *testing.T) {
-	base := AlarmAutomationArgs{
-		Name:           "v",
-		Conditions:     []AlarmCondition{{Source: "motion"}},
-		WebhookActions: []AlarmWebhookAction{{Url: "https://example.test"}},
+func TestCheckRequiresConditionsAndActions(t *testing.T) {
+	// alarmInputs builds the resource inputs as a property.Map with the given
+	// number of (present-but-minimal) conditions and webhook actions.
+	alarmInputs := func(conds, acts int) property.Map {
+		mk := func(n int, kv map[string]property.Value) property.Value {
+			vals := make([]property.Value, n)
+			for i := range vals {
+				vals[i] = property.New(property.NewMap(kv))
+			}
+			return property.New(property.NewArray(vals))
+		}
+		return property.NewMap(map[string]property.Value{
+			"name":           property.New("v"),
+			"conditions":     mk(conds, map[string]property.Value{"source": property.New("motion")}),
+			"webhookActions": mk(acts, map[string]property.Value{"url": property.New("https://example.test")}),
+		})
 	}
-	if err := base.validate(); err != nil {
-		t.Errorf("valid args rejected: %v", err)
+	check := func(in property.Map) []p.CheckFailure {
+		t.Helper()
+		resp, err := AlarmAutomation{}.Check(context.Background(), infer.CheckRequest{NewInputs: in})
+		if err != nil {
+			t.Fatalf("Check: %v", err)
+		}
+		return resp.Failures
 	}
-	noCond := base
-	noCond.Conditions = nil
-	if err := noCond.validate(); err == nil {
-		t.Error("missing conditions should fail validation")
+	if f := check(alarmInputs(1, 1)); len(f) != 0 {
+		t.Errorf("valid args produced failures: %v", f)
 	}
-	noAct := base
-	noAct.WebhookActions = nil
-	if err := noAct.validate(); err == nil {
-		t.Error("missing webhook actions should fail validation")
+	if !hasFailure(check(alarmInputs(0, 1)), "conditions") {
+		t.Error("empty conditions should fail check on the conditions property")
 	}
+	if !hasFailure(check(alarmInputs(1, 0)), "webhookActions") {
+		t.Error("empty webhook actions should fail check on the webhookActions property")
+	}
+}
+
+func hasFailure(failures []p.CheckFailure, property string) bool {
+	for _, f := range failures {
+		if f.Property == property {
+			return true
+		}
+	}
+	return false
 }

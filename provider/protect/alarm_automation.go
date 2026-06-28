@@ -10,6 +10,7 @@ import (
 	"maps"
 	"slices"
 
+	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
 
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
@@ -149,19 +150,25 @@ const (
 	defaultCooldownMs       = 600000
 )
 
-func (a AlarmAutomationArgs) validate() error {
-	if len(a.Conditions) == 0 {
-		return fmt.Errorf("alarm automation %q needs at least one condition", a.Name)
+// Check applies defaults, then validates required collections at preview time
+// so the errors surface as per-property CheckFailures rather than apply-time.
+func (AlarmAutomation) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[AlarmAutomationArgs], error) {
+	args, failures, err := infer.DefaultCheck[AlarmAutomationArgs](ctx, req.NewInputs)
+	if err != nil || len(failures) > 0 {
+		return infer.CheckResponse[AlarmAutomationArgs]{Inputs: args, Failures: failures}, err
 	}
-	if len(a.WebhookActions) == 0 {
-		return fmt.Errorf("alarm automation %q needs at least one webhook action", a.Name)
+	if len(args.Conditions) == 0 {
+		failures = append(failures, p.CheckFailure{Property: "conditions", Reason: "at least one condition is required"})
 	}
-	return nil
+	if len(args.WebhookActions) == 0 {
+		failures = append(failures, p.CheckFailure{Property: "webhookActions", Reason: "at least one webhook action is required"})
+	}
+	return infer.CheckResponse[AlarmAutomationArgs]{Inputs: args, Failures: failures}, nil
 }
 
 // toAutomation builds the wire-format rule. Slices are always non-nil: the
 // private API's strict POST parser wants [] rather than null.
-func (a AlarmAutomationArgs) toAutomation() protectapi.Automation {
+func (a AlarmAutomationArgs) toAutomation() (protectapi.Automation, error) {
 	auto := protectapi.Automation{
 		Name:              a.Name,
 		Enable:            derefOr(a.Enabled, true),
@@ -189,13 +196,16 @@ func (a AlarmAutomationArgs) toAutomation() protectapi.Automation {
 		})
 	}
 	for _, w := range a.WebhookActions {
-		md, _ := json.Marshal(protectapi.HTTPRequestMetadata{
+		md, err := json.Marshal(protectapi.HTTPRequestMetadata{
 			URL:          w.Url,
 			Method:       derefOr(w.Method, defaultWebhookMethod),
 			Headers:      headerList(w.Headers),
 			Timeout:      derefOr(w.TimeoutMs, defaultWebhookTimeoutMs),
 			UseThumbnail: derefOr(w.UseThumbnail, true),
 		})
+		if err != nil {
+			return protectapi.Automation{}, fmt.Errorf("encode webhook action %q: %w", w.Url, err)
+		}
 		auto.Actions = append(auto.Actions, protectapi.Action{
 			Type:     "HTTP_REQUEST",
 			Metadata: md,
@@ -205,7 +215,7 @@ func (a AlarmAutomationArgs) toAutomation() protectapi.Automation {
 	if a.Cooldown != nil {
 		auto.Cooldown = protectapi.Cooldown{Enable: a.Cooldown.Enabled, Timeout: a.Cooldown.TimeoutMs}
 	}
-	return auto
+	return auto, nil
 }
 
 // headerList converts the Pulumi-side header map to the controller's sorted
@@ -267,14 +277,15 @@ func alarmStateFrom(auto protectapi.Automation) AlarmAutomationState {
 }
 
 func (AlarmAutomation) Create(ctx context.Context, req infer.CreateRequest[AlarmAutomationArgs]) (infer.CreateResponse[AlarmAutomationState], error) {
-	if err := req.Inputs.validate(); err != nil {
-		return infer.CreateResponse[AlarmAutomationState]{}, err
-	}
 	if req.DryRun {
 		return infer.CreateResponse[AlarmAutomationState]{Output: AlarmAutomationState{AlarmAutomationArgs: req.Inputs}}, nil
 	}
+	auto, err := req.Inputs.toAutomation()
+	if err != nil {
+		return infer.CreateResponse[AlarmAutomationState]{}, err
+	}
 	cfg := infer.GetConfig[config.Config](ctx)
-	created, err := protectapi.Create(ctx, cfg.Controller(), req.Inputs.toAutomation())
+	created, err := protectapi.Create(ctx, cfg.Controller(), auto)
 	if err != nil {
 		return infer.CreateResponse[AlarmAutomationState]{}, err
 	}
@@ -300,11 +311,12 @@ func (AlarmAutomation) Read(ctx context.Context, req infer.ReadRequest[AlarmAuto
 }
 
 func (AlarmAutomation) Update(ctx context.Context, req infer.UpdateRequest[AlarmAutomationArgs, AlarmAutomationState]) (infer.UpdateResponse[AlarmAutomationState], error) {
-	if err := req.Inputs.validate(); err != nil {
-		return infer.UpdateResponse[AlarmAutomationState]{}, err
-	}
 	if req.DryRun {
 		return infer.UpdateResponse[AlarmAutomationState]{Output: AlarmAutomationState{AlarmAutomationArgs: req.Inputs, AutomationId: req.ID}}, nil
+	}
+	managed, err := req.Inputs.toAutomation()
+	if err != nil {
+		return infer.UpdateResponse[AlarmAutomationState]{}, err
 	}
 	cfg := infer.GetConfig[config.Config](ctx)
 	// PATCH requires the full rule body: read the controller's copy, overlay
@@ -313,7 +325,7 @@ func (AlarmAutomation) Update(ctx context.Context, req infer.UpdateRequest[Alarm
 	if err != nil {
 		return infer.UpdateResponse[AlarmAutomationState]{}, err
 	}
-	full, err := protectapi.MergeManaged(raw, req.Inputs.toAutomation())
+	full, err := protectapi.MergeManaged(raw, managed)
 	if err != nil {
 		return infer.UpdateResponse[AlarmAutomationState]{}, err
 	}
