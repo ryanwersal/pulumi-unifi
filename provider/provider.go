@@ -36,13 +36,17 @@ const npmPackageName = "@ryanwersal/pulumi-unifi"
 func New() (p.Provider, error) {
 	return infer.NewProviderBuilder().
 		WithDisplayName("UniFi").
-		WithDescription("Manage a UniFi Dream Machine's Network and Protect applications via the local controller API.").
+		WithDescription("A Pulumi provider for managing a Ubiquiti UniFi Dream Machine's Network and Protect applications via the local controller API.").
+		WithKeywords("unifi", "ubiquiti", "category/network", "kind/native").
 		WithHomepage("https://github.com/ryanwersal/pulumi-unifi").
 		WithRepository("https://github.com/ryanwersal/pulumi-unifi").
 		WithPublisher("ryanwersal").
 		WithLicense("Apache-2.0").
 		WithPluginDownloadURL(pluginDownloadURL).
 		WithLanguageMap(map[string]any{
+			"go": map[string]any{
+				"importBasePath": "github.com/ryanwersal/pulumi-unifi/sdk/go/unifi",
+			},
 			"nodejs": map[string]any{
 				"respectSchemaVersion": true,
 				"packageName":          npmPackageName,

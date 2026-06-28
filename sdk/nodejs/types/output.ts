@@ -1488,17 +1488,17 @@ export namespace network {
          */
         dasEnabled?: boolean;
         /**
+         * MacAclEmptyPassword sends an empty password for MAC ACL auth.
+         */
+        macAclEmptyPassword?: boolean;
+        /**
+         * MacAclFormat is the MAC ACL format: none_lower | hyphen_lower | colon_lower | none_upper | hyphen_upper | colon_upper.
+         */
+        macAclFormat?: enums.network.WlanMacAclFormat;
+        /**
          * MacAuthEnabled enables RADIUS-based MAC authentication.
          */
         macAuthEnabled?: boolean;
-        /**
-         * MacaclEmptyPassword sends an empty password for MAC ACL auth.
-         */
-        macaclEmptyPassword?: boolean;
-        /**
-         * MacaclFormat is the MAC ACL format: none_lower | hyphen_lower | colon_lower | none_upper | hyphen_upper | colon_upper.
-         */
-        macaclFormat?: string;
         /**
          * NasIdentifier is the RADIUS NAS identifier value (0-48 chars).
          */

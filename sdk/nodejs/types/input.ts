@@ -1488,17 +1488,17 @@ export namespace network {
          */
         dasEnabled?: pulumi.Input<boolean | undefined>;
         /**
+         * MacAclEmptyPassword sends an empty password for MAC ACL auth.
+         */
+        macAclEmptyPassword?: pulumi.Input<boolean | undefined>;
+        /**
+         * MacAclFormat is the MAC ACL format: none_lower | hyphen_lower | colon_lower | none_upper | hyphen_upper | colon_upper.
+         */
+        macAclFormat?: pulumi.Input<enums.network.WlanMacAclFormat | undefined>;
+        /**
          * MacAuthEnabled enables RADIUS-based MAC authentication.
          */
         macAuthEnabled?: pulumi.Input<boolean | undefined>;
-        /**
-         * MacaclEmptyPassword sends an empty password for MAC ACL auth.
-         */
-        macaclEmptyPassword?: pulumi.Input<boolean | undefined>;
-        /**
-         * MacaclFormat is the MAC ACL format: none_lower | hyphen_lower | colon_lower | none_upper | hyphen_upper | colon_upper.
-         */
-        macaclFormat?: pulumi.Input<string | undefined>;
         /**
          * NasIdentifier is the RADIUS NAS identifier value (0-48 chars).
          */

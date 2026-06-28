@@ -106,8 +106,8 @@ func TestWlanRoundTrip(t *testing.T) {
 		Radius: &WlanRadius{
 			ProfileId:           ptr("rad1"),
 			MacAuthEnabled:      ptr(true),
-			MacaclFormat:        ptr("colon_lower"),
-			MacaclEmptyPassword: ptr(true),
+			MacAclFormat:        ptr(WlanMacAclFormat("colon_lower")),
+			MacAclEmptyPassword: ptr(true),
 			DasEnabled:          ptr(true),
 			NasIdentifier:       ptr("nas1"),
 			NasIdentifierType:   ptr(WlanNasIdentifierType("custom")),

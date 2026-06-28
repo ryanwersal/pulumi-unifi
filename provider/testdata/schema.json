@@ -2,7 +2,13 @@
   "name": "unifi",
   "displayName": "UniFi",
   "version": "0.1.0",
-  "description": "Manage a UniFi Dream Machine's Network and Protect applications via the local controller API.",
+  "description": "A Pulumi provider for managing a Ubiquiti UniFi Dream Machine's Network and Protect applications via the local controller API.",
+  "keywords": [
+    "unifi",
+    "ubiquiti",
+    "category/network",
+    "kind/native"
+  ],
   "homepage": "https://github.com/ryanwersal/pulumi-unifi",
   "license": "Apache-2.0",
   "repository": "https://github.com/ryanwersal/pulumi-unifi",
@@ -10,7 +16,7 @@
   "publisher": "ryanwersal",
   "language": {
     "go": {
-      "importBasePath": "https://github.com/ryanwersal/pulumi-unifi/sdk/go/unifi"
+      "importBasePath": "github.com/ryanwersal/pulumi-unifi/sdk/go/unifi"
     },
     "nodejs": {
       "packageName": "@ryanwersal/pulumi-unifi",
@@ -2922,6 +2928,41 @@
       },
       "type": "object"
     },
+    "unifi:network:WlanMacAclFormat": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "NoneLower",
+          "description": "No separators, lowercase.",
+          "value": "none_lower"
+        },
+        {
+          "name": "HyphenLower",
+          "description": "Hyphen separators, lowercase.",
+          "value": "hyphen_lower"
+        },
+        {
+          "name": "ColonLower",
+          "description": "Colon separators, lowercase.",
+          "value": "colon_lower"
+        },
+        {
+          "name": "NoneUpper",
+          "description": "No separators, uppercase.",
+          "value": "none_upper"
+        },
+        {
+          "name": "HyphenUpper",
+          "description": "Hyphen separators, uppercase.",
+          "value": "hyphen_upper"
+        },
+        {
+          "name": "ColonUpper",
+          "description": "Colon separators, uppercase.",
+          "value": "colon_upper"
+        }
+      ]
+    },
     "unifi:network:WlanMacFilter": {
       "properties": {
         "enabled": {
@@ -3136,17 +3177,17 @@
           "type": "boolean",
           "description": "DasEnabled enables RADIUS Dynamic Authorization (CoA/DM)."
         },
+        "macAclEmptyPassword": {
+          "type": "boolean",
+          "description": "MacAclEmptyPassword sends an empty password for MAC ACL auth."
+        },
+        "macAclFormat": {
+          "$ref": "#/types/unifi:network:WlanMacAclFormat",
+          "description": "MacAclFormat is the MAC ACL format: none_lower | hyphen_lower | colon_lower | none_upper | hyphen_upper | colon_upper."
+        },
         "macAuthEnabled": {
           "type": "boolean",
           "description": "MacAuthEnabled enables RADIUS-based MAC authentication."
-        },
-        "macaclEmptyPassword": {
-          "type": "boolean",
-          "description": "MacaclEmptyPassword sends an empty password for MAC ACL auth."
-        },
-        "macaclFormat": {
-          "type": "string",
-          "description": "MacaclFormat is the MAC ACL format: none_lower | hyphen_lower | colon_lower | none_upper | hyphen_upper | colon_upper."
         },
         "nasIdentifier": {
           "type": "string",

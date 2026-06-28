@@ -1080,6 +1080,35 @@ export const WlanDtimMode = {
 
 export type WlanDtimMode = (typeof WlanDtimMode)[keyof typeof WlanDtimMode];
 
+export const WlanMacAclFormat = {
+    /**
+     * No separators, lowercase.
+     */
+    NoneLower: "none_lower",
+    /**
+     * Hyphen separators, lowercase.
+     */
+    HyphenLower: "hyphen_lower",
+    /**
+     * Colon separators, lowercase.
+     */
+    ColonLower: "colon_lower",
+    /**
+     * No separators, uppercase.
+     */
+    NoneUpper: "none_upper",
+    /**
+     * Hyphen separators, uppercase.
+     */
+    HyphenUpper: "hyphen_upper",
+    /**
+     * Colon separators, uppercase.
+     */
+    ColonUpper: "colon_upper",
+} as const;
+
+export type WlanMacAclFormat = (typeof WlanMacAclFormat)[keyof typeof WlanMacAclFormat];
+
 export const WlanMacFilterPolicy = {
     /**
      * Allow only listed MACs.

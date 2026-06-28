@@ -372,16 +372,39 @@ func (d *WlanPrivatePresharedKeys) Annotate(a infer.Annotator) {
 }
 
 // WlanRadius groups the RADIUS/802.1X plumbing for wpaeap and RADIUS-MAC auth.
+// WlanMacAclFormat is the closed set of MAC ACL address formats.
+type WlanMacAclFormat string
+
+const (
+	WlanMacAclFormatNoneLower   WlanMacAclFormat = "none_lower"
+	WlanMacAclFormatHyphenLower WlanMacAclFormat = "hyphen_lower"
+	WlanMacAclFormatColonLower  WlanMacAclFormat = "colon_lower"
+	WlanMacAclFormatNoneUpper   WlanMacAclFormat = "none_upper"
+	WlanMacAclFormatHyphenUpper WlanMacAclFormat = "hyphen_upper"
+	WlanMacAclFormatColonUpper  WlanMacAclFormat = "colon_upper"
+)
+
+func (WlanMacAclFormat) Values() []infer.EnumValue[WlanMacAclFormat] {
+	return []infer.EnumValue[WlanMacAclFormat]{
+		{Name: "NoneLower", Value: WlanMacAclFormatNoneLower, Description: "No separators, lowercase."},
+		{Name: "HyphenLower", Value: WlanMacAclFormatHyphenLower, Description: "Hyphen separators, lowercase."},
+		{Name: "ColonLower", Value: WlanMacAclFormatColonLower, Description: "Colon separators, lowercase."},
+		{Name: "NoneUpper", Value: WlanMacAclFormatNoneUpper, Description: "No separators, uppercase."},
+		{Name: "HyphenUpper", Value: WlanMacAclFormatHyphenUpper, Description: "Hyphen separators, uppercase."},
+		{Name: "ColonUpper", Value: WlanMacAclFormatColonUpper, Description: "Colon separators, uppercase."},
+	}
+}
+
 type WlanRadius struct {
 	// ProfileId is the RADIUS profile (`_id`) for wpaeap security.
 	ProfileId *string `pulumi:"profileId,optional"`
 	// MacAuthEnabled enables RADIUS-based MAC authentication.
 	MacAuthEnabled *bool `pulumi:"macAuthEnabled,optional"`
-	// MacaclFormat is the MAC ACL format: none_lower | hyphen_lower |
+	// MacAclFormat is the MAC ACL format: none_lower | hyphen_lower |
 	// colon_lower | none_upper | hyphen_upper | colon_upper.
-	MacaclFormat *string `pulumi:"macaclFormat,optional"`
-	// MacaclEmptyPassword sends an empty password for MAC ACL auth.
-	MacaclEmptyPassword *bool `pulumi:"macaclEmptyPassword,optional"`
+	MacAclFormat *WlanMacAclFormat `pulumi:"macAclFormat,optional"`
+	// MacAclEmptyPassword sends an empty password for MAC ACL auth.
+	MacAclEmptyPassword *bool `pulumi:"macAclEmptyPassword,optional"`
 	// DasEnabled enables RADIUS Dynamic Authorization (CoA/DM).
 	DasEnabled *bool `pulumi:"dasEnabled,optional"`
 	// NasIdentifier is the RADIUS NAS identifier value (0-48 chars).
@@ -393,8 +416,8 @@ type WlanRadius struct {
 func (d *WlanRadius) Annotate(a infer.Annotator) {
 	a.Describe(&d.ProfileId, "ProfileId is the RADIUS profile (`_id`) for wpaeap security.")
 	a.Describe(&d.MacAuthEnabled, "MacAuthEnabled enables RADIUS-based MAC authentication.")
-	a.Describe(&d.MacaclFormat, "MacaclFormat is the MAC ACL format: none_lower | hyphen_lower | colon_lower | none_upper | hyphen_upper | colon_upper.")
-	a.Describe(&d.MacaclEmptyPassword, "MacaclEmptyPassword sends an empty password for MAC ACL auth.")
+	a.Describe(&d.MacAclFormat, "MacAclFormat is the MAC ACL format: none_lower | hyphen_lower | colon_lower | none_upper | hyphen_upper | colon_upper.")
+	a.Describe(&d.MacAclEmptyPassword, "MacAclEmptyPassword sends an empty password for MAC ACL auth.")
 	a.Describe(&d.DasEnabled, "DasEnabled enables RADIUS Dynamic Authorization (CoA/DM).")
 	a.Describe(&d.NasIdentifier, "NasIdentifier is the RADIUS NAS identifier value (0-48 chars).")
 	a.Describe(&d.NasIdentifierType, "NasIdentifierType: ap_name | ap_mac | bssid | site_name | custom.")
@@ -853,11 +876,11 @@ func (a WlanArgs) toUnifi(id string) *unifi.WLAN {
 		if g.MacAuthEnabled != nil {
 			w.RADIUSMACAuthEnabled = *g.MacAuthEnabled
 		}
-		if g.MacaclFormat != nil {
-			w.RADIUSMACaclFormat = *g.MacaclFormat
+		if g.MacAclFormat != nil {
+			w.RADIUSMACaclFormat = string(*g.MacAclFormat)
 		}
-		if g.MacaclEmptyPassword != nil {
-			w.RADIUSMACaclEmptyPassword = *g.MacaclEmptyPassword
+		if g.MacAclEmptyPassword != nil {
+			w.RADIUSMACaclEmptyPassword = *g.MacAclEmptyPassword
 		}
 		if g.DasEnabled != nil {
 			w.RADIUSDasEnabled = *g.DasEnabled
@@ -1308,8 +1331,8 @@ func wlanRadiusFrom(w *unifi.WLAN, prior *WlanRadius) *WlanRadius {
 	g := WlanRadius{
 		ProfileId:           wlanStringState(w.RADIUSProfileID, p.ProfileId),
 		MacAuthEnabled:      wlanBoolState(w.RADIUSMACAuthEnabled, p.MacAuthEnabled),
-		MacaclFormat:        wlanStringState(w.RADIUSMACaclFormat, p.MacaclFormat),
-		MacaclEmptyPassword: wlanBoolState(w.RADIUSMACaclEmptyPassword, p.MacaclEmptyPassword),
+		MacAclFormat:        wlanEnumState(w.RADIUSMACaclFormat, p.MacAclFormat),
+		MacAclEmptyPassword: wlanBoolState(w.RADIUSMACaclEmptyPassword, p.MacAclEmptyPassword),
 		DasEnabled:          wlanBoolState(w.RADIUSDasEnabled, p.DasEnabled),
 		NasIdentifier:       wlanStringState(w.NasIDentifier, p.NasIdentifier),
 		NasIdentifierType:   wlanEnumState(w.NasIDentifierType, p.NasIdentifierType),

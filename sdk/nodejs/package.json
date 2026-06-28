@@ -1,6 +1,12 @@
 {
     "name": "@ryanwersal/pulumi-unifi",
     "version": "0.1.0",
+    "keywords": [
+        "unifi",
+        "ubiquiti",
+        "category/network",
+        "kind/native"
+    ],
     "homepage": "https://github.com/ryanwersal/pulumi-unifi",
     "repository": "https://github.com/ryanwersal/pulumi-unifi",
     "license": "Apache-2.0",
