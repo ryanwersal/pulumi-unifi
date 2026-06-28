@@ -106,11 +106,13 @@ mise run sdk:nodejs     # generate the TypeScript SDK into sdk/nodejs
 mise run sdk:check      # fail if the committed SDK is stale vs. the schema
 mise run lint           # golangci-lint
 mise run test           # go test ./...
-mise run check          # lint + test + build (pre-commit gate)
+mise run ci             # full gate: tidy + fmt + vet + lint + test + build + sdk freshness
+mise run vulncheck      # govulncheck vulnerability scan
 ```
 
-CI (`.github/workflows/ci.yml`) runs `go mod tidy` verification, `lint`, `test`,
-and `sdk:check` on every push and PR to `main`.
+CI (`.github/workflows/ci.yml`) runs the same `mise run ci` gate developers run
+locally, plus `mise run vulncheck`, on every push and PR to `main`. `mise run
+check` is an alias for `ci`.
 
 ## Consuming from another Pulumi program
 

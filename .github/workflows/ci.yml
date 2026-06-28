@@ -7,21 +7,17 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  # Single source of truth: the same aggregate gate developers run locally
+  # (`mise run ci`) — tidy, fmt, vet, lint, test, sdk freshness, vuln scan, build.
+  gate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
 
       - uses: jdx/mise-action@v4
 
-      - name: Check go mod tidy
-        run: |
-          go mod tidy
-          git diff --exit-code go.mod go.sum
+      - run: mise run ci
 
-      - run: mise run lint
-
-      - run: mise run test
-
-      - name: Check generated SDK is up to date
-        run: mise run sdk:check
+      # Vuln scan is network/time-dependent (new disclosures can fail it without
+      # a code change), so it runs in CI but is not part of the local gate.
+      - run: mise run vulncheck

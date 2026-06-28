@@ -3,7 +3,7 @@
 
 [tools]
 # Pinned for reproducible builds. Bump deliberately.
-go = "1.26.3"
+go = "1.26.4"
 pulumi = "3.241.0"
 golangci-lint = "2.11.3"
 goreleaser = "2.15.3"
@@ -110,10 +110,21 @@ run = "test -z \"$(gofmt -l .)\""
 description = "go mod tidy"
 run = "go mod tidy"
 
+[tasks.tidy-check]
+description = "Fail if go.mod/go.sum are not tidy (no mutation)"
+run = "go mod tidy -diff"
+
+[tasks.vulncheck]
+description = "Scan for known vulnerabilities"
+run = "go run golang.org/x/vuln/cmd/govulncheck@v1.1.4 ./..."
+
+[tasks.ci]
+description = "Deterministic gate, run locally AND in CI: tidy, fmt, vet, lint, test, sdk freshness, build"
+depends = ["tidy-check", "fmt-check", "vet", "lint", "test", "sdk:check"]
+
 [tasks.check]
-description = "Pre-commit gate: lint + test + build"
-depends = ["lint", "test"]
-run = "go build ./..."
+description = "Alias for the CI gate (ci)"
+depends = ["ci"]
 
 [tasks.release]
 description = "Bump version (major|minor|patch), tag, and push — triggers the GH release + npm publish"

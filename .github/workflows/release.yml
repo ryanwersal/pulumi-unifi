@@ -24,7 +24,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   # Regenerate the Node.js SDK at the tagged version and publish it to npm.
+  # Gated on `binaries` so the GitHub Release assets (which the SDK's
+  # pluginDownloadURL resolves) exist before consumers can `npm add`.
   publish-npm:
+    needs: binaries
     runs-on: ubuntu-latest
     permissions:
       contents: read
