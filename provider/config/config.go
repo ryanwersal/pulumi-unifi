@@ -63,6 +63,29 @@ func (c *Config) Annotate(a infer.Annotator) {
 	a.SetDefault(&c.InsecureTLS, nil, "UNIFI_INSECURE_TLS")
 }
 
+// buildNetworkClient and buildProtectClient construct the real clients. They are
+// package vars so InjectClientsForTest can swap in fakes for hermetic tests.
+var (
+	buildNetworkClient = unifi.NewClient
+	buildProtectClient = func(apiKey, host string, insecureSkipVerify bool) protecttypes.ProtectV1 {
+		pc := unifiprotect.NewDefaultConfig(apiKey)
+		pc.Hostname = host
+		pc.InsecureSkipVerify = insecureSkipVerify
+		quiet := logrus.New()
+		quiet.SetOutput(io.Discard)
+		return unifiprotect.NewClient(context.Background(), pc, quiet).Protect
+	}
+)
+
+// InjectClientsForTest swaps in fake clients and returns a restore func. It lets
+// tests in other packages drive CRUD without a live controller. Test-only.
+func InjectClientsForTest(net unifi.Client, protect protecttypes.ProtectV1) func() {
+	origNet, origProtect := buildNetworkClient, buildProtectClient
+	buildNetworkClient = func(*unifi.ClientConfig) (unifi.Client, error) { return net, nil }
+	buildProtectClient = func(string, string, bool) protecttypes.ProtectV1 { return protect }
+	return func() { buildNetworkClient, buildProtectClient = origNet, origProtect }
+}
+
 // Configure builds the authenticated UniFi client. Called once per provider
 // process, after the receiver has been hydrated from inputs.
 func (c *Config) Configure(_ context.Context) error {
@@ -84,7 +107,7 @@ func (c *Config) Configure(_ context.Context) error {
 		return fmt.Errorf("unifi provider: set either `apiKey` or both `username` and `password`")
 	}
 
-	client, err := unifi.NewClient(cc)
+	client, err := buildNetworkClient(cc)
 	if err != nil {
 		return fmt.Errorf("unifi provider: failed to create client for %s: %w", c.URL, err)
 	}
@@ -97,13 +120,7 @@ func (c *Config) Configure(_ context.Context) error {
 		if err != nil {
 			return fmt.Errorf("unifi provider: invalid url %q: %w", c.URL, err)
 		}
-		pc := unifiprotect.NewDefaultConfig(cc.APIKey)
-		pc.Hostname = host
-		pc.InsecureSkipVerify = !cc.VerifySSL
-
-		quiet := logrus.New()
-		quiet.SetOutput(io.Discard)
-		c.protect = unifiprotect.NewClient(context.Background(), pc, quiet).Protect
+		c.protect = buildProtectClient(cc.APIKey, host, !cc.VerifySSL)
 	}
 	return nil
 }

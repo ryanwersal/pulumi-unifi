@@ -56,6 +56,9 @@ func TestProviderSchemaBuilds(t *testing.T) {
 				Value any `json:"value"`
 			} `json:"enum"`
 		} `json:"types"`
+		Config struct {
+			Variables propSet `json:"variables"`
+		} `json:"config"`
 	}
 	if err := json.Unmarshal([]byte(resp.Schema), &schema); err != nil {
 		t.Fatalf("unmarshal schema: %v", err)
@@ -130,6 +133,18 @@ func TestProviderSchemaBuilds(t *testing.T) {
 			t.Errorf("%s.%s is not marked secret", tok, field)
 		}
 	}
+	// Provider credentials must be secret too.
+	for _, field := range []string{"apiKey", "password"} {
+		prop, ok := schema.Config.Variables[field]
+		if !ok {
+			t.Errorf("config %s missing", field)
+			continue
+		}
+		if !prop.Secret {
+			t.Errorf("config %s is not marked secret", field)
+		}
+	}
+
 	typeSecrets := map[string]string{
 		"unifi:network:VlanWan":        "password", // PPPoE password
 		"unifi:network:WlanWep":        "key",      // WEP key (moved into nested group)

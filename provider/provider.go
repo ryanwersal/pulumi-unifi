@@ -48,7 +48,7 @@ func New() (p.Provider, error) {
 				"packageName":          npmPackageName,
 			},
 		}).
-		WithConfig(infer.Config(config.Config{})).
+		WithConfig(infer.Config(&config.Config{})).
 		WithResources(
 			infer.Resource(network.Vlan{}),
 			infer.Resource(network.Wlan{}),
