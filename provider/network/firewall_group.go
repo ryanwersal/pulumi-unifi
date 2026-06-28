@@ -45,6 +45,7 @@ func (g *FirewallGroup) Annotate(a infer.Annotator) {
 func (d *FirewallGroupArgs) Annotate(a infer.Annotator) {
 	a.Describe(&d.Name, "Name of the firewall group (1-64 characters).")
 	a.Describe(&d.GroupType, "GroupType selects the kind of group: address-group | port-group | ipv6-address-group.")
+	a.SetDefault(&d.GroupType, "address-group")
 	a.Describe(&d.GroupMembers, "GroupMembers are the entries in the group. The accepted format depends on GroupType: IPv4 addresses/CIDRs for address-group, port numbers/ranges for port-group, or IPv6 addresses/CIDRs for ipv6-address-group.")
 }
 

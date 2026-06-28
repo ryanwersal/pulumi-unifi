@@ -5,6 +5,8 @@ import * as pulumi from "@pulumi/pulumi";
 import * as inputs from "../types/input";
 import * as outputs from "../types/output";
 
+import * as utilities from "../utilities";
+
 export namespace network {
     export interface DeviceDot1x {
         /**
@@ -1686,6 +1688,15 @@ export namespace protect {
          */
         value?: string;
     }
+    /**
+     * alarmConditionProvideDefaults sets the appropriate defaults for AlarmCondition
+     */
+    export function alarmConditionProvideDefaults(val: AlarmCondition): AlarmCondition {
+        return {
+            ...val,
+            type: (val.type) ?? "is",
+        };
+    }
 
     export interface AlarmCooldown {
         /**
@@ -1707,6 +1718,15 @@ export namespace protect {
          * Type is "include" or "exclude". Defaults to "include".
          */
         type?: string;
+    }
+    /**
+     * alarmSourceProvideDefaults sets the appropriate defaults for AlarmSource
+     */
+    export function alarmSourceProvideDefaults(val: AlarmSource): AlarmSource {
+        return {
+            ...val,
+            type: (val.type) ?? "include",
+        };
     }
 
     export interface AlarmWebhookAction {
@@ -1730,6 +1750,17 @@ export namespace protect {
          * UseThumbnail attaches the event thumbnail to the request. Defaults to true.
          */
         useThumbnail?: boolean;
+    }
+    /**
+     * alarmWebhookActionProvideDefaults sets the appropriate defaults for AlarmWebhookAction
+     */
+    export function alarmWebhookActionProvideDefaults(val: AlarmWebhookAction): AlarmWebhookAction {
+        return {
+            ...val,
+            method: (val.method) ?? "POST",
+            timeoutMs: (val.timeoutMs) ?? 30000,
+            useThumbnail: (val.useThumbnail) ?? true,
+        };
     }
 
 }

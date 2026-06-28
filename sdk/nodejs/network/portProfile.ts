@@ -121,14 +121,14 @@ export class PortProfile extends pulumi.CustomResource {
             resourceInputs["link"] = args?.link;
             resourceInputs["lldpMed"] = args?.lldpMed;
             resourceInputs["name"] = args?.name;
-            resourceInputs["opMode"] = args?.opMode;
+            resourceInputs["opMode"] = (args?.opMode) ?? "switch";
             resourceInputs["poeMode"] = args?.poeMode;
             resourceInputs["portKeepaliveEnabled"] = args?.portKeepaliveEnabled;
             resourceInputs["portSecurity"] = args?.portSecurity;
             resourceInputs["priorityQueues"] = args?.priorityQueues;
             resourceInputs["settingPreference"] = args?.settingPreference;
             resourceInputs["stormControl"] = args?.stormControl;
-            resourceInputs["stpPortMode"] = args?.stpPortMode;
+            resourceInputs["stpPortMode"] = (args?.stpPortMode) ?? true;
             resourceInputs["vlan"] = args?.vlan;
             resourceInputs["portProfileId"] = undefined /*out*/;
         } else {

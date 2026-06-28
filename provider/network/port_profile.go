@@ -225,12 +225,14 @@ type PortProfileArgs struct {
 func (args *PortProfileArgs) Annotate(a infer.Annotator) {
 	a.Describe(&args.Name, "Name is a descriptive name for the port profile.")
 	a.Describe(&args.OpMode, "OpMode is the operation mode. Only \"switch\" is supported. Defaults to \"switch\".")
+	a.SetDefault(&args.OpMode, "switch")
 	a.Describe(&args.Isolation, "Isolation enables port isolation so devices on this profile cannot "+
 		"communicate with each other. Defaults to false.")
 	a.Describe(&args.PoeMode, "PoeMode controls Power-over-Ethernet: auto | off (the values go-unifi "+
 		"accepts for a port profile). Per-port passthrough/pasv24 modes are set via "+
 		"a Device port override's poeMode, not here.")
 	a.Describe(&args.StpPortMode, "StpPortMode enables Spanning Tree Protocol on the port. Defaults to true.")
+	a.SetDefault(&args.StpPortMode, true)
 	a.Describe(&args.PortKeepaliveEnabled, "PortKeepaliveEnabled enables port keepalive. Defaults to false.")
 	a.Describe(&args.SettingPreference, "SettingPreference controls config source: auto | manual.")
 	a.Describe(&args.Vlan, "Vlan groups the VLAN / forwarding settings.")

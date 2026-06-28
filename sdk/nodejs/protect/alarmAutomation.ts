@@ -87,7 +87,7 @@ export class AlarmAutomation extends pulumi.CustomResource {
             }
             resourceInputs["conditions"] = args?.conditions;
             resourceInputs["cooldown"] = args?.cooldown;
-            resourceInputs["enabled"] = args?.enabled;
+            resourceInputs["enabled"] = (args?.enabled) ?? true;
             resourceInputs["name"] = args?.name;
             resourceInputs["sources"] = args?.sources;
             resourceInputs["webhookActions"] = args?.webhookActions;

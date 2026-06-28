@@ -67,4 +67,15 @@ func TestConfigureRequiresAuth(t *testing.T) {
 	}
 }
 
+// TestConfigureRequiresURL verifies the empty-URL path errors clearly before any
+// client is constructed (url is optional in the schema, supplied via config or
+// the UNIFI_URL env var).
+func TestConfigureRequiresURL(t *testing.T) {
+	cfg := &Config{APIKey: strPtr("k")}
+	err := cfg.Configure(context.Background())
+	if err == nil || !strings.Contains(err.Error(), "url") {
+		t.Fatalf("Configure with empty url should error mentioning url, got: %v", err)
+	}
+}
+
 func strPtr(s string) *string { return &s }

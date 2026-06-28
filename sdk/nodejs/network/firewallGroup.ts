@@ -66,7 +66,7 @@ export class FirewallGroup extends pulumi.CustomResource {
                 throw new Error("Missing required property 'name'");
             }
             resourceInputs["groupMembers"] = args?.groupMembers;
-            resourceInputs["groupType"] = args?.groupType;
+            resourceInputs["groupType"] = (args?.groupType) ?? "address-group";
             resourceInputs["name"] = args?.name;
             resourceInputs["firewallGroupId"] = undefined /*out*/;
         } else {

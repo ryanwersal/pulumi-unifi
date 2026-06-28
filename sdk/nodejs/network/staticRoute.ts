@@ -96,7 +96,7 @@ export class StaticRoute extends pulumi.CustomResource {
                 throw new Error("Missing required property 'staticRouteType'");
             }
             resourceInputs["distance"] = args?.distance;
-            resourceInputs["enabled"] = args?.enabled;
+            resourceInputs["enabled"] = (args?.enabled) ?? true;
             resourceInputs["gatewayDevice"] = args?.gatewayDevice;
             resourceInputs["gatewayType"] = args?.gatewayType;
             resourceInputs["interface"] = args?.interface;

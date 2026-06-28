@@ -66,8 +66,8 @@ export class UserGroup extends pulumi.CustomResource {
                 throw new Error("Missing required property 'name'");
             }
             resourceInputs["name"] = args?.name;
-            resourceInputs["qosRateMaxDown"] = args?.qosRateMaxDown;
-            resourceInputs["qosRateMaxUp"] = args?.qosRateMaxUp;
+            resourceInputs["qosRateMaxDown"] = (args?.qosRateMaxDown) ?? -1;
+            resourceInputs["qosRateMaxUp"] = (args?.qosRateMaxUp) ?? -1;
             resourceInputs["userGroupId"] = undefined /*out*/;
         } else {
             resourceInputs["name"] = undefined /*out*/;

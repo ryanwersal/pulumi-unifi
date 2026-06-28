@@ -112,7 +112,7 @@ export class FirewallZonePolicy extends pulumi.CustomResource {
             resourceInputs["createAllowRespond"] = args?.createAllowRespond;
             resourceInputs["description"] = args?.description;
             resourceInputs["destination"] = args?.destination;
-            resourceInputs["enabled"] = args?.enabled;
+            resourceInputs["enabled"] = (args?.enabled) ?? true;
             resourceInputs["index"] = args?.index;
             resourceInputs["logging"] = args?.logging;
             resourceInputs["matching"] = args?.matching;

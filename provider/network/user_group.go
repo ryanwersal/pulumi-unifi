@@ -29,7 +29,9 @@ type UserGroupArgs struct {
 func (g *UserGroupArgs) Annotate(a infer.Annotator) {
 	a.Describe(&g.Name, "Name of the user group.")
 	a.Describe(&g.QosRateMaxDown, "QosRateMaxDown is the maximum download rate in kbps. -1 means unlimited. Defaults to -1.")
+	a.SetDefault(&g.QosRateMaxDown, -1)
 	a.Describe(&g.QosRateMaxUp, "QosRateMaxUp is the maximum upload rate in kbps. -1 means unlimited. Defaults to -1.")
+	a.SetDefault(&g.QosRateMaxUp, -1)
 }
 
 // UserGroupState is the persisted state: inputs plus controller-assigned fields.

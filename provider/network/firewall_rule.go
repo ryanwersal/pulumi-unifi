@@ -157,6 +157,7 @@ func (r *FirewallRuleArgs) Annotate(a infer.Annotator) {
 	a.Describe(&r.Action, "Action taken on matching traffic: accept | drop | reject.")
 	a.Describe(&r.Ruleset, "Ruleset the rule belongs to, from the perspective of the security gateway: WAN_IN | WAN_OUT | WAN_LOCAL | LAN_IN | LAN_OUT | LAN_LOCAL | GUEST_IN | GUEST_OUT | GUEST_LOCAL | WANv6_IN | WANv6_OUT | WANv6_LOCAL | LANv6_IN | LANv6_OUT | LANv6_LOCAL | GUESTv6_IN | GUESTv6_OUT | GUESTv6_LOCAL.")
 	a.Describe(&r.Enabled, "Enabled controls whether the rule is active. Defaults to true.")
+	a.SetDefault(&r.Enabled, true)
 	a.Describe(&r.Logging, "Logging enables logging of packets that match this rule.")
 	a.Describe(&r.IpSec, "IpSec matches on IPsec encapsulation: match-ipsec | match-none.")
 	a.Describe(&r.SettingPreference, "SettingPreference controls whether the rule uses automatic or manual settings: auto | manual.")

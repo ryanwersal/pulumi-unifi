@@ -62,6 +62,7 @@ func (d *StaticRouteArgs) Annotate(a infer.Annotator) {
 	a.Describe(&d.Network, "Network is the destination network in CIDR notation (IPv4 or IPv6), e.g. 10.0.0.0/24.")
 	a.Describe(&d.StaticRouteType, "StaticRouteType selects the route kind: nexthop-route | interface-route | blackhole.")
 	a.Describe(&d.Enabled, "Enabled controls whether the route is active. Defaults to true.")
+	a.SetDefault(&d.Enabled, true)
 	a.Describe(&d.Nexthop, "Nexthop is the next-hop IP address (required when staticRouteType=nexthop-route).")
 	a.Describe(&d.Distance, "Distance is the administrative distance / metric of the route (1-255).")
 	a.Describe(&d.Interface, "Interface is the egress interface when staticRouteType=interface-route: WAN1 | WAN2 | a network ID.")

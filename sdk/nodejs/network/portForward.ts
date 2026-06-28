@@ -111,14 +111,14 @@ export class PortForward extends pulumi.CustomResource {
             resourceInputs["destinationIp"] = args?.destinationIp;
             resourceInputs["destinationIps"] = args?.destinationIps;
             resourceInputs["dstPort"] = args?.dstPort;
-            resourceInputs["enabled"] = args?.enabled;
+            resourceInputs["enabled"] = (args?.enabled) ?? true;
             resourceInputs["fwd"] = args?.fwd;
             resourceInputs["fwdPort"] = args?.fwdPort;
             resourceInputs["log"] = args?.log;
             resourceInputs["name"] = args?.name;
             resourceInputs["pfwdInterface"] = args?.pfwdInterface;
-            resourceInputs["proto"] = args?.proto;
-            resourceInputs["src"] = args?.src;
+            resourceInputs["proto"] = (args?.proto) ?? "tcp_udp";
+            resourceInputs["src"] = (args?.src) ?? "any";
             resourceInputs["srcFirewallGroupId"] = args?.srcFirewallGroupId;
             resourceInputs["srcLimitingEnabled"] = args?.srcLimitingEnabled;
             resourceInputs["srcLimitingType"] = args?.srcLimitingType;

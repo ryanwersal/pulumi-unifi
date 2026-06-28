@@ -26,7 +26,7 @@ import (
 // the UniFi OS console.
 type Config struct {
 	// URL is the base URL of the controller, e.g. https://192.168.1.1 (no /api suffix).
-	URL string `pulumi:"url"`
+	URL string `pulumi:"url,optional"`
 	// APIKey authenticates via the UniFi OS local API key (X-API-Key).
 	APIKey *string `pulumi:"apiKey,optional" provider:"secret"`
 	// Username for username/password auth (alternative to APIKey).
@@ -47,19 +47,28 @@ type Config struct {
 	protect protecttypes.ProtectV1
 }
 
-// Annotate attaches human-readable descriptions to the config fields.
+// Annotate attaches descriptions, defaults, and env-var fallbacks to the config.
 func (c *Config) Annotate(a infer.Annotator) {
 	a.Describe(&c.URL, "Base URL of the UniFi controller, e.g. https://192.168.1.1 (omit any /api suffix).")
+	a.SetDefault(&c.URL, nil, "UNIFI_URL")
 	a.Describe(&c.APIKey, "UniFi OS local API key. Preferred for headless automation. Mutually exclusive with username/password.")
+	a.SetDefault(&c.APIKey, nil, "UNIFI_API_KEY")
 	a.Describe(&c.Username, "Local admin username. Use with password when not using an API key.")
+	a.SetDefault(&c.Username, nil, "UNIFI_USERNAME")
 	a.Describe(&c.Password, "Local admin password.")
+	a.SetDefault(&c.Password, nil, "UNIFI_PASSWORD")
 	a.Describe(&c.Site, `UniFi site name (defaults to "default").`)
+	a.SetDefault(&c.Site, "default", "UNIFI_SITE")
 	a.Describe(&c.InsecureTLS, "Skip TLS certificate verification (for self-signed controller certs).")
+	a.SetDefault(&c.InsecureTLS, nil, "UNIFI_INSECURE_TLS")
 }
 
 // Configure builds the authenticated UniFi client. Called once per provider
 // process, after the receiver has been hydrated from inputs.
 func (c *Config) Configure(_ context.Context) error {
+	if c.URL == "" {
+		return fmt.Errorf("unifi provider: set `url` (or the UNIFI_URL env var)")
+	}
 	cc := &unifi.ClientConfig{URL: c.URL}
 	cc.VerifySSL = c.InsecureTLS == nil || !*c.InsecureTLS
 	// Silence the go-unifi logger; provider diagnostics go through Pulumi.

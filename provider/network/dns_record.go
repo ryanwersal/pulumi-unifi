@@ -55,6 +55,7 @@ func (d *DnsRecordArgs) Annotate(a infer.Annotator) {
 	a.Describe(&d.RecordType, "RecordType is the DNS record type: A | AAAA | CNAME | MX | NS | PTR | SOA | SRV | TXT.")
 	a.Describe(&d.Value, "Value is the record payload (e.g. an IP for A/AAAA, a hostname for CNAME/MX/NS).")
 	a.Describe(&d.Enabled, "Enabled controls whether the record is active. Defaults to true.")
+	a.SetDefault(&d.Enabled, true)
 	a.Describe(&d.Ttl, "Ttl is the record time-to-live in seconds. 0 lets the controller pick a default.")
 	a.Describe(&d.Priority, "Priority is the preference value for MX and SRV records.")
 	a.Describe(&d.Port, "Port is the target port for SRV records.")

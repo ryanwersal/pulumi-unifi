@@ -13,7 +13,7 @@ const __config = new pulumi.Config("unifi");
 export declare const apiKey: string | undefined;
 Object.defineProperty(exports, "apiKey", {
     get() {
-        return __config.get("apiKey");
+        return __config.get("apiKey") ?? utilities.getEnv("UNIFI_API_KEY");
     },
     enumerable: true,
 });
@@ -24,7 +24,7 @@ Object.defineProperty(exports, "apiKey", {
 export declare const insecureTls: boolean | undefined;
 Object.defineProperty(exports, "insecureTls", {
     get() {
-        return __config.getObject<boolean>("insecureTls");
+        return __config.getObject<boolean>("insecureTls") ?? utilities.getEnvBoolean("UNIFI_INSECURE_TLS");
     },
     enumerable: true,
 });
@@ -35,7 +35,7 @@ Object.defineProperty(exports, "insecureTls", {
 export declare const password: string | undefined;
 Object.defineProperty(exports, "password", {
     get() {
-        return __config.get("password");
+        return __config.get("password") ?? utilities.getEnv("UNIFI_PASSWORD");
     },
     enumerable: true,
 });
@@ -43,10 +43,10 @@ Object.defineProperty(exports, "password", {
 /**
  * UniFi site name (defaults to "default").
  */
-export declare const site: string | undefined;
+export declare const site: string;
 Object.defineProperty(exports, "site", {
     get() {
-        return __config.get("site");
+        return __config.get("site") ?? (utilities.getEnv("UNIFI_SITE") || "default");
     },
     enumerable: true,
 });
@@ -57,7 +57,7 @@ Object.defineProperty(exports, "site", {
 export declare const url: string | undefined;
 Object.defineProperty(exports, "url", {
     get() {
-        return __config.get("url");
+        return __config.get("url") ?? utilities.getEnv("UNIFI_URL");
     },
     enumerable: true,
 });
@@ -68,7 +68,7 @@ Object.defineProperty(exports, "url", {
 export declare const username: string | undefined;
 Object.defineProperty(exports, "username", {
     get() {
-        return __config.get("username");
+        return __config.get("username") ?? utilities.getEnv("UNIFI_USERNAME");
     },
     enumerable: true,
 });

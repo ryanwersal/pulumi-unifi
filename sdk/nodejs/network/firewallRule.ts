@@ -109,7 +109,7 @@ export class FirewallRule extends pulumi.CustomResource {
             resourceInputs["action"] = args?.action;
             resourceInputs["connectionState"] = args?.connectionState;
             resourceInputs["destination"] = args?.destination;
-            resourceInputs["enabled"] = args?.enabled;
+            resourceInputs["enabled"] = (args?.enabled) ?? true;
             resourceInputs["ipSec"] = args?.ipSec;
             resourceInputs["logging"] = args?.logging;
             resourceInputs["name"] = args?.name;

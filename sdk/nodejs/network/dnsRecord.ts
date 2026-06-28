@@ -91,7 +91,7 @@ export class DnsRecord extends pulumi.CustomResource {
             if (args?.value === undefined && !opts.urn) {
                 throw new Error("Missing required property 'value'");
             }
-            resourceInputs["enabled"] = args?.enabled;
+            resourceInputs["enabled"] = (args?.enabled) ?? true;
             resourceInputs["key"] = args?.key;
             resourceInputs["port"] = args?.port;
             resourceInputs["priority"] = args?.priority;

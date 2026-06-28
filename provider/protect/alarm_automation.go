@@ -41,6 +41,7 @@ type AlarmSource struct {
 func (s *AlarmSource) Annotate(a infer.Annotator) {
 	a.Describe(&s.Device, `Device is the device MAC address, uppercase hex without separators (e.g. "F4E2C6730625").`)
 	a.Describe(&s.Type, `Type is "include" or "exclude". Defaults to "include".`)
+	a.SetDefault(&s.Type, "include")
 }
 
 // AlarmCondition is a single trigger condition. Conditions are ANDed.
@@ -57,6 +58,7 @@ type AlarmCondition struct {
 func (c *AlarmCondition) Annotate(a infer.Annotator) {
 	a.Describe(&c.Source, `Source is the detection trigger, e.g. "motion", "person", "vehicle", "ring", "sensor_door_opened", "sensor_water_leak", "audio_alarm_smoke".`)
 	a.Describe(&c.Type, `Type is the match type. Defaults to "is".`)
+	a.SetDefault(&c.Type, "is")
 	a.Describe(&c.Value, `Value refines some sources (e.g. a crossing-line direction or a known license plate).`)
 }
 
@@ -77,9 +79,12 @@ type AlarmWebhookAction struct {
 func (w *AlarmWebhookAction) Annotate(a infer.Annotator) {
 	a.Describe(&w.Url, "Url is the webhook target URL.")
 	a.Describe(&w.Method, `Method is the HTTP method. Defaults to "POST".`)
+	a.SetDefault(&w.Method, defaultWebhookMethod)
 	a.Describe(&w.Headers, "Headers are extra request headers.")
 	a.Describe(&w.TimeoutMs, "TimeoutMs is the request timeout in milliseconds. Defaults to 30000.")
+	a.SetDefault(&w.TimeoutMs, defaultWebhookTimeoutMs)
 	a.Describe(&w.UseThumbnail, "UseThumbnail attaches the event thumbnail to the request. Defaults to true.")
+	a.SetDefault(&w.UseThumbnail, true)
 }
 
 // AlarmCooldown suppresses repeat fires of the rule.
@@ -114,6 +119,7 @@ type AlarmAutomationArgs struct {
 func (d *AlarmAutomationArgs) Annotate(a infer.Annotator) {
 	a.Describe(&d.Name, "Name is the rule's display name.")
 	a.Describe(&d.Enabled, "Enabled controls whether the rule fires. Defaults to true.")
+	a.SetDefault(&d.Enabled, true)
 	a.Describe(&d.Sources, "Sources scopes the rule to devices. Empty means all devices.")
 	a.Describe(&d.Conditions, "Conditions are the trigger conditions (ANDed). At least one is required.")
 	a.Describe(&d.WebhookActions, "WebhookActions fire when the rule matches. At least one is required.")

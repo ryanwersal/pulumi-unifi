@@ -186,7 +186,7 @@ export class Wlan extends pulumi.CustomResource {
             resourceInputs["bandSteering"] = args?.bandSteering;
             resourceInputs["dpi"] = args?.dpi;
             resourceInputs["dtim"] = args?.dtim;
-            resourceInputs["enabled"] = args?.enabled;
+            resourceInputs["enabled"] = (args?.enabled) ?? true;
             resourceInputs["hideSsid"] = args?.hideSsid;
             resourceInputs["iot"] = args?.iot;
             resourceInputs["isGuest"] = args?.isGuest;
@@ -205,7 +205,7 @@ export class Wlan extends pulumi.CustomResource {
             resourceInputs["roaming"] = args?.roaming;
             resourceInputs["sae"] = args?.sae;
             resourceInputs["schedule"] = args?.schedule;
-            resourceInputs["security"] = args?.security;
+            resourceInputs["security"] = (args?.security) ?? "wpapsk";
             resourceInputs["uapsdEnabled"] = args?.uapsdEnabled;
             resourceInputs["userGroupId"] = args?.userGroupId;
             resourceInputs["vlanTagging"] = args?.vlanTagging;

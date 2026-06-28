@@ -5,6 +5,8 @@ import * as pulumi from "@pulumi/pulumi";
 import * as inputs from "../types/input";
 import * as outputs from "../types/output";
 
+import * as utilities from "../utilities";
+
 export namespace network {
     export interface DeviceDot1xArgs {
         /**
@@ -1685,6 +1687,15 @@ export namespace protect {
          */
         value?: pulumi.Input<string | undefined>;
     }
+    /**
+     * alarmConditionArgsProvideDefaults sets the appropriate defaults for AlarmConditionArgs
+     */
+    export function alarmConditionArgsProvideDefaults(val: AlarmConditionArgs): AlarmConditionArgs {
+        return {
+            ...val,
+            type: (val.type) ?? "is",
+        };
+    }
 
     export interface AlarmCooldownArgs {
         /**
@@ -1706,6 +1717,15 @@ export namespace protect {
          * Type is "include" or "exclude". Defaults to "include".
          */
         type?: pulumi.Input<string | undefined>;
+    }
+    /**
+     * alarmSourceArgsProvideDefaults sets the appropriate defaults for AlarmSourceArgs
+     */
+    export function alarmSourceArgsProvideDefaults(val: AlarmSourceArgs): AlarmSourceArgs {
+        return {
+            ...val,
+            type: (val.type) ?? "include",
+        };
     }
 
     export interface AlarmWebhookActionArgs {
@@ -1729,5 +1749,16 @@ export namespace protect {
          * UseThumbnail attaches the event thumbnail to the request. Defaults to true.
          */
         useThumbnail?: pulumi.Input<boolean | undefined>;
+    }
+    /**
+     * alarmWebhookActionArgsProvideDefaults sets the appropriate defaults for AlarmWebhookActionArgs
+     */
+    export function alarmWebhookActionArgsProvideDefaults(val: AlarmWebhookActionArgs): AlarmWebhookActionArgs {
+        return {
+            ...val,
+            method: (val.method) ?? "POST",
+            timeoutMs: (val.timeoutMs) ?? 30000,
+            useThumbnail: (val.useThumbnail) ?? true,
+        };
     }
 }

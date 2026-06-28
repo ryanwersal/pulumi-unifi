@@ -241,6 +241,7 @@ func (p *FirewallZonePolicyArgs) Annotate(a infer.Annotator) {
 	a.Describe(&p.Source, "Source is the source zone and matching criteria.")
 	a.Describe(&p.Destination, "Destination is the destination zone and matching criteria.")
 	a.Describe(&p.Enabled, "Enabled controls whether the policy is active. Defaults to true.")
+	a.SetDefault(&p.Enabled, true)
 	a.Describe(&p.Description, "Description is free-form documentation for the policy.")
 	a.Describe(&p.Index, "Index is the policy priority/ordering rank (lower is evaluated first).")
 	a.Describe(&p.Logging, "Logging enables syslog logging for traffic matching this policy.")

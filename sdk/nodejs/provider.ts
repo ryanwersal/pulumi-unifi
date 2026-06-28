@@ -34,7 +34,7 @@ export class Provider extends pulumi.ProviderResource {
     /**
      * Base URL of the UniFi controller, e.g. https://192.168.1.1 (omit any /api suffix).
      */
-    declare public readonly url: pulumi.Output<string>;
+    declare public readonly url: pulumi.Output<string | undefined>;
     /**
      * Local admin username. Use with password when not using an API key.
      */
@@ -47,19 +47,16 @@ export class Provider extends pulumi.ProviderResource {
      * @param args The arguments to use to populate this resource's properties.
      * @param opts A bag of options that control this resource's behavior.
      */
-    constructor(name: string, args: ProviderArgs, opts?: pulumi.ResourceOptions) {
+    constructor(name: string, args?: ProviderArgs, opts?: pulumi.ResourceOptions) {
         let resourceInputs: pulumi.Inputs = {};
         opts = opts || {};
         {
-            if (args?.url === undefined && !opts.urn) {
-                throw new Error("Missing required property 'url'");
-            }
-            resourceInputs["apiKey"] = args?.apiKey ? pulumi.secret(args.apiKey) : undefined;
-            resourceInputs["insecureTls"] = pulumi.output(args?.insecureTls).apply(JSON.stringify);
-            resourceInputs["password"] = args?.password ? pulumi.secret(args.password) : undefined;
-            resourceInputs["site"] = args?.site;
-            resourceInputs["url"] = args?.url;
-            resourceInputs["username"] = args?.username;
+            resourceInputs["apiKey"] = (args?.apiKey ? pulumi.secret(args.apiKey) : undefined) ?? utilities.getEnv("UNIFI_API_KEY");
+            resourceInputs["insecureTls"] = pulumi.output((args?.insecureTls) ?? utilities.getEnvBoolean("UNIFI_INSECURE_TLS")).apply(JSON.stringify);
+            resourceInputs["password"] = (args?.password ? pulumi.secret(args.password) : undefined) ?? utilities.getEnv("UNIFI_PASSWORD");
+            resourceInputs["site"] = (args?.site) ?? (utilities.getEnv("UNIFI_SITE") || "default");
+            resourceInputs["url"] = (args?.url) ?? utilities.getEnv("UNIFI_URL");
+            resourceInputs["username"] = (args?.username) ?? utilities.getEnv("UNIFI_USERNAME");
         }
         opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
         const secretOpts = { additionalSecretOutputs: ["apiKey", "password"] };
@@ -91,7 +88,7 @@ export interface ProviderArgs {
     /**
      * Base URL of the UniFi controller, e.g. https://192.168.1.1 (omit any /api suffix).
      */
-    url: pulumi.Input<string>;
+    url?: pulumi.Input<string | undefined>;
     /**
      * Local admin username. Use with password when not using an API key.
      */
