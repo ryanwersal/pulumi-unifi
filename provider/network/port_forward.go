@@ -285,6 +285,9 @@ func (PortForward) Create(ctx context.Context, req infer.CreateRequest[PortForwa
 	if err != nil {
 		return infer.CreateResponse[PortForwardState]{}, wrap(fmt.Sprintf("create port forward %q (site %q)", derefOr(req.Inputs.Name, ""), cfg.ResolvedSite()), err)
 	}
+	if created.ID == "" {
+		return infer.CreateResponse[PortForwardState]{}, infer.ProviderErrorf("created port forward but controller returned no ID")
+	}
 	return infer.CreateResponse[PortForwardState]{ID: created.ID, Output: portForwardStateFrom(created, req.Inputs)}, nil
 }
 

@@ -83,6 +83,9 @@ func (UserGroup) Create(ctx context.Context, req infer.CreateRequest[UserGroupAr
 	if err != nil {
 		return infer.CreateResponse[UserGroupState]{}, wrap(fmt.Sprintf("create user group %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
+	if created.ID == "" {
+		return infer.CreateResponse[UserGroupState]{}, infer.ProviderErrorf("created user group but controller returned no ID")
+	}
 	return infer.CreateResponse[UserGroupState]{ID: created.ID, Output: userGroupStateFrom(created, req.Inputs)}, nil
 }
 

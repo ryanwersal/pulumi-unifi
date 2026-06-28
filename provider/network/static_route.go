@@ -180,6 +180,9 @@ func (StaticRoute) Create(ctx context.Context, req infer.CreateRequest[StaticRou
 	if err != nil {
 		return infer.CreateResponse[StaticRouteState]{}, wrap(fmt.Sprintf("create static route %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
+	if created.ID == "" {
+		return infer.CreateResponse[StaticRouteState]{}, infer.ProviderErrorf("created static route but controller returned no ID")
+	}
 	return infer.CreateResponse[StaticRouteState]{ID: created.ID, Output: staticRouteStateFrom(created, req.Inputs)}, nil
 }
 

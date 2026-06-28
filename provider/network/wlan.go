@@ -1606,6 +1606,9 @@ func (Wlan) Create(ctx context.Context, req infer.CreateRequest[WlanArgs]) (infe
 	if err != nil {
 		return infer.CreateResponse[WlanState]{}, wrap(fmt.Sprintf("create wlan %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
+	if created.ID == "" {
+		return infer.CreateResponse[WlanState]{}, infer.ProviderErrorf("created wlan but controller returned no ID")
+	}
 	return infer.CreateResponse[WlanState]{ID: created.ID, Output: wlanStateFrom(created, req.Inputs)}, nil
 }
 

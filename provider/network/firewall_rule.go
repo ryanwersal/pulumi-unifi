@@ -544,6 +544,9 @@ func (FirewallRule) Create(ctx context.Context, req infer.CreateRequest[Firewall
 	if err != nil {
 		return infer.CreateResponse[FirewallRuleState]{}, wrap(fmt.Sprintf("create firewall rule %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
+	if created.ID == "" {
+		return infer.CreateResponse[FirewallRuleState]{}, infer.ProviderErrorf("created firewall rule but controller returned no ID")
+	}
 	return infer.CreateResponse[FirewallRuleState]{ID: created.ID, Output: firewallRuleStateFrom(created, req.Inputs)}, nil
 }
 

@@ -805,6 +805,9 @@ func (FirewallZonePolicy) Create(ctx context.Context, req infer.CreateRequest[Fi
 	if err != nil {
 		return infer.CreateResponse[FirewallZonePolicyState]{}, wrap(fmt.Sprintf("create firewall zone policy %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
+	if created.ID == "" {
+		return infer.CreateResponse[FirewallZonePolicyState]{}, infer.ProviderErrorf("created firewall zone policy but controller returned no ID")
+	}
 	return infer.CreateResponse[FirewallZonePolicyState]{ID: created.ID, Output: firewallZonePolicyStateFrom(created, req.Inputs)}, nil
 }
 

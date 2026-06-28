@@ -1293,6 +1293,9 @@ func (Device) Create(ctx context.Context, req infer.CreateRequest[DeviceArgs]) (
 	if err != nil {
 		return infer.CreateResponse[DeviceState]{}, wrap(fmt.Sprintf("create device %q (site %q)", req.Inputs.Mac, cfg.ResolvedSite()), err)
 	}
+	if updated.ID == "" {
+		return infer.CreateResponse[DeviceState]{}, infer.ProviderErrorf("created device but controller returned no ID")
+	}
 	return infer.CreateResponse[DeviceState]{ID: updated.ID, Output: deviceStateFrom(updated, req.Inputs)}, nil
 }
 

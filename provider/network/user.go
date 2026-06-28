@@ -201,6 +201,9 @@ func (User) Create(ctx context.Context, req infer.CreateRequest[UserArgs]) (infe
 	if err != nil {
 		return infer.CreateResponse[UserState]{}, wrap(fmt.Sprintf("create user %q (site %q)", req.Inputs.Mac, cfg.ResolvedSite()), err)
 	}
+	if created.ID == "" {
+		return infer.CreateResponse[UserState]{}, infer.ProviderErrorf("created user but controller returned no ID")
+	}
 	return infer.CreateResponse[UserState]{ID: created.ID, Output: userStateFrom(created, req.Inputs)}, nil
 }
 

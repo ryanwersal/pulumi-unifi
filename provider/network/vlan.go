@@ -1573,6 +1573,9 @@ func (Vlan) Create(ctx context.Context, req infer.CreateRequest[VlanArgs]) (infe
 	if err != nil {
 		return infer.CreateResponse[VlanState]{}, wrap(fmt.Sprintf("create network %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
+	if created.ID == "" {
+		return infer.CreateResponse[VlanState]{}, infer.ProviderErrorf("created network but controller returned no ID")
+	}
 	return infer.CreateResponse[VlanState]{ID: created.ID, Output: vlanStateFrom(created, req.Inputs)}, nil
 }
 

@@ -806,6 +806,9 @@ func (PortProfile) Create(ctx context.Context, req infer.CreateRequest[PortProfi
 	if err != nil {
 		return infer.CreateResponse[PortProfileState]{}, wrap(fmt.Sprintf("create port profile %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
+	if created.ID == "" {
+		return infer.CreateResponse[PortProfileState]{}, infer.ProviderErrorf("created port profile but controller returned no ID")
+	}
 	return infer.CreateResponse[PortProfileState]{ID: created.ID, Output: portProfileStateFrom(created, req.Inputs)}, nil
 }
 

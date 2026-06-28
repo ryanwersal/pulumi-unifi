@@ -153,6 +153,9 @@ func (DnsRecord) Create(ctx context.Context, req infer.CreateRequest[DnsRecordAr
 	if err != nil {
 		return infer.CreateResponse[DnsRecordState]{}, wrap(fmt.Sprintf("create dns record %q (site %q)", req.Inputs.Key, cfg.ResolvedSite()), err)
 	}
+	if created.ID == "" {
+		return infer.CreateResponse[DnsRecordState]{}, infer.ProviderErrorf("created dns record but controller returned no ID")
+	}
 	return infer.CreateResponse[DnsRecordState]{ID: created.ID, Output: dnsRecordStateFrom(created, req.Inputs)}, nil
 }
 

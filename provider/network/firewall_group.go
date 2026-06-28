@@ -111,6 +111,9 @@ func (FirewallGroup) Create(ctx context.Context, req infer.CreateRequest[Firewal
 	if err != nil {
 		return infer.CreateResponse[FirewallGroupState]{}, wrap(fmt.Sprintf("create firewall group %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
+	if created.ID == "" {
+		return infer.CreateResponse[FirewallGroupState]{}, infer.ProviderErrorf("created firewall group but controller returned no ID")
+	}
 	return infer.CreateResponse[FirewallGroupState]{ID: created.ID, Output: firewallGroupStateFrom(created, req.Inputs)}, nil
 }
 

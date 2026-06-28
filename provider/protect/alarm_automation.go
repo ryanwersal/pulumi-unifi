@@ -289,6 +289,9 @@ func (AlarmAutomation) Create(ctx context.Context, req infer.CreateRequest[Alarm
 	if err != nil {
 		return infer.CreateResponse[AlarmAutomationState]{}, err
 	}
+	if created.ID == "" {
+		return infer.CreateResponse[AlarmAutomationState]{}, infer.ProviderErrorf("created alarm automation but controller returned no ID")
+	}
 	return infer.CreateResponse[AlarmAutomationState]{ID: created.ID, Output: alarmStateFrom(created)}, nil
 }
 
