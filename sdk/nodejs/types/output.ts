@@ -4,6 +4,7 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as inputs from "../types/input";
 import * as outputs from "../types/output";
+import * as enums from "../types/enums";
 
 import * as utilities from "../utilities";
 
@@ -550,7 +551,7 @@ export namespace network {
         /**
          * Connection-state matching: ALL | RESPOND_ONLY | CUSTOM.
          */
-        connectionStateType?: string;
+        connectionStateType?: enums.network.FirewallZonePolicyConnectionStateType;
         /**
          * ConnectionStates lists states to match when connectionStateType=CUSTOM: ESTABLISHED | NEW | RELATED | INVALID.
          */
@@ -558,7 +559,7 @@ export namespace network {
         /**
          * L3 version the policy matches: BOTH | IPV4 | IPV6.
          */
-        ipVersion?: string;
+        ipVersion?: enums.network.FirewallZonePolicyIpVersion;
         /**
          * MatchIpSec enables matching on IPsec-encapsulated traffic.
          */

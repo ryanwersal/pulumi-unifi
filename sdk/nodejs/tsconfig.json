@@ -39,6 +39,8 @@
         "protect/camera.ts",
         "protect/index.ts",
         "provider.ts",
+        "types/enums/index.ts",
+        "types/enums/network/index.ts",
         "types/index.ts",
         "types/input.ts",
         "types/output.ts",

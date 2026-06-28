@@ -2,6 +2,9 @@
 // *** Do not edit by hand unless you're certain you know what you are doing! ***
 
 import * as pulumi from "@pulumi/pulumi";
+import * as inputs from "../types/input";
+import * as outputs from "../types/output";
+import * as enums from "../types/enums";
 import * as utilities from "../utilities";
 
 /**
@@ -45,7 +48,7 @@ export class FirewallGroup extends pulumi.CustomResource {
     /**
      * GroupType selects the kind of group: address-group | port-group | ipv6-address-group.
      */
-    declare public readonly groupType: pulumi.Output<string | undefined>;
+    declare public readonly groupType: pulumi.Output<enums.network.FirewallGroupType | undefined>;
     /**
      * Name of the firewall group (1-64 characters).
      */
@@ -91,7 +94,7 @@ export interface FirewallGroupArgs {
     /**
      * GroupType selects the kind of group: address-group | port-group | ipv6-address-group.
      */
-    groupType?: pulumi.Input<string | undefined>;
+    groupType?: pulumi.Input<enums.network.FirewallGroupType | undefined>;
     /**
      * Name of the firewall group (1-64 characters).
      */

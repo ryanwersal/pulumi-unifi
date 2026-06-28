@@ -4,6 +4,7 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as inputs from "../types/input";
 import * as outputs from "../types/output";
+import * as enums from "../types/enums";
 import * as utilities from "../utilities";
 
 /**
@@ -131,7 +132,7 @@ export class Wlan extends pulumi.CustomResource {
     /**
      * Security: open | wpapsk | wpaeap | wep | osen. Defaults to "wpapsk".
      */
-    declare public readonly security: pulumi.Output<string | undefined>;
+    declare public readonly security: pulumi.Output<enums.network.WlanSecurity | undefined>;
     /**
      * UapsdEnabled enables Unscheduled Automatic Power Save Delivery.
      */
@@ -354,7 +355,7 @@ export interface WlanArgs {
     /**
      * Security: open | wpapsk | wpaeap | wep | osen. Defaults to "wpapsk".
      */
-    security?: pulumi.Input<string | undefined>;
+    security?: pulumi.Input<enums.network.WlanSecurity | undefined>;
     /**
      * UapsdEnabled enables Unscheduled Automatic Power Save Delivery.
      */

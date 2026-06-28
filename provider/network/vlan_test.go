@@ -10,7 +10,7 @@ import "testing"
 func TestVlanRoundTrip(t *testing.T) {
 	args := VlanArgs{
 		Name:                    "lab",
-		Purpose:                 ptr("corporate"),
+		Purpose:                 ptr(VlanPurposeCorporate),
 		Vlan:                    ptr(30),
 		Subnet:                  ptr("192.168.30.1/24"),
 		Enabled:                 ptr(true),
@@ -175,7 +175,7 @@ func TestVlanRoundTrip(t *testing.T) {
 	}
 
 	out := st.VlanArgs
-	vlanEqStrP(t, "purpose", out.Purpose, args.Purpose)
+	vlanEqStrP(t, "purpose", (*string)(out.Purpose), (*string)(args.Purpose))
 	vlanEqIntP(t, "vlan", out.Vlan, args.Vlan)
 	vlanEqStrP(t, "subnet", out.Subnet, args.Subnet)
 	vlanEqBoolP(t, "enabled", out.Enabled, args.Enabled)

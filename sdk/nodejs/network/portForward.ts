@@ -4,6 +4,7 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as inputs from "../types/input";
 import * as outputs from "../types/output";
+import * as enums from "../types/enums";
 import * as utilities from "../utilities";
 
 /**
@@ -79,7 +80,7 @@ export class PortForward extends pulumi.CustomResource {
     /**
      * Proto selects the matched protocol: tcp_udp | tcp | udp. Defaults to "tcp_udp".
      */
-    declare public readonly proto: pulumi.Output<string | undefined>;
+    declare public readonly proto: pulumi.Output<enums.network.PortForwardProtocol | undefined>;
     /**
      * Src restricts the source address: a single IPv4, range, CIDR, negation (!addr), or "any". Defaults to "any".
      */
@@ -188,7 +189,7 @@ export interface PortForwardArgs {
     /**
      * Proto selects the matched protocol: tcp_udp | tcp | udp. Defaults to "tcp_udp".
      */
-    proto?: pulumi.Input<string | undefined>;
+    proto?: pulumi.Input<enums.network.PortForwardProtocol | undefined>;
     /**
      * Src restricts the source address: a single IPv4, range, CIDR, negation (!addr), or "any". Defaults to "any".
      */

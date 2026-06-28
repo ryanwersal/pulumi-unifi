@@ -12,6 +12,57 @@ import (
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
 )
 
+// FirewallZonePolicyAction is the traffic disposition applied by a policy.
+type FirewallZonePolicyAction string
+
+const (
+	FirewallZonePolicyActionAllow  FirewallZonePolicyAction = "ALLOW"
+	FirewallZonePolicyActionBlock  FirewallZonePolicyAction = "BLOCK"
+	FirewallZonePolicyActionReject FirewallZonePolicyAction = "REJECT"
+)
+
+func (FirewallZonePolicyAction) Values() []infer.EnumValue[FirewallZonePolicyAction] {
+	return []infer.EnumValue[FirewallZonePolicyAction]{
+		{Name: "Allow", Value: FirewallZonePolicyActionAllow, Description: "Permit matching traffic."},
+		{Name: "Block", Value: FirewallZonePolicyActionBlock, Description: "Silently drop matching traffic."},
+		{Name: "Reject", Value: FirewallZonePolicyActionReject, Description: "Drop matching traffic and send a rejection response."},
+	}
+}
+
+// FirewallZonePolicyIpVersion restricts a policy to an L3 IP version.
+type FirewallZonePolicyIpVersion string
+
+const (
+	FirewallZonePolicyIpVersionBoth FirewallZonePolicyIpVersion = "BOTH"
+	FirewallZonePolicyIpVersionIpv4 FirewallZonePolicyIpVersion = "IPV4"
+	FirewallZonePolicyIpVersionIpv6 FirewallZonePolicyIpVersion = "IPV6"
+)
+
+func (FirewallZonePolicyIpVersion) Values() []infer.EnumValue[FirewallZonePolicyIpVersion] {
+	return []infer.EnumValue[FirewallZonePolicyIpVersion]{
+		{Name: "Both", Value: FirewallZonePolicyIpVersionBoth, Description: "Match both IPv4 and IPv6 traffic."},
+		{Name: "Ipv4", Value: FirewallZonePolicyIpVersionIpv4, Description: "Match IPv4 traffic only."},
+		{Name: "Ipv6", Value: FirewallZonePolicyIpVersionIpv6, Description: "Match IPv6 traffic only."},
+	}
+}
+
+// FirewallZonePolicyConnectionStateType selects connection-state matching mode.
+type FirewallZonePolicyConnectionStateType string
+
+const (
+	FirewallZonePolicyConnectionStateTypeAll         FirewallZonePolicyConnectionStateType = "ALL"
+	FirewallZonePolicyConnectionStateTypeRespondOnly FirewallZonePolicyConnectionStateType = "RESPOND_ONLY"
+	FirewallZonePolicyConnectionStateTypeCustom      FirewallZonePolicyConnectionStateType = "CUSTOM"
+)
+
+func (FirewallZonePolicyConnectionStateType) Values() []infer.EnumValue[FirewallZonePolicyConnectionStateType] {
+	return []infer.EnumValue[FirewallZonePolicyConnectionStateType]{
+		{Name: "All", Value: FirewallZonePolicyConnectionStateTypeAll, Description: "Match all connection states."},
+		{Name: "RespondOnly", Value: FirewallZonePolicyConnectionStateTypeRespondOnly, Description: "Match only return (responding) traffic."},
+		{Name: "Custom", Value: FirewallZonePolicyConnectionStateTypeCustom, Description: "Match the explicit connection states listed in connectionStates."},
+	}
+}
+
 // FirewallZonePolicy is the controlling (marker) struct for a UniFi zone-based
 // firewall policy. Zone-based firewall policies are used by current UDM/UDM-SE
 // firmware (the "Zone-Based Firewall" feature) and replace the legacy rule list.
@@ -113,13 +164,13 @@ type FirewallZonePolicyScheduleArgs struct {
 // tied to either the source or destination zone.
 type FirewallZonePolicyMatchingArgs struct {
 	// IpVersion restricts the policy to an L3 version: BOTH | IPV4 | IPV6.
-	IpVersion *string `pulumi:"ipVersion,optional"`
+	IpVersion *FirewallZonePolicyIpVersion `pulumi:"ipVersion,optional"`
 	// Protocol filters by IP protocol: all | tcp_udp | tcp | udp | icmp | icmpv6 | igmp | esp | ah | gre | ... (see UniFi docs).
 	Protocol *string `pulumi:"protocol,optional"`
 	// MatchOppositeProtocol inverts (negates) the protocol match.
 	MatchOppositeProtocol *bool `pulumi:"matchOppositeProtocol,optional"`
 	// ConnectionStateType selects connection-state matching: ALL | RESPOND_ONLY | CUSTOM.
-	ConnectionStateType *string `pulumi:"connectionStateType,optional"`
+	ConnectionStateType *FirewallZonePolicyConnectionStateType `pulumi:"connectionStateType,optional"`
 	// ConnectionStates lists states to match when connectionStateType=CUSTOM: ESTABLISHED | NEW | RELATED | INVALID.
 	ConnectionStates []string `pulumi:"connectionStates,optional"`
 	// MatchIpSec enables matching on IPsec-encapsulated traffic.
@@ -133,7 +184,7 @@ type FirewallZonePolicyArgs struct {
 	// Name is the policy identifier shown in the controller.
 	Name string `pulumi:"name"`
 	// Action is the traffic disposition: ALLOW | BLOCK | REJECT.
-	Action string `pulumi:"action"`
+	Action FirewallZonePolicyAction `pulumi:"action"`
 	// Source is the source zone and matching criteria.
 	Source FirewallZonePolicySourceArgs `pulumi:"source"`
 	// Destination is the destination zone and matching criteria.
@@ -260,7 +311,7 @@ func (a FirewallZonePolicyArgs) toUnifi(id string) *unifi.FirewallZonePolicy {
 	p := &unifi.FirewallZonePolicy{
 		ID:                 id,
 		Name:               a.Name,
-		Action:             a.Action,
+		Action:             string(a.Action),
 		Enabled:            derefOr(a.Enabled, true),
 		Logging:            derefOr(a.Logging, false),
 		CreateAllowRespond: derefOr(a.CreateAllowRespond, false),
@@ -285,13 +336,13 @@ func (a FirewallZonePolicyArgs) toUnifi(id string) *unifi.FirewallZonePolicy {
 	p.MatchIPSec = derefOr(m.MatchIpSec, false)
 	p.MatchOppositeProtocol = derefOr(m.MatchOppositeProtocol, false)
 	if m.IpVersion != nil {
-		p.IPVersion = *m.IpVersion
+		p.IPVersion = string(*m.IpVersion)
 	}
 	if m.Protocol != nil {
 		p.Protocol = *m.Protocol
 	}
 	if m.ConnectionStateType != nil {
-		p.ConnectionStateType = *m.ConnectionStateType
+		p.ConnectionStateType = string(*m.ConnectionStateType)
 	}
 	if m.ConnectionStates != nil {
 		p.ConnectionStates = m.ConnectionStates
@@ -535,13 +586,22 @@ func firewallZonePolicyMatchingFrom(u *unifi.FirewallZonePolicy, prior *Firewall
 		p = *prior
 	}
 	m := FirewallZonePolicyMatchingArgs{
-		IpVersion:             fzpStrPtr(u.IPVersion, p.IpVersion),
 		Protocol:              fzpStrPtr(u.Protocol, p.Protocol),
 		MatchOppositeProtocol: fzpBoolPtr(u.MatchOppositeProtocol, p.MatchOppositeProtocol),
-		ConnectionStateType:   fzpStrPtr(u.ConnectionStateType, p.ConnectionStateType),
 		ConnectionStates:      fzpStrSlice(u.ConnectionStates, p.ConnectionStates),
 		MatchIpSec:            fzpBoolPtr(u.MatchIPSec, p.MatchIpSec),
 		MatchIpSecType:        fzpStrPtr(u.MatchIPSecType, p.MatchIpSecType),
+	}
+	// Enum fields: reflect the controller value when set, else keep prior.
+	if u.IPVersion != "" {
+		m.IpVersion = ptr(FirewallZonePolicyIpVersion(u.IPVersion))
+	} else {
+		m.IpVersion = p.IpVersion
+	}
+	if u.ConnectionStateType != "" {
+		m.ConnectionStateType = ptr(FirewallZonePolicyConnectionStateType(u.ConnectionStateType))
+	} else {
+		m.ConnectionStateType = p.ConnectionStateType
 	}
 	if m.isZero() {
 		return nil
@@ -554,7 +614,7 @@ func firewallZonePolicyMatchingFrom(u *unifi.FirewallZonePolicy, prior *Firewall
 func firewallZonePolicyStateFrom(u *unifi.FirewallZonePolicy, prior FirewallZonePolicyArgs) FirewallZonePolicyState {
 	args := FirewallZonePolicyArgs{
 		Name:               u.Name,
-		Action:             u.Action,
+		Action:             FirewallZonePolicyAction(u.Action),
 		Enabled:            fzpBoolPtr(u.Enabled, prior.Enabled),
 		Description:        fzpStrPtr(u.Description, prior.Description),
 		Index:              fzpIntPtr(u.Index, prior.Index),

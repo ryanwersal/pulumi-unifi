@@ -12,6 +12,35 @@ import (
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
 )
 
+// DnsRecordType is the DNS record type.
+type DnsRecordType string
+
+const (
+	DnsRecordTypeA     DnsRecordType = "A"
+	DnsRecordTypeAaaa  DnsRecordType = "AAAA"
+	DnsRecordTypeCname DnsRecordType = "CNAME"
+	DnsRecordTypeMx    DnsRecordType = "MX"
+	DnsRecordTypeNs    DnsRecordType = "NS"
+	DnsRecordTypePtr   DnsRecordType = "PTR"
+	DnsRecordTypeSoa   DnsRecordType = "SOA"
+	DnsRecordTypeSrv   DnsRecordType = "SRV"
+	DnsRecordTypeTxt   DnsRecordType = "TXT"
+)
+
+func (DnsRecordType) Values() []infer.EnumValue[DnsRecordType] {
+	return []infer.EnumValue[DnsRecordType]{
+		{Name: "A", Value: DnsRecordTypeA, Description: "IPv4 address record."},
+		{Name: "Aaaa", Value: DnsRecordTypeAaaa, Description: "IPv6 address record."},
+		{Name: "Cname", Value: DnsRecordTypeCname, Description: "Canonical name (alias) record."},
+		{Name: "Mx", Value: DnsRecordTypeMx, Description: "Mail exchange record."},
+		{Name: "Ns", Value: DnsRecordTypeNs, Description: "Name server record."},
+		{Name: "Ptr", Value: DnsRecordTypePtr, Description: "Pointer (reverse DNS) record."},
+		{Name: "Soa", Value: DnsRecordTypeSoa, Description: "Start of authority record."},
+		{Name: "Srv", Value: DnsRecordTypeSrv, Description: "Service locator record."},
+		{Name: "Txt", Value: DnsRecordTypeTxt, Description: "Arbitrary text record."},
+	}
+}
+
 // DnsRecord is the controlling (marker) struct for a UniFi controller-local DNS
 // record (static DNS), supported on gateways such as the UDM-SE.
 type DnsRecord struct{}
@@ -21,7 +50,7 @@ type DnsRecordArgs struct {
 	// Key is the hostname/record name the record answers for, e.g. "host.example.com".
 	Key string `pulumi:"key"`
 	// RecordType is the DNS record type: A | AAAA | CNAME | MX | NS | PTR | SOA | SRV | TXT.
-	RecordType string `pulumi:"recordType"`
+	RecordType DnsRecordType `pulumi:"recordType"`
 	// Value is the record payload (e.g. an IP for A/AAAA, a hostname for CNAME/MX/NS).
 	Value string `pulumi:"value"`
 	// Enabled controls whether the record is active. Defaults to true.
@@ -71,7 +100,7 @@ func (a DnsRecordArgs) toUnifi(id string) *unifi.DNSRecord {
 	r := &unifi.DNSRecord{
 		ID:         id,
 		Key:        a.Key,
-		RecordType: a.RecordType,
+		RecordType: string(a.RecordType),
 		Value:      a.Value,
 		Enabled:    derefOr(a.Enabled, true),
 	}
@@ -103,7 +132,7 @@ func dnsRecordIntPtr(v int, prior *int) *int {
 func dnsRecordStateFrom(r *unifi.DNSRecord, prior DnsRecordArgs) DnsRecordState {
 	args := DnsRecordArgs{
 		Key:        r.Key,
-		RecordType: r.RecordType,
+		RecordType: DnsRecordType(r.RecordType),
 		Value:      r.Value,
 		Enabled:    ptr(r.Enabled),
 		Ttl:        dnsRecordIntPtr(r.Ttl, prior.Ttl),

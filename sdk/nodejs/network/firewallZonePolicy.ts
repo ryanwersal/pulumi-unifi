@@ -4,6 +4,7 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as inputs from "../types/input";
 import * as outputs from "../types/output";
+import * as enums from "../types/enums";
 import * as utilities from "../utilities";
 
 /**
@@ -39,7 +40,7 @@ export class FirewallZonePolicy extends pulumi.CustomResource {
     /**
      * Action is the traffic disposition: ALLOW | BLOCK | REJECT.
      */
-    declare public readonly action: pulumi.Output<string>;
+    declare public readonly action: pulumi.Output<enums.network.FirewallZonePolicyAction>;
     /**
      * CreateAllowRespond automatically allows reverse-direction (return) traffic.
      */
@@ -146,7 +147,7 @@ export interface FirewallZonePolicyArgs {
     /**
      * Action is the traffic disposition: ALLOW | BLOCK | REJECT.
      */
-    action: pulumi.Input<string>;
+    action: pulumi.Input<enums.network.FirewallZonePolicyAction>;
     /**
      * CreateAllowRespond automatically allows reverse-direction (return) traffic.
      */

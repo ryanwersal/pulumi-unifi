@@ -12,6 +12,27 @@ import (
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
 )
 
+// WlanSecurity is the WLAN security/authentication mode.
+type WlanSecurity string
+
+const (
+	WlanSecurityOpen   WlanSecurity = "open"
+	WlanSecurityWpaPsk WlanSecurity = "wpapsk"
+	WlanSecurityWpaEap WlanSecurity = "wpaeap"
+	WlanSecurityWep    WlanSecurity = "wep"
+	WlanSecurityOsen   WlanSecurity = "osen"
+)
+
+func (WlanSecurity) Values() []infer.EnumValue[WlanSecurity] {
+	return []infer.EnumValue[WlanSecurity]{
+		{Name: "Open", Value: WlanSecurityOpen, Description: "Open network with no authentication."},
+		{Name: "WpaPsk", Value: WlanSecurityWpaPsk, Description: "WPA personal with a pre-shared key."},
+		{Name: "WpaEap", Value: WlanSecurityWpaEap, Description: "WPA enterprise with RADIUS/802.1X (EAP)."},
+		{Name: "Wep", Value: WlanSecurityWep, Description: "Legacy WEP encryption."},
+		{Name: "Osen", Value: WlanSecurityOsen, Description: "OSU Server-only authenticated L2 encryption (Hotspot 2.0)."},
+	}
+}
+
 // Wlan is the controlling (marker) struct for a UniFi wireless network (SSID).
 type Wlan struct{}
 
@@ -398,7 +419,7 @@ type WlanArgs struct {
 	// Enabled controls whether the SSID is broadcast. Defaults to true.
 	Enabled *bool `pulumi:"enabled,optional"`
 	// Security: open | wpapsk | wpaeap | wep | osen. Defaults to "wpapsk".
-	Security *string `pulumi:"security,optional"`
+	Security *WlanSecurity `pulumi:"security,optional"`
 	// Passphrase is the WPA pre-shared key (8-63 chars). Secret.
 	Passphrase *string `pulumi:"passphrase,optional" provider:"secret"`
 	// HideSsid hides the SSID from broadcast. Defaults to false.
@@ -512,7 +533,7 @@ func (a WlanArgs) toUnifi(id string) *unifi.WLAN {
 		Name:      a.Name,
 		NetworkID: a.NetworkId,
 		Enabled:   derefOr(a.Enabled, true),
-		Security:  derefOr(a.Security, "wpapsk"),
+		Security:  string(derefOr(a.Security, WlanSecurityWpaPsk)),
 		HideSSID:  derefOr(a.HideSsid, false),
 	}
 	if a.WlanGroupId != nil {
@@ -1319,7 +1340,7 @@ func wlanStateFrom(w *unifi.WLAN, prior WlanArgs) WlanState {
 		Name:      w.Name,
 		NetworkId: w.NetworkID,
 		Enabled:   ptr(w.Enabled),
-		Security:  ptr(w.Security),
+		Security:  ptr(WlanSecurity(w.Security)),
 		HideSsid:  ptr(w.HideSSID),
 		// Preserve user-provided secrets; the controller may not echo them back.
 		Passphrase: prior.Passphrase,

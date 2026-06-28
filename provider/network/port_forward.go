@@ -12,6 +12,23 @@ import (
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
 )
 
+// PortForwardProtocol is the matched transport protocol for a port-forwarding rule.
+type PortForwardProtocol string
+
+const (
+	PortForwardProtocolTcpUdp PortForwardProtocol = "tcp_udp"
+	PortForwardProtocolTcp    PortForwardProtocol = "tcp"
+	PortForwardProtocolUdp    PortForwardProtocol = "udp"
+)
+
+func (PortForwardProtocol) Values() []infer.EnumValue[PortForwardProtocol] {
+	return []infer.EnumValue[PortForwardProtocol]{
+		{Name: "TcpUdp", Value: PortForwardProtocolTcpUdp, Description: "Match both TCP and UDP traffic."},
+		{Name: "Tcp", Value: PortForwardProtocolTcp, Description: "Match TCP traffic only."},
+		{Name: "Udp", Value: PortForwardProtocolUdp, Description: "Match UDP traffic only."},
+	}
+}
+
 // PortForward is the controlling (marker) struct for a UniFi port-forwarding rule.
 type PortForward struct{}
 
@@ -38,7 +55,7 @@ type PortForwardArgs struct {
 	// Fwd is the internal IPv4 address to forward traffic to.
 	Fwd *string `pulumi:"fwd,optional"`
 	// Proto selects the matched protocol: tcp_udp | tcp | udp. Defaults to "tcp_udp".
-	Proto *string `pulumi:"proto,optional"`
+	Proto *PortForwardProtocol `pulumi:"proto,optional"`
 	// Src restricts the source address: a single IPv4, range, CIDR, negation (!addr), or "any". Defaults to "any".
 	Src *string `pulumi:"src,optional"`
 	// Log enables logging of forwarded traffic. Defaults to false.
@@ -108,7 +125,7 @@ func (a PortForwardArgs) toUnifi(id string) *unifi.PortForward {
 		ID:      id,
 		Enabled: derefOr(a.Enabled, true),
 		Log:     derefOr(a.Log, false),
-		Proto:   derefOr(a.Proto, "tcp_udp"),
+		Proto:   string(derefOr(a.Proto, PortForwardProtocolTcpUdp)),
 		Src:     derefOr(a.Src, "any"),
 	}
 	if a.Name != nil {
@@ -171,7 +188,11 @@ func portForwardStateFrom(pf *unifi.PortForward, prior PortForwardArgs) PortForw
 	args.FwdPort = portForwardStrPtr(pf.FwdPort, prior.FwdPort)
 	args.DstPort = portForwardStrPtr(pf.DstPort, prior.DstPort)
 	args.Fwd = portForwardStrPtr(pf.Fwd, prior.Fwd)
-	args.Proto = portForwardStrPtr(pf.Proto, prior.Proto)
+	if pf.Proto != "" {
+		args.Proto = ptr(PortForwardProtocol(pf.Proto))
+	} else {
+		args.Proto = prior.Proto
+	}
 	args.Src = portForwardStrPtr(pf.Src, prior.Src)
 	args.PfwdInterface = portForwardStrPtr(pf.PfwdInterface, prior.PfwdInterface)
 	args.SrcFirewallGroupId = portForwardStrPtr(pf.SrcFirewallGroupID, prior.SrcFirewallGroupId)

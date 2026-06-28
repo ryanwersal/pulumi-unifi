@@ -7,7 +7,7 @@ import "testing"
 func TestDnsRecordRoundTrip(t *testing.T) {
 	args := DnsRecordArgs{
 		Key:        "_sip._tcp.example.com",
-		RecordType: "SRV",
+		RecordType: DnsRecordTypeSrv,
 		Value:      "sip.example.com",
 		Enabled:    ptr(true),
 		Ttl:        ptr(3600),
@@ -64,7 +64,7 @@ func TestDnsRecordDefaultsAndPreserve(t *testing.T) {
 	// Minimal A record: optional fields unset.
 	args := DnsRecordArgs{
 		Key:        "host.example.com",
-		RecordType: "A",
+		RecordType: DnsRecordTypeA,
 		Value:      "192.168.1.10",
 	}
 

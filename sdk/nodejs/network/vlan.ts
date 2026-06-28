@@ -4,6 +4,7 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as inputs from "../types/input";
 import * as outputs from "../types/output";
+import * as enums from "../types/enums";
 import * as utilities from "../utilities";
 
 /**
@@ -119,7 +120,7 @@ export class Vlan extends pulumi.CustomResource {
     /**
      * Purpose: corporate | guest | vlan-only | wan | remote-user-vpn | site-vpn | vpn-client. Defaults to "corporate".
      */
-    declare public readonly purpose: pulumi.Output<string | undefined>;
+    declare public readonly purpose: pulumi.Output<enums.network.VlanPurpose | undefined>;
     /**
      * SettingPreference: auto | manual. Controls whether device-specific overrides apply.
      */
@@ -297,7 +298,7 @@ export interface VlanArgs {
     /**
      * Purpose: corporate | guest | vlan-only | wan | remote-user-vpn | site-vpn | vpn-client. Defaults to "corporate".
      */
-    purpose?: pulumi.Input<string | undefined>;
+    purpose?: pulumi.Input<enums.network.VlanPurpose | undefined>;
     /**
      * SettingPreference: auto | manual. Controls whether device-specific overrides apply.
      */

@@ -12,6 +12,32 @@ import (
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
 )
 
+// VlanPurpose is the closed set of network purposes.
+type VlanPurpose string
+
+const (
+	VlanPurposeCorporate     VlanPurpose = "corporate"
+	VlanPurposeGuest         VlanPurpose = "guest"
+	VlanPurposeVlanOnly      VlanPurpose = "vlan-only"
+	VlanPurposeWan           VlanPurpose = "wan"
+	VlanPurposeRemoteUserVpn VlanPurpose = "remote-user-vpn"
+	VlanPurposeSiteVpn       VlanPurpose = "site-vpn"
+	VlanPurposeVpnClient     VlanPurpose = "vpn-client"
+)
+
+// Values enumerates the allowed VlanPurpose values for the schema/SDK.
+func (VlanPurpose) Values() []infer.EnumValue[VlanPurpose] {
+	return []infer.EnumValue[VlanPurpose]{
+		{Name: "Corporate", Value: VlanPurposeCorporate, Description: "Routed LAN/VLAN network."},
+		{Name: "Guest", Value: VlanPurposeGuest, Description: "Guest network with isolation/portal."},
+		{Name: "VlanOnly", Value: VlanPurposeVlanOnly, Description: "Layer-2 VLAN with no gateway."},
+		{Name: "Wan", Value: VlanPurposeWan, Description: "WAN uplink network."},
+		{Name: "RemoteUserVpn", Value: VlanPurposeRemoteUserVpn, Description: "Remote-user VPN server network."},
+		{Name: "SiteVpn", Value: VlanPurposeSiteVpn, Description: "Site-to-site VPN network."},
+		{Name: "VpnClient", Value: VlanPurposeVpnClient, Description: "VPN client network."},
+	}
+}
+
 // Vlan is the controlling (marker) struct for a UniFi network/VLAN resource.
 type Vlan struct{}
 
@@ -282,7 +308,7 @@ type VlanArgs struct {
 	// Name of the network.
 	Name string `pulumi:"name"`
 	// Purpose: corporate | guest | vlan-only | wan | remote-user-vpn | site-vpn | vpn-client. Defaults to "corporate".
-	Purpose *string `pulumi:"purpose,optional"`
+	Purpose *VlanPurpose `pulumi:"purpose,optional"`
 	// Vlan is the 802.1Q VLAN ID. When set, VLAN tagging is enabled.
 	Vlan *int `pulumi:"vlan,optional"`
 	// Subnet is the gateway IP/CIDR for the network, e.g. 192.168.20.1/24.
@@ -532,7 +558,7 @@ func (a VlanArgs) toUnifi(id string) *unifi.Network {
 	n := &unifi.Network{
 		ID:                    id,
 		Name:                  a.Name,
-		Purpose:               derefOr(a.Purpose, "corporate"),
+		Purpose:               string(derefOr(a.Purpose, VlanPurposeCorporate)),
 		Enabled:               derefOr(a.Enabled, true),
 		NetworkGroup:          derefOr(a.NetworkGroup, "LAN"),
 		InternetAccessEnabled: derefOr(a.InternetAccessEnabled, true),
@@ -1252,7 +1278,7 @@ func vlanNatFrom(n *unifi.Network, prior *VlanNat) *VlanNat {
 func vlanStateFrom(n *unifi.Network, prior VlanArgs) VlanState {
 	args := VlanArgs{
 		Name:    n.Name,
-		Purpose: ptr(n.Purpose),
+		Purpose: ptr(VlanPurpose(n.Purpose)),
 		Enabled: ptr(n.Enabled),
 	}
 	if n.VLANEnabled {

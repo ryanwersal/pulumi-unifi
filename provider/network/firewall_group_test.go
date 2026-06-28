@@ -11,7 +11,7 @@ import (
 func TestFirewallGroupRoundTrip(t *testing.T) {
 	args := FirewallGroupArgs{
 		Name:         "blocked-ips",
-		GroupType:    ptr("address-group"),
+		GroupType:    ptr(FirewallGroupTypeAddressGroup),
 		GroupMembers: []string{"1.2.3.4", "10.0.0.0/24"},
 	}
 
@@ -53,7 +53,7 @@ func TestFirewallGroupDefaultsAndPriorPreserved(t *testing.T) {
 	}
 
 	// Controller returns empty members/type; prior inputs should be preserved.
-	prior := FirewallGroupArgs{Name: "g", GroupType: ptr("port-group"), GroupMembers: []string{"80", "443"}}
+	prior := FirewallGroupArgs{Name: "g", GroupType: ptr(FirewallGroupTypePortGroup), GroupMembers: []string{"80", "443"}}
 	st := firewallGroupStateFrom(&unifi.FirewallGroup{ID: "x", Name: "g"}, prior)
 	if len(st.GroupMembers) != 2 {
 		t.Fatalf("preserved GroupMembers = %v, want 2 entries", st.GroupMembers)

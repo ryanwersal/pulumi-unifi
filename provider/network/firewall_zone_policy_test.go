@@ -10,17 +10,17 @@ import "testing"
 func TestFirewallZonePolicyRoundTrip(t *testing.T) {
 	args := FirewallZonePolicyArgs{
 		Name:               "lan-to-wan-block",
-		Action:             "BLOCK",
+		Action:             FirewallZonePolicyActionBlock,
 		Enabled:            ptr(true),
 		Description:        ptr("block lab to internet"),
 		Index:              ptr(2),
 		Logging:            ptr(true),
 		CreateAllowRespond: ptr(true),
 		Matching: &FirewallZonePolicyMatchingArgs{
-			IpVersion:             ptr("IPV4"),
+			IpVersion:             ptr(FirewallZonePolicyIpVersionIpv4),
 			Protocol:              ptr("tcp_udp"),
 			MatchOppositeProtocol: ptr(false),
-			ConnectionStateType:   ptr("CUSTOM"),
+			ConnectionStateType:   ptr(FirewallZonePolicyConnectionStateTypeCustom),
 			ConnectionStates:      []string{"NEW", "ESTABLISHED"},
 			MatchIpSec:            ptr(true),
 			MatchIpSecType:        ptr("MATCH_IP_SEC"),
@@ -151,7 +151,7 @@ func TestFirewallZonePolicyRoundTrip(t *testing.T) {
 func TestFirewallZonePolicyDefaultsAndScheduleOmitted(t *testing.T) {
 	args := FirewallZonePolicyArgs{
 		Name:   "allow-all",
-		Action: "ALLOW",
+		Action: FirewallZonePolicyActionAllow,
 		Source: FirewallZonePolicySourceArgs{ZoneId: "zone-a"},
 		Destination: FirewallZonePolicyDestinationArgs{
 			ZoneId: "zone-b",

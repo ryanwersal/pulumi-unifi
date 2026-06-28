@@ -14,7 +14,7 @@ func TestPortForwardRoundTrip(t *testing.T) {
 		FwdPort:            ptr("22"),
 		DstPort:            ptr("2222"),
 		Fwd:                ptr("192.168.1.10"),
-		Proto:              ptr("tcp"),
+		Proto:              ptr(PortForwardProtocolTcp),
 		Src:                ptr("203.0.113.0/24"),
 		Log:                ptr(true),
 		PfwdInterface:      ptr("wan"),

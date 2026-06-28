@@ -11,7 +11,7 @@ func TestWlanRoundTrip(t *testing.T) {
 		WlanGroupId:  ptr("grp1"),
 		UserGroupId:  ptr("ug1"),
 		Enabled:      ptr(true),
-		Security:     ptr("wpapsk"),
+		Security:     ptr(WlanSecurityWpaPsk),
 		Passphrase:   ptr("supersecret"),
 		HideSsid:     ptr(false),
 		UapsdEnabled: ptr(true),

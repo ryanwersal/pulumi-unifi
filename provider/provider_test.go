@@ -52,6 +52,9 @@ func TestProviderSchemaBuilds(t *testing.T) {
 		} `json:"resources"`
 		Types map[string]struct {
 			Properties propSet `json:"properties"`
+			Enum       []struct {
+				Value any `json:"value"`
+			} `json:"enum"`
 		} `json:"types"`
 	}
 	if err := json.Unmarshal([]byte(resp.Schema), &schema); err != nil {
@@ -167,6 +170,23 @@ func TestProviderSchemaBuilds(t *testing.T) {
 			if p.Description == "" {
 				t.Errorf("type %s.%s has no description", tok, name)
 			}
+		}
+	}
+
+	// Closed value sets are modeled as enums so the schema/SDK validate them.
+	wantEnums := []string{
+		"unifi:network:DnsRecordType",
+		"unifi:network:FirewallGroupType",
+		"unifi:network:PortForwardProtocol",
+		"unifi:network:VlanPurpose",
+		"unifi:network:WlanSecurity",
+		"unifi:network:FirewallZonePolicyAction",
+		"unifi:network:FirewallZonePolicyIpVersion",
+		"unifi:network:FirewallZonePolicyConnectionStateType",
+	}
+	for _, tok := range wantEnums {
+		if len(schema.Types[tok].Enum) == 0 {
+			t.Errorf("type %s should be an enum with values", tok)
 		}
 	}
 

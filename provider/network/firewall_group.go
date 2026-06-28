@@ -12,6 +12,23 @@ import (
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
 )
 
+// FirewallGroupType is the kind of firewall group.
+type FirewallGroupType string
+
+const (
+	FirewallGroupTypeAddressGroup     FirewallGroupType = "address-group"
+	FirewallGroupTypePortGroup        FirewallGroupType = "port-group"
+	FirewallGroupTypeIpv6AddressGroup FirewallGroupType = "ipv6-address-group"
+)
+
+func (FirewallGroupType) Values() []infer.EnumValue[FirewallGroupType] {
+	return []infer.EnumValue[FirewallGroupType]{
+		{Name: "AddressGroup", Value: FirewallGroupTypeAddressGroup, Description: "Group of IPv4 addresses or CIDRs."},
+		{Name: "PortGroup", Value: FirewallGroupTypePortGroup, Description: "Group of port numbers or ranges."},
+		{Name: "Ipv6AddressGroup", Value: FirewallGroupTypeIpv6AddressGroup, Description: "Group of IPv6 addresses or CIDRs."},
+	}
+}
+
 // FirewallGroup is the controlling (marker) struct for a UniFi firewall group
 // resource. A firewall group is a reusable set of addresses or ports that can
 // be referenced from firewall rules.
@@ -22,7 +39,7 @@ type FirewallGroupArgs struct {
 	// Name of the firewall group (1-64 characters).
 	Name string `pulumi:"name"`
 	// GroupType selects the kind of group: address-group | port-group | ipv6-address-group.
-	GroupType *string `pulumi:"groupType,optional"`
+	GroupType *FirewallGroupType `pulumi:"groupType,optional"`
 	// GroupMembers are the entries in the group. The accepted format depends on
 	// GroupType: IPv4 addresses/CIDRs for address-group, port numbers/ranges for
 	// port-group, or IPv6 addresses/CIDRs for ipv6-address-group.
@@ -58,7 +75,7 @@ func (a FirewallGroupArgs) toUnifi(id string) *unifi.FirewallGroup {
 	g := &unifi.FirewallGroup{
 		ID:           id,
 		Name:         a.Name,
-		GroupType:    derefOr(a.GroupType, "address-group"),
+		GroupType:    string(derefOr(a.GroupType, FirewallGroupTypeAddressGroup)),
 		GroupMembers: a.GroupMembers,
 	}
 	return g
@@ -72,7 +89,7 @@ func firewallGroupStateFrom(g *unifi.FirewallGroup, prior FirewallGroupArgs) Fir
 		Name: g.Name,
 	}
 	if g.GroupType != "" {
-		args.GroupType = ptr(g.GroupType)
+		args.GroupType = ptr(FirewallGroupType(g.GroupType))
 	} else {
 		args.GroupType = prior.GroupType
 	}
