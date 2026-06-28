@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 // Package config defines the provider-level configuration and builds the
 // authenticated UniFi controller client once per provider process. Resources
 // retrieve the configured client via infer.GetConfig.

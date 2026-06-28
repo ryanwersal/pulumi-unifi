@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 // Package protectapi is a minimal client for UniFi Protect's PRIVATE Alarm
 // Manager automations API (/proxy/protect/api/automations).
 //

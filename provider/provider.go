@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 // Package provider wires the inferred UniFi provider: its configuration and the
 // set of resources it manages. Resource implementations live in subpackages
 // (network/, protect/); this package only assembles them.

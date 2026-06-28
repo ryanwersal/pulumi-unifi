@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: Apache-2.0
+
 // Command pulumi-resource-unifi is the Pulumi plugin binary for the UniFi
 // provider. Pulumi discovers plugins by the `pulumi-resource-<name>` naming
 // convention, so this directory name is load-bearing.
