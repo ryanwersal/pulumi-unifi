@@ -110,6 +110,13 @@ func hostOf(raw string) (string, error) {
 // Network returns the configured UniFi Network client.
 func (c Config) Network() unifi.Client { return c.net }
 
+// Controller returns the session-authenticated UniFi OS client for endpoints
+// outside the Network application (e.g. the private Protect automations API).
+// It is the same underlying client as Network(): go-unifi resolves absolute
+// paths (leading "/") against the controller base URL and carries the session
+// cookie + CSRF token (or X-API-Key) on every request.
+func (c Config) Controller() unifi.Client { return c.net }
+
 // Protect returns the configured UniFi Protect client, or an error if no API
 // key was supplied (Protect requires API-key authentication).
 func (c Config) Protect() (protecttypes.ProtectV1, error) {

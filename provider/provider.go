@@ -50,7 +50,18 @@ func New() (p.Provider, error) {
 		WithResources(
 			infer.Resource(network.Vlan{}),
 			infer.Resource(network.Wlan{}),
+			infer.Resource(network.Device{}),
+			infer.Resource(network.PortProfile{}),
+			infer.Resource(network.PortForward{}),
+			infer.Resource(network.FirewallGroup{}),
+			infer.Resource(network.FirewallRule{}),
+			infer.Resource(network.FirewallZonePolicy{}),
+			infer.Resource(network.StaticRoute{}),
+			infer.Resource(network.User{}),
+			infer.Resource(network.UserGroup{}),
+			infer.Resource(network.DnsRecord{}),
 			infer.Resource(protect.Camera{}),
+			infer.Resource(protect.AlarmAutomation{}),
 		).
 		Build()
 }

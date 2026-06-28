@@ -2,10 +2,12 @@
 // *** Do not edit by hand unless you're certain you know what you are doing! ***
 
 import * as pulumi from "@pulumi/pulumi";
+import * as inputs from "../types/input";
+import * as outputs from "../types/output";
 import * as utilities from "../utilities";
 
 /**
- * A UniFi Network (VLAN). Maps to a controller network configuration object.
+ * A UniFi Network (VLAN/LAN/WAN). Maps to a controller network configuration object. Covers LAN/VLAN DHCP (v4 and v6), IGMP, IPv6, and WAN settings, grouped into nested objects (dhcp, dhcpV6, ipv6, igmp, wan, nat). VPN-specific networks (IPSec/OpenVPN/WireGuard/L2TP/PPTP) are not modeled.
  */
 export class Vlan extends pulumi.CustomResource {
     /**
@@ -34,15 +36,32 @@ export class Vlan extends pulumi.CustomResource {
         return obj['__pulumiType'] === Vlan.__pulumiType;
     }
 
-    declare public readonly dhcpEnabled: pulumi.Output<boolean | undefined>;
-    declare public readonly dhcpStart: pulumi.Output<string | undefined>;
-    declare public readonly dhcpStop: pulumi.Output<string | undefined>;
+    declare public readonly autoScaleEnabled: pulumi.Output<boolean | undefined>;
+    declare public readonly dhcp: pulumi.Output<outputs.network.VlanDhcp | undefined>;
+    declare public readonly dhcpV6: pulumi.Output<outputs.network.VlanDhcpV6 | undefined>;
+    declare public readonly domainName: pulumi.Output<string | undefined>;
+    declare public readonly dpiEnabled: pulumi.Output<boolean | undefined>;
     declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    declare public readonly gatewayType: pulumi.Output<string | undefined>;
+    declare public readonly igmp: pulumi.Output<outputs.network.VlanIgmp | undefined>;
+    declare public readonly interfaceMtu: pulumi.Output<number | undefined>;
+    declare public readonly interfaceMtuEnabled: pulumi.Output<boolean | undefined>;
+    declare public readonly internetAccessEnabled: pulumi.Output<boolean | undefined>;
+    declare public readonly ipv6: pulumi.Output<outputs.network.VlanIpv6 | undefined>;
+    declare public readonly macOverride: pulumi.Output<string | undefined>;
+    declare public readonly macOverrideEnabled: pulumi.Output<boolean | undefined>;
+    declare public readonly mdnsEnabled: pulumi.Output<boolean | undefined>;
     declare public readonly name: pulumi.Output<string>;
+    declare public readonly nat: pulumi.Output<outputs.network.VlanNat | undefined>;
+    declare public readonly networkGroup: pulumi.Output<string | undefined>;
     declare public /*out*/ readonly networkId: pulumi.Output<string>;
+    declare public readonly networkIsolationEnabled: pulumi.Output<boolean | undefined>;
     declare public readonly purpose: pulumi.Output<string | undefined>;
+    declare public readonly settingPreference: pulumi.Output<string | undefined>;
     declare public readonly subnet: pulumi.Output<string | undefined>;
+    declare public readonly upnpLanEnabled: pulumi.Output<boolean | undefined>;
     declare public readonly vlan: pulumi.Output<number | undefined>;
+    declare public readonly wan: pulumi.Output<outputs.network.VlanWan | undefined>;
 
     /**
      * Create a Vlan resource with the given unique name, arguments, and options.
@@ -58,25 +77,59 @@ export class Vlan extends pulumi.CustomResource {
             if (args?.name === undefined && !opts.urn) {
                 throw new Error("Missing required property 'name'");
             }
-            resourceInputs["dhcpEnabled"] = args?.dhcpEnabled;
-            resourceInputs["dhcpStart"] = args?.dhcpStart;
-            resourceInputs["dhcpStop"] = args?.dhcpStop;
+            resourceInputs["autoScaleEnabled"] = args?.autoScaleEnabled;
+            resourceInputs["dhcp"] = args?.dhcp;
+            resourceInputs["dhcpV6"] = args?.dhcpV6;
+            resourceInputs["domainName"] = args?.domainName;
+            resourceInputs["dpiEnabled"] = args?.dpiEnabled;
             resourceInputs["enabled"] = args?.enabled;
+            resourceInputs["gatewayType"] = args?.gatewayType;
+            resourceInputs["igmp"] = args?.igmp;
+            resourceInputs["interfaceMtu"] = args?.interfaceMtu;
+            resourceInputs["interfaceMtuEnabled"] = args?.interfaceMtuEnabled;
+            resourceInputs["internetAccessEnabled"] = args?.internetAccessEnabled;
+            resourceInputs["ipv6"] = args?.ipv6;
+            resourceInputs["macOverride"] = args?.macOverride;
+            resourceInputs["macOverrideEnabled"] = args?.macOverrideEnabled;
+            resourceInputs["mdnsEnabled"] = args?.mdnsEnabled;
             resourceInputs["name"] = args?.name;
+            resourceInputs["nat"] = args?.nat;
+            resourceInputs["networkGroup"] = args?.networkGroup;
+            resourceInputs["networkIsolationEnabled"] = args?.networkIsolationEnabled;
             resourceInputs["purpose"] = args?.purpose;
+            resourceInputs["settingPreference"] = args?.settingPreference;
             resourceInputs["subnet"] = args?.subnet;
+            resourceInputs["upnpLanEnabled"] = args?.upnpLanEnabled;
             resourceInputs["vlan"] = args?.vlan;
+            resourceInputs["wan"] = args?.wan;
             resourceInputs["networkId"] = undefined /*out*/;
         } else {
-            resourceInputs["dhcpEnabled"] = undefined /*out*/;
-            resourceInputs["dhcpStart"] = undefined /*out*/;
-            resourceInputs["dhcpStop"] = undefined /*out*/;
+            resourceInputs["autoScaleEnabled"] = undefined /*out*/;
+            resourceInputs["dhcp"] = undefined /*out*/;
+            resourceInputs["dhcpV6"] = undefined /*out*/;
+            resourceInputs["domainName"] = undefined /*out*/;
+            resourceInputs["dpiEnabled"] = undefined /*out*/;
             resourceInputs["enabled"] = undefined /*out*/;
+            resourceInputs["gatewayType"] = undefined /*out*/;
+            resourceInputs["igmp"] = undefined /*out*/;
+            resourceInputs["interfaceMtu"] = undefined /*out*/;
+            resourceInputs["interfaceMtuEnabled"] = undefined /*out*/;
+            resourceInputs["internetAccessEnabled"] = undefined /*out*/;
+            resourceInputs["ipv6"] = undefined /*out*/;
+            resourceInputs["macOverride"] = undefined /*out*/;
+            resourceInputs["macOverrideEnabled"] = undefined /*out*/;
+            resourceInputs["mdnsEnabled"] = undefined /*out*/;
             resourceInputs["name"] = undefined /*out*/;
+            resourceInputs["nat"] = undefined /*out*/;
+            resourceInputs["networkGroup"] = undefined /*out*/;
             resourceInputs["networkId"] = undefined /*out*/;
+            resourceInputs["networkIsolationEnabled"] = undefined /*out*/;
             resourceInputs["purpose"] = undefined /*out*/;
+            resourceInputs["settingPreference"] = undefined /*out*/;
             resourceInputs["subnet"] = undefined /*out*/;
+            resourceInputs["upnpLanEnabled"] = undefined /*out*/;
             resourceInputs["vlan"] = undefined /*out*/;
+            resourceInputs["wan"] = undefined /*out*/;
         }
         opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
         super(Vlan.__pulumiType, name, resourceInputs, opts);
@@ -87,12 +140,29 @@ export class Vlan extends pulumi.CustomResource {
  * The set of arguments for constructing a Vlan resource.
  */
 export interface VlanArgs {
-    dhcpEnabled?: pulumi.Input<boolean | undefined>;
-    dhcpStart?: pulumi.Input<string | undefined>;
-    dhcpStop?: pulumi.Input<string | undefined>;
+    autoScaleEnabled?: pulumi.Input<boolean | undefined>;
+    dhcp?: pulumi.Input<inputs.network.VlanDhcpArgs | undefined>;
+    dhcpV6?: pulumi.Input<inputs.network.VlanDhcpV6Args | undefined>;
+    domainName?: pulumi.Input<string | undefined>;
+    dpiEnabled?: pulumi.Input<boolean | undefined>;
     enabled?: pulumi.Input<boolean | undefined>;
+    gatewayType?: pulumi.Input<string | undefined>;
+    igmp?: pulumi.Input<inputs.network.VlanIgmpArgs | undefined>;
+    interfaceMtu?: pulumi.Input<number | undefined>;
+    interfaceMtuEnabled?: pulumi.Input<boolean | undefined>;
+    internetAccessEnabled?: pulumi.Input<boolean | undefined>;
+    ipv6?: pulumi.Input<inputs.network.VlanIpv6Args | undefined>;
+    macOverride?: pulumi.Input<string | undefined>;
+    macOverrideEnabled?: pulumi.Input<boolean | undefined>;
+    mdnsEnabled?: pulumi.Input<boolean | undefined>;
     name: pulumi.Input<string>;
+    nat?: pulumi.Input<inputs.network.VlanNatArgs | undefined>;
+    networkGroup?: pulumi.Input<string | undefined>;
+    networkIsolationEnabled?: pulumi.Input<boolean | undefined>;
     purpose?: pulumi.Input<string | undefined>;
+    settingPreference?: pulumi.Input<string | undefined>;
     subnet?: pulumi.Input<string | undefined>;
+    upnpLanEnabled?: pulumi.Input<boolean | undefined>;
     vlan?: pulumi.Input<number | undefined>;
+    wan?: pulumi.Input<inputs.network.VlanWanArgs | undefined>;
 }

@@ -2,8 +2,13 @@
 // *** Do not edit by hand unless you're certain you know what you are doing! ***
 
 import * as pulumi from "@pulumi/pulumi";
+import * as inputs from "../types/input";
+import * as outputs from "../types/output";
 import * as utilities from "../utilities";
 
+/**
+ * A UniFi wireless network (SSID). Maps to a controller wlanconf object. Security, RADIUS, roaming, band/rate, scheduling, and other settings are grouped into nested objects (wpa, wpa3, sae, wep, radius, roaming, etc.).
+ */
 export class Wlan extends pulumi.CustomResource {
     /**
      * Get an existing Wlan resource's state with the given name, ID, and optional extra
@@ -31,15 +36,38 @@ export class Wlan extends pulumi.CustomResource {
         return obj['__pulumiType'] === Wlan.__pulumiType;
     }
 
+    declare public readonly apGroups: pulumi.Output<outputs.network.WlanApGroups | undefined>;
+    declare public readonly bandSteering: pulumi.Output<outputs.network.WlanBandSteering | undefined>;
+    declare public readonly dpi: pulumi.Output<outputs.network.WlanDpi | undefined>;
+    declare public readonly dtim: pulumi.Output<outputs.network.WlanDtim | undefined>;
     declare public readonly enabled: pulumi.Output<boolean | undefined>;
     declare public readonly hideSsid: pulumi.Output<boolean | undefined>;
+    declare public readonly iot: pulumi.Output<outputs.network.WlanIot | undefined>;
+    declare public readonly isGuest: pulumi.Output<boolean | undefined>;
+    declare public readonly l2Isolation: pulumi.Output<boolean | undefined>;
+    declare public readonly macFilter: pulumi.Output<outputs.network.WlanMacFilter | undefined>;
+    declare public readonly minRate: pulumi.Output<outputs.network.WlanMinrate | undefined>;
+    declare public readonly mloEnabled: pulumi.Output<boolean | undefined>;
+    declare public readonly multicast: pulumi.Output<outputs.network.WlanMulticast | undefined>;
     declare public readonly name: pulumi.Output<string>;
     declare public readonly networkId: pulumi.Output<string>;
+    declare public readonly p2p: pulumi.Output<outputs.network.WlanP2p | undefined>;
     declare public readonly passphrase: pulumi.Output<string | undefined>;
+    declare public readonly priority: pulumi.Output<string | undefined>;
+    declare public readonly privatePresharedKeys: pulumi.Output<outputs.network.WlanPrivatePresharedKeys | undefined>;
+    declare public readonly radius: pulumi.Output<outputs.network.WlanRadius | undefined>;
+    declare public readonly roaming: pulumi.Output<outputs.network.WlanRoaming | undefined>;
+    declare public readonly sae: pulumi.Output<outputs.network.WlanSae | undefined>;
+    declare public readonly schedule: pulumi.Output<outputs.network.WlanSchedule | undefined>;
     declare public readonly security: pulumi.Output<string | undefined>;
+    declare public readonly uapsdEnabled: pulumi.Output<boolean | undefined>;
+    declare public readonly userGroupId: pulumi.Output<string | undefined>;
+    declare public readonly vlanTagging: pulumi.Output<outputs.network.WlanVlanTagging | undefined>;
+    declare public readonly wep: pulumi.Output<outputs.network.WlanWep | undefined>;
     declare public readonly wlanGroupId: pulumi.Output<string | undefined>;
     declare public /*out*/ readonly wlanId: pulumi.Output<string>;
-    declare public readonly wpaMode: pulumi.Output<string | undefined>;
+    declare public readonly wpa: pulumi.Output<outputs.network.WlanWpa | undefined>;
+    declare public readonly wpa3: pulumi.Output<outputs.network.WlanWpa3 | undefined>;
 
     /**
      * Create a Wlan resource with the given unique name, arguments, and options.
@@ -58,25 +86,71 @@ export class Wlan extends pulumi.CustomResource {
             if (args?.networkId === undefined && !opts.urn) {
                 throw new Error("Missing required property 'networkId'");
             }
+            resourceInputs["apGroups"] = args?.apGroups;
+            resourceInputs["bandSteering"] = args?.bandSteering;
+            resourceInputs["dpi"] = args?.dpi;
+            resourceInputs["dtim"] = args?.dtim;
             resourceInputs["enabled"] = args?.enabled;
             resourceInputs["hideSsid"] = args?.hideSsid;
+            resourceInputs["iot"] = args?.iot;
+            resourceInputs["isGuest"] = args?.isGuest;
+            resourceInputs["l2Isolation"] = args?.l2Isolation;
+            resourceInputs["macFilter"] = args?.macFilter;
+            resourceInputs["minRate"] = args?.minRate;
+            resourceInputs["mloEnabled"] = args?.mloEnabled;
+            resourceInputs["multicast"] = args?.multicast;
             resourceInputs["name"] = args?.name;
             resourceInputs["networkId"] = args?.networkId;
+            resourceInputs["p2p"] = args?.p2p;
             resourceInputs["passphrase"] = args?.passphrase ? pulumi.secret(args.passphrase) : undefined;
+            resourceInputs["priority"] = args?.priority;
+            resourceInputs["privatePresharedKeys"] = args?.privatePresharedKeys;
+            resourceInputs["radius"] = args?.radius;
+            resourceInputs["roaming"] = args?.roaming;
+            resourceInputs["sae"] = args?.sae;
+            resourceInputs["schedule"] = args?.schedule;
             resourceInputs["security"] = args?.security;
+            resourceInputs["uapsdEnabled"] = args?.uapsdEnabled;
+            resourceInputs["userGroupId"] = args?.userGroupId;
+            resourceInputs["vlanTagging"] = args?.vlanTagging;
+            resourceInputs["wep"] = args?.wep;
             resourceInputs["wlanGroupId"] = args?.wlanGroupId;
-            resourceInputs["wpaMode"] = args?.wpaMode;
+            resourceInputs["wpa"] = args?.wpa;
+            resourceInputs["wpa3"] = args?.wpa3;
             resourceInputs["wlanId"] = undefined /*out*/;
         } else {
+            resourceInputs["apGroups"] = undefined /*out*/;
+            resourceInputs["bandSteering"] = undefined /*out*/;
+            resourceInputs["dpi"] = undefined /*out*/;
+            resourceInputs["dtim"] = undefined /*out*/;
             resourceInputs["enabled"] = undefined /*out*/;
             resourceInputs["hideSsid"] = undefined /*out*/;
+            resourceInputs["iot"] = undefined /*out*/;
+            resourceInputs["isGuest"] = undefined /*out*/;
+            resourceInputs["l2Isolation"] = undefined /*out*/;
+            resourceInputs["macFilter"] = undefined /*out*/;
+            resourceInputs["minRate"] = undefined /*out*/;
+            resourceInputs["mloEnabled"] = undefined /*out*/;
+            resourceInputs["multicast"] = undefined /*out*/;
             resourceInputs["name"] = undefined /*out*/;
             resourceInputs["networkId"] = undefined /*out*/;
+            resourceInputs["p2p"] = undefined /*out*/;
             resourceInputs["passphrase"] = undefined /*out*/;
+            resourceInputs["priority"] = undefined /*out*/;
+            resourceInputs["privatePresharedKeys"] = undefined /*out*/;
+            resourceInputs["radius"] = undefined /*out*/;
+            resourceInputs["roaming"] = undefined /*out*/;
+            resourceInputs["sae"] = undefined /*out*/;
+            resourceInputs["schedule"] = undefined /*out*/;
             resourceInputs["security"] = undefined /*out*/;
+            resourceInputs["uapsdEnabled"] = undefined /*out*/;
+            resourceInputs["userGroupId"] = undefined /*out*/;
+            resourceInputs["vlanTagging"] = undefined /*out*/;
+            resourceInputs["wep"] = undefined /*out*/;
             resourceInputs["wlanGroupId"] = undefined /*out*/;
             resourceInputs["wlanId"] = undefined /*out*/;
-            resourceInputs["wpaMode"] = undefined /*out*/;
+            resourceInputs["wpa"] = undefined /*out*/;
+            resourceInputs["wpa3"] = undefined /*out*/;
         }
         opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
         const secretOpts = { additionalSecretOutputs: ["passphrase"] };
@@ -89,12 +163,35 @@ export class Wlan extends pulumi.CustomResource {
  * The set of arguments for constructing a Wlan resource.
  */
 export interface WlanArgs {
+    apGroups?: pulumi.Input<inputs.network.WlanApGroupsArgs | undefined>;
+    bandSteering?: pulumi.Input<inputs.network.WlanBandSteeringArgs | undefined>;
+    dpi?: pulumi.Input<inputs.network.WlanDpiArgs | undefined>;
+    dtim?: pulumi.Input<inputs.network.WlanDtimArgs | undefined>;
     enabled?: pulumi.Input<boolean | undefined>;
     hideSsid?: pulumi.Input<boolean | undefined>;
+    iot?: pulumi.Input<inputs.network.WlanIotArgs | undefined>;
+    isGuest?: pulumi.Input<boolean | undefined>;
+    l2Isolation?: pulumi.Input<boolean | undefined>;
+    macFilter?: pulumi.Input<inputs.network.WlanMacFilterArgs | undefined>;
+    minRate?: pulumi.Input<inputs.network.WlanMinrateArgs | undefined>;
+    mloEnabled?: pulumi.Input<boolean | undefined>;
+    multicast?: pulumi.Input<inputs.network.WlanMulticastArgs | undefined>;
     name: pulumi.Input<string>;
     networkId: pulumi.Input<string>;
+    p2p?: pulumi.Input<inputs.network.WlanP2pArgs | undefined>;
     passphrase?: pulumi.Input<string | undefined>;
+    priority?: pulumi.Input<string | undefined>;
+    privatePresharedKeys?: pulumi.Input<inputs.network.WlanPrivatePresharedKeysArgs | undefined>;
+    radius?: pulumi.Input<inputs.network.WlanRadiusArgs | undefined>;
+    roaming?: pulumi.Input<inputs.network.WlanRoamingArgs | undefined>;
+    sae?: pulumi.Input<inputs.network.WlanSaeArgs | undefined>;
+    schedule?: pulumi.Input<inputs.network.WlanScheduleArgs | undefined>;
     security?: pulumi.Input<string | undefined>;
+    uapsdEnabled?: pulumi.Input<boolean | undefined>;
+    userGroupId?: pulumi.Input<string | undefined>;
+    vlanTagging?: pulumi.Input<inputs.network.WlanVlanTaggingArgs | undefined>;
+    wep?: pulumi.Input<inputs.network.WlanWepArgs | undefined>;
     wlanGroupId?: pulumi.Input<string | undefined>;
-    wpaMode?: pulumi.Input<string | undefined>;
+    wpa?: pulumi.Input<inputs.network.WlanWpaArgs | undefined>;
+    wpa3?: pulumi.Input<inputs.network.WlanWpa3Args | undefined>;
 }

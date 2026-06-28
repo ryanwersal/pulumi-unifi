@@ -5,6 +5,56 @@ import * as pulumi from "@pulumi/pulumi";
 import * as utilities from "../utilities";
 
 // Export members:
+export { DeviceArgs } from "./device";
+export type Device = import("./device").Device;
+export const Device: typeof import("./device").Device = null as any;
+utilities.lazyLoad(exports, ["Device"], () => require("./device"));
+
+export { DnsRecordArgs } from "./dnsRecord";
+export type DnsRecord = import("./dnsRecord").DnsRecord;
+export const DnsRecord: typeof import("./dnsRecord").DnsRecord = null as any;
+utilities.lazyLoad(exports, ["DnsRecord"], () => require("./dnsRecord"));
+
+export { FirewallGroupArgs } from "./firewallGroup";
+export type FirewallGroup = import("./firewallGroup").FirewallGroup;
+export const FirewallGroup: typeof import("./firewallGroup").FirewallGroup = null as any;
+utilities.lazyLoad(exports, ["FirewallGroup"], () => require("./firewallGroup"));
+
+export { FirewallRuleArgs } from "./firewallRule";
+export type FirewallRule = import("./firewallRule").FirewallRule;
+export const FirewallRule: typeof import("./firewallRule").FirewallRule = null as any;
+utilities.lazyLoad(exports, ["FirewallRule"], () => require("./firewallRule"));
+
+export { FirewallZonePolicyArgs } from "./firewallZonePolicy";
+export type FirewallZonePolicy = import("./firewallZonePolicy").FirewallZonePolicy;
+export const FirewallZonePolicy: typeof import("./firewallZonePolicy").FirewallZonePolicy = null as any;
+utilities.lazyLoad(exports, ["FirewallZonePolicy"], () => require("./firewallZonePolicy"));
+
+export { PortForwardArgs } from "./portForward";
+export type PortForward = import("./portForward").PortForward;
+export const PortForward: typeof import("./portForward").PortForward = null as any;
+utilities.lazyLoad(exports, ["PortForward"], () => require("./portForward"));
+
+export { PortProfileArgs } from "./portProfile";
+export type PortProfile = import("./portProfile").PortProfile;
+export const PortProfile: typeof import("./portProfile").PortProfile = null as any;
+utilities.lazyLoad(exports, ["PortProfile"], () => require("./portProfile"));
+
+export { StaticRouteArgs } from "./staticRoute";
+export type StaticRoute = import("./staticRoute").StaticRoute;
+export const StaticRoute: typeof import("./staticRoute").StaticRoute = null as any;
+utilities.lazyLoad(exports, ["StaticRoute"], () => require("./staticRoute"));
+
+export { UserArgs } from "./user";
+export type User = import("./user").User;
+export const User: typeof import("./user").User = null as any;
+utilities.lazyLoad(exports, ["User"], () => require("./user"));
+
+export { UserGroupArgs } from "./userGroup";
+export type UserGroup = import("./userGroup").UserGroup;
+export const UserGroup: typeof import("./userGroup").UserGroup = null as any;
+utilities.lazyLoad(exports, ["UserGroup"], () => require("./userGroup"));
+
 export { VlanArgs } from "./vlan";
 export type Vlan = import("./vlan").Vlan;
 export const Vlan: typeof import("./vlan").Vlan = null as any;
@@ -20,6 +70,26 @@ const _module = {
     version: utilities.getVersion(),
     construct: (name: string, type: string, urn: string): pulumi.Resource => {
         switch (type) {
+            case "unifi:network:Device":
+                return new Device(name, <any>undefined, { urn })
+            case "unifi:network:DnsRecord":
+                return new DnsRecord(name, <any>undefined, { urn })
+            case "unifi:network:FirewallGroup":
+                return new FirewallGroup(name, <any>undefined, { urn })
+            case "unifi:network:FirewallRule":
+                return new FirewallRule(name, <any>undefined, { urn })
+            case "unifi:network:FirewallZonePolicy":
+                return new FirewallZonePolicy(name, <any>undefined, { urn })
+            case "unifi:network:PortForward":
+                return new PortForward(name, <any>undefined, { urn })
+            case "unifi:network:PortProfile":
+                return new PortProfile(name, <any>undefined, { urn })
+            case "unifi:network:StaticRoute":
+                return new StaticRoute(name, <any>undefined, { urn })
+            case "unifi:network:User":
+                return new User(name, <any>undefined, { urn })
+            case "unifi:network:UserGroup":
+                return new UserGroup(name, <any>undefined, { urn })
             case "unifi:network:Vlan":
                 return new Vlan(name, <any>undefined, { urn })
             case "unifi:network:Wlan":

@@ -14,9 +14,16 @@ import (
 //
 // Cameras are physical hardware: the Protect API exposes no create/delete, only
 // settings patches. This resource therefore follows an adoption model — it
-// binds to a camera by its Protect ID and manages a subset of its settings.
-// Create applies the desired settings to the already-adopted device, and Delete
-// is a no-op (the camera is left in place, untouched).
+// binds to a camera by its Protect ID and manages the subset of its settings
+// that the Protect CameraPatchRequest supports. Create applies the desired
+// settings to the already-adopted device, and Delete is a no-op (the camera is
+// left in place, untouched).
+//
+// Field selection: the Terraform UniFi providers (filipowm, paultyng) model the
+// network controller only and have NO Protect camera resource, so there is no
+// upstream naming to mirror; the exposed surface is exactly the writable fields
+// of the Protect CameraPatchRequest (name, OSD overlays, status LED, doorbell
+// LCD message, microphone volume, video mode, HDR, and smart-detect types).
 type Camera struct{}
 
 // CameraArgs are the user-supplied inputs.
@@ -25,27 +32,54 @@ type CameraArgs struct {
 	CameraId string `pulumi:"cameraId"`
 	// Name is the camera's display name.
 	Name *string `pulumi:"name,optional"`
-	// MicVolume sets the microphone volume (0-100).
+	// MicVolume sets the microphone volume (0-100). A value of 0 is not applied
+	// by the Protect API (the field is omitted when zero).
 	MicVolume *int `pulumi:"micVolume,optional"`
-	// VideoMode, e.g. "default", "highFps".
+	// VideoMode selects the capture mode, e.g. "default", "highFps", "sport".
 	VideoMode *string `pulumi:"videoMode,optional"`
-	// HdrType, e.g. "auto", "always", "off".
+	// HdrType selects HDR behaviour, e.g. "auto", "always", "off".
 	HdrType *string `pulumi:"hdrType,optional"`
-	// LedEnabled toggles the status LED.
+	// LedEnabled toggles the status LED (ledSettings.isEnabled).
 	LedEnabled *bool `pulumi:"ledEnabled,optional"`
+
+	// OsdNameEnabled overlays the camera name on the video (osdSettings.isNameEnabled).
+	OsdNameEnabled *bool `pulumi:"osdNameEnabled,optional"`
+	// OsdDateEnabled overlays the date/time on the video (osdSettings.isDateEnabled).
+	OsdDateEnabled *bool `pulumi:"osdDateEnabled,optional"`
+	// OsdLogoEnabled overlays the logo on the video (osdSettings.isLogoEnabled).
+	OsdLogoEnabled *bool `pulumi:"osdLogoEnabled,optional"`
+	// OsdDebugEnabled overlays debug telemetry on the video (osdSettings.isDebugEnabled).
+	OsdDebugEnabled *bool `pulumi:"osdDebugEnabled,optional"`
+
+	// LcdMessageType is the doorbell LCD message type, e.g. "CUSTOM_MESSAGE",
+	// "DO_NOT_DISTURB", "LEAVE_PACKAGE_AT_DOOR" (doorbell cameras only).
+	LcdMessageType *string `pulumi:"lcdMessageType,optional"`
+	// LcdMessageText is the doorbell LCD custom message text (used with type CUSTOM_MESSAGE).
+	LcdMessageText *string `pulumi:"lcdMessageText,optional"`
+	// LcdMessageResetAt is the epoch-millisecond timestamp at which the LCD
+	// message clears. 0 (or omitted) leaves the message until changed.
+	LcdMessageResetAt *int `pulumi:"lcdMessageResetAt,optional"`
+
+	// SmartDetectObjectTypes selects which objects trigger smart detections,
+	// e.g. "person", "vehicle", "animal", "package", "licensePlate".
+	SmartDetectObjectTypes []string `pulumi:"smartDetectObjectTypes,optional"`
+	// SmartDetectAudioTypes selects which sounds trigger smart detections,
+	// e.g. "smoke", "cmonitor" (CO alarm), "alrmSmoke", "alrmCmonitor".
+	SmartDetectAudioTypes []string `pulumi:"smartDetectAudioTypes,optional"`
 }
 
 // CameraState is the persisted state: inputs plus read-only device facts.
 type CameraState struct {
 	CameraArgs
-	// Type is the camera model/type (read-only).
+	// Type is the camera model/type (read-only; the Protect modelKey).
 	Type string `pulumi:"type"`
 	// State is the connection state, e.g. "CONNECTED" (read-only).
 	State string `pulumi:"state"`
 }
 
 func (c *Camera) Annotate(a infer.Annotator) {
-	a.Describe(&c, "Manage settings of an existing UniFi Protect camera (adoption model; cameras are not created or deleted via the API).")
+	a.Describe(&c, "Manage settings of an existing UniFi Protect camera (adoption model; cameras are not created or deleted via the API). "+
+		"Exposes the writable fields of the Protect CameraPatchRequest.")
 }
 
 func (a CameraArgs) toPatch() *protecttypes.CameraPatchRequest {
@@ -65,23 +99,90 @@ func (a CameraArgs) toPatch() *protecttypes.CameraPatchRequest {
 	if a.LedEnabled != nil {
 		p.LedSettings.IsEnabled = *a.LedEnabled
 	}
+	if a.OsdNameEnabled != nil {
+		p.OsdSettings.IsNameEnabled = *a.OsdNameEnabled
+	}
+	if a.OsdDateEnabled != nil {
+		p.OsdSettings.IsDateEnabled = *a.OsdDateEnabled
+	}
+	if a.OsdLogoEnabled != nil {
+		p.OsdSettings.IsLogoEnabled = *a.OsdLogoEnabled
+	}
+	if a.OsdDebugEnabled != nil {
+		p.OsdSettings.IsDebugEnabled = *a.OsdDebugEnabled
+	}
+	if a.LcdMessageType != nil {
+		p.LcdMessage.Type = *a.LcdMessageType
+	}
+	if a.LcdMessageText != nil {
+		p.LcdMessage.Text = *a.LcdMessageText
+	}
+	if a.LcdMessageResetAt != nil {
+		p.LcdMessage.ResetAt = *a.LcdMessageResetAt
+	}
+	if a.SmartDetectObjectTypes != nil {
+		p.SmartDetectSettings.ObjectTypes = a.SmartDetectObjectTypes
+	}
+	if a.SmartDetectAudioTypes != nil {
+		p.SmartDetectSettings.AudioTypes = a.SmartDetectAudioTypes
+	}
 	return p
 }
 
-// stateFrom maps a device into state. Write-mostly settings (mic/video/hdr/led)
-// are preserved from prior inputs rather than re-read, since the Protect Camera
-// payload nests them differently; Name and read-only facts come from the device.
+// cameraStrPtr reflects a device string, falling back to the prior input when empty.
+func cameraStrPtr(v string, prior *string) *string {
+	if v != "" {
+		return ptr(v)
+	}
+	return prior
+}
+
+// cameraIntPtr reflects a device int, falling back to the prior input when zero.
+func cameraIntPtr(v int, prior *int) *int {
+	if v != 0 {
+		return ptr(v)
+	}
+	return prior
+}
+
+// cameraBoolPtr reflects a device bool when the user set it or when it is true,
+// otherwise leaves the optional input unset to avoid spurious diffs.
+func cameraBoolPtr(v bool, prior *bool) *bool {
+	if v {
+		return ptr(v)
+	}
+	return prior
+}
+
+// cameraStrSlice reflects a device string slice, falling back to the prior
+// input when the device returns nothing.
+func cameraStrSlice(v []string, prior []string) []string {
+	if len(v) > 0 {
+		return v
+	}
+	return prior
+}
+
+// stateFrom maps a device into state. Settings the Camera payload echoes are
+// round-tripped from the device; the prior inputs preserve any optional fields
+// the device leaves at their zero value so they do not produce spurious diffs.
 func stateFrom(cam *protecttypes.Camera, prior CameraArgs) CameraState {
 	args := prior
 	args.CameraId = cam.ID
 	args.Name = ptr(cam.Name)
-	// These settings are top-level on the device, so round-trip them.
-	if cam.VideoMode != "" {
-		args.VideoMode = ptr(cam.VideoMode)
-	}
-	if cam.HdrType != "" {
-		args.HdrType = ptr(cam.HdrType)
-	}
+	args.MicVolume = cameraIntPtr(cam.MicVolume, prior.MicVolume)
+	args.VideoMode = cameraStrPtr(cam.VideoMode, prior.VideoMode)
+	args.HdrType = cameraStrPtr(cam.HdrType, prior.HdrType)
+	args.LedEnabled = cameraBoolPtr(cam.LedSettings.IsEnabled, prior.LedEnabled)
+	args.OsdNameEnabled = cameraBoolPtr(cam.OsdSettings.IsNameEnabled, prior.OsdNameEnabled)
+	args.OsdDateEnabled = cameraBoolPtr(cam.OsdSettings.IsDateEnabled, prior.OsdDateEnabled)
+	args.OsdLogoEnabled = cameraBoolPtr(cam.OsdSettings.IsLogoEnabled, prior.OsdLogoEnabled)
+	args.OsdDebugEnabled = cameraBoolPtr(cam.OsdSettings.IsDebugEnabled, prior.OsdDebugEnabled)
+	args.LcdMessageType = cameraStrPtr(cam.LcdMessage.Type, prior.LcdMessageType)
+	args.LcdMessageText = cameraStrPtr(cam.LcdMessage.Text, prior.LcdMessageText)
+	args.LcdMessageResetAt = cameraIntPtr(cam.LcdMessage.ResetAt, prior.LcdMessageResetAt)
+	args.SmartDetectObjectTypes = cameraStrSlice(cam.SmartDetectSettings.ObjectTypes, prior.SmartDetectObjectTypes)
+	args.SmartDetectAudioTypes = cameraStrSlice(cam.SmartDetectSettings.AudioTypes, prior.SmartDetectAudioTypes)
 	return CameraState{CameraArgs: args, Type: cam.ModelKey, State: cam.State}
 }
 

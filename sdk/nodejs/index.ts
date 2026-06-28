@@ -15,11 +15,13 @@ utilities.lazyLoad(exports, ["Provider"], () => require("./provider"));
 import * as config from "./config";
 import * as network from "./network";
 import * as protect from "./protect";
+import * as types from "./types";
 
 export {
     config,
     network,
     protect,
+    types,
 };
 pulumi.runtime.registerResourcePackage("unifi", {
     version: utilities.getVersion(),

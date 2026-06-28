@@ -5,7 +5,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as utilities from "../utilities";
 
 /**
- * Manage settings of an existing UniFi Protect camera (adoption model; cameras are not created or deleted via the API).
+ * Manage settings of an existing UniFi Protect camera (adoption model; cameras are not created or deleted via the API). Exposes the writable fields of the Protect CameraPatchRequest.
  */
 export class Camera extends pulumi.CustomResource {
     /**
@@ -36,9 +36,18 @@ export class Camera extends pulumi.CustomResource {
 
     declare public readonly cameraId: pulumi.Output<string>;
     declare public readonly hdrType: pulumi.Output<string | undefined>;
+    declare public readonly lcdMessageResetAt: pulumi.Output<number | undefined>;
+    declare public readonly lcdMessageText: pulumi.Output<string | undefined>;
+    declare public readonly lcdMessageType: pulumi.Output<string | undefined>;
     declare public readonly ledEnabled: pulumi.Output<boolean | undefined>;
     declare public readonly micVolume: pulumi.Output<number | undefined>;
     declare public readonly name: pulumi.Output<string | undefined>;
+    declare public readonly osdDateEnabled: pulumi.Output<boolean | undefined>;
+    declare public readonly osdDebugEnabled: pulumi.Output<boolean | undefined>;
+    declare public readonly osdLogoEnabled: pulumi.Output<boolean | undefined>;
+    declare public readonly osdNameEnabled: pulumi.Output<boolean | undefined>;
+    declare public readonly smartDetectAudioTypes: pulumi.Output<string[] | undefined>;
+    declare public readonly smartDetectObjectTypes: pulumi.Output<string[] | undefined>;
     declare public /*out*/ readonly state: pulumi.Output<string>;
     declare public /*out*/ readonly type: pulumi.Output<string>;
     declare public readonly videoMode: pulumi.Output<string | undefined>;
@@ -59,18 +68,36 @@ export class Camera extends pulumi.CustomResource {
             }
             resourceInputs["cameraId"] = args?.cameraId;
             resourceInputs["hdrType"] = args?.hdrType;
+            resourceInputs["lcdMessageResetAt"] = args?.lcdMessageResetAt;
+            resourceInputs["lcdMessageText"] = args?.lcdMessageText;
+            resourceInputs["lcdMessageType"] = args?.lcdMessageType;
             resourceInputs["ledEnabled"] = args?.ledEnabled;
             resourceInputs["micVolume"] = args?.micVolume;
             resourceInputs["name"] = args?.name;
+            resourceInputs["osdDateEnabled"] = args?.osdDateEnabled;
+            resourceInputs["osdDebugEnabled"] = args?.osdDebugEnabled;
+            resourceInputs["osdLogoEnabled"] = args?.osdLogoEnabled;
+            resourceInputs["osdNameEnabled"] = args?.osdNameEnabled;
+            resourceInputs["smartDetectAudioTypes"] = args?.smartDetectAudioTypes;
+            resourceInputs["smartDetectObjectTypes"] = args?.smartDetectObjectTypes;
             resourceInputs["videoMode"] = args?.videoMode;
             resourceInputs["state"] = undefined /*out*/;
             resourceInputs["type"] = undefined /*out*/;
         } else {
             resourceInputs["cameraId"] = undefined /*out*/;
             resourceInputs["hdrType"] = undefined /*out*/;
+            resourceInputs["lcdMessageResetAt"] = undefined /*out*/;
+            resourceInputs["lcdMessageText"] = undefined /*out*/;
+            resourceInputs["lcdMessageType"] = undefined /*out*/;
             resourceInputs["ledEnabled"] = undefined /*out*/;
             resourceInputs["micVolume"] = undefined /*out*/;
             resourceInputs["name"] = undefined /*out*/;
+            resourceInputs["osdDateEnabled"] = undefined /*out*/;
+            resourceInputs["osdDebugEnabled"] = undefined /*out*/;
+            resourceInputs["osdLogoEnabled"] = undefined /*out*/;
+            resourceInputs["osdNameEnabled"] = undefined /*out*/;
+            resourceInputs["smartDetectAudioTypes"] = undefined /*out*/;
+            resourceInputs["smartDetectObjectTypes"] = undefined /*out*/;
             resourceInputs["state"] = undefined /*out*/;
             resourceInputs["type"] = undefined /*out*/;
             resourceInputs["videoMode"] = undefined /*out*/;
@@ -86,8 +113,17 @@ export class Camera extends pulumi.CustomResource {
 export interface CameraArgs {
     cameraId: pulumi.Input<string>;
     hdrType?: pulumi.Input<string | undefined>;
+    lcdMessageResetAt?: pulumi.Input<number | undefined>;
+    lcdMessageText?: pulumi.Input<string | undefined>;
+    lcdMessageType?: pulumi.Input<string | undefined>;
     ledEnabled?: pulumi.Input<boolean | undefined>;
     micVolume?: pulumi.Input<number | undefined>;
     name?: pulumi.Input<string | undefined>;
+    osdDateEnabled?: pulumi.Input<boolean | undefined>;
+    osdDebugEnabled?: pulumi.Input<boolean | undefined>;
+    osdLogoEnabled?: pulumi.Input<boolean | undefined>;
+    osdNameEnabled?: pulumi.Input<boolean | undefined>;
+    smartDetectAudioTypes?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+    smartDetectObjectTypes?: pulumi.Input<pulumi.Input<string>[] | undefined>;
     videoMode?: pulumi.Input<string | undefined>;
 }

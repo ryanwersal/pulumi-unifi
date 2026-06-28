@@ -19,31 +19,79 @@ It wraps two maintained Go clients:
 
 ## Status
 
-Early. The following resources exist:
+The following resources exist. Each maps the **full, real-world field set** of
+the underlying controller object — matched against the `filipowm`/`paultyng`
+Terraform UniFi providers and the upstream `go-unifi` types, and extended beyond
+them where useful (e.g. the Network resource exposes ~120 inputs; the WLAN
+resource covers WPA3/PMF/MLO/band/fast-roaming/MAC-filter/schedules/PPSKs).
 
 | Token | What | Lifecycle |
 |---|---|---|
-| `unifi:network:Vlan` | A network / VLAN | full CRUD + `Read` (import) |
+| `unifi:network:Vlan` | A network / VLAN (DHCP, DNS, IGMP, IPv6, WAN, mDNS, …) | full CRUD + `Read` (import) |
 | `unifi:network:Wlan` | A wireless network (SSID) | full CRUD + `Read` (import) |
+| `unifi:network:Device` | Settings of an **existing** switch / AP / gateway / PDU | adoption: Create/Update merge, Read, Delete is a no-op |
+| `unifi:network:PortProfile` | A reusable switch-port profile | full CRUD + `Read` (import) |
+| `unifi:network:PortForward` | A port-forwarding rule | full CRUD + `Read` (import) |
+| `unifi:network:FirewallGroup` | A firewall address / port group | full CRUD + `Read` (import) |
+| `unifi:network:FirewallRule` | A classic per-ruleset firewall rule | full CRUD + `Read` (import) |
+| `unifi:network:FirewallZonePolicy` | A zone-based firewall policy (UDM-SE / current firmware) | full CRUD + `Read` (import) |
+| `unifi:network:StaticRoute` | A static route | full CRUD + `Read` (import) |
+| `unifi:network:User` | A known client (fixed IP, group, block, local DNS) | full CRUD + `Read` (import) |
+| `unifi:network:UserGroup` | A bandwidth-limit user group | full CRUD + `Read` (import) |
+| `unifi:network:DnsRecord` | A controller local DNS record | full CRUD + `Read` (import) |
 | `unifi:protect:Camera` | Settings of an **existing** Protect camera | adoption: Create/Update patch, Read, Delete is a no-op |
+| `unifi:protect:AlarmAutomation` | An Alarm Manager rule (conditions → webhook actions) | full CRUD + `Read` (import) — **private API**, see below |
 
-Protect cameras are physical hardware — the API has no create/delete, only
-settings patches — so the `Camera` resource manages a camera you've already
-adopted, identified by its Protect `cameraId`. Deleting it from Pulumi releases
-it from management without touching the device.
+### Adoption-model resources (`Device`, `Camera`)
+
+Physical hardware (switches, APs, gateways, PDUs, cameras) is **adopted**, not
+created via the API, so these resources manage settings on a device you have
+already adopted, identified by `mac` (Device) or `cameraId` (Camera). `Device`
+does a **read-modify-write**: it fetches the live device, overlays only the
+fields you set (and merges port/outlet/radio overrides by key), and writes it
+back — unmanaged settings are preserved. Deleting from Pulumi releases the
+device from management without touching it. The `Device` resource covers switch
+**port overrides** (PoE, VLANs, speed, storm control, port security, 802.1X,
+aggregation/mirroring, rate limiting, QoS), **EtherLighting** + LED, **PDU
+outlet** overrides, STP/jumbo/flow-control, AP **radio** settings, and gateway
+VRRP / LCM display.
+
+> **Not covered:** the **UNAS Pro** NAS is a separate UniFi application; the
+> Network controller API (`go-unifi`) exposes no NAS resources, so it cannot be
+> managed by this provider.
+
+### Alarm Manager caveats
+
+Ubiquiti's official Protect integration API can only *trigger* alarms; rule
+CRUD exists solely on Protect's **private** API
+(`/proxy/protect/api/automations`). The `AlarmAutomation` resource uses that
+surface, which means:
+
+- It is **unversioned and unsupported** by Ubiquiti and may change with
+  Protect releases.
+- The console's Alarm Manager must be in **local** mode — consoles migrated to
+  the Global Alarm Manager reject local rule writes with a 400.
+- It may require **username/password** auth (the session-cookie + CSRF flow);
+  API keys are not consistently accepted on private endpoints.
+- v1 models **webhook (`HTTP_REQUEST`) actions only**, and the resource owns
+  the rule's entire actions list: actions added in the Protect UI to a managed
+  rule are removed on the next update. Schedules and other unmodeled settings
+  are preserved.
 
 ## Configuration
 
 | Key | Notes |
 |---|---|
 | `unifi:url` | Controller base URL, e.g. `https://192.168.1.1` (no `/api` suffix) |
-| `unifi:apiKey` | **secret.** UniFi OS local API key. Preferred. **Required for Protect.** |
-| `unifi:username` / `unifi:password` | **secret.** Alternative to `apiKey` (Network only) |
+| `unifi:apiKey` | **secret.** UniFi OS local API key. Preferred. **Required for `protect:Camera`.** |
+| `unifi:username` / `unifi:password` | **secret.** Alternative to `apiKey`. **May be required for `protect:AlarmAutomation`.** |
 | `unifi:site` | Site name, defaults to `default` |
 | `unifi:insecureTls` | Skip TLS verification (self-signed controller certs) |
 
-Authenticate with **either** an API key **or** username/password. Protect
-resources require an API key (the integration API is API-key only).
+Authenticate with **either** an API key **or** username/password. The
+`protect:Camera` resource requires an API key (the official integration API is
+API-key only), while `protect:AlarmAutomation` rides the controller session
+and may require username/password (see the Alarm Manager caveats above).
 
 ## Toolchain
 

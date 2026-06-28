@@ -5,6 +5,11 @@ import * as pulumi from "@pulumi/pulumi";
 import * as utilities from "../utilities";
 
 // Export members:
+export { AlarmAutomationArgs } from "./alarmAutomation";
+export type AlarmAutomation = import("./alarmAutomation").AlarmAutomation;
+export const AlarmAutomation: typeof import("./alarmAutomation").AlarmAutomation = null as any;
+utilities.lazyLoad(exports, ["AlarmAutomation"], () => require("./alarmAutomation"));
+
 export { CameraArgs } from "./camera";
 export type Camera = import("./camera").Camera;
 export const Camera: typeof import("./camera").Camera = null as any;
@@ -15,6 +20,8 @@ const _module = {
     version: utilities.getVersion(),
     construct: (name: string, type: string, urn: string): pulumi.Resource => {
         switch (type) {
+            case "unifi:protect:AlarmAutomation":
+                return new AlarmAutomation(name, <any>undefined, { urn })
             case "unifi:protect:Camera":
                 return new Camera(name, <any>undefined, { urn })
             default:
