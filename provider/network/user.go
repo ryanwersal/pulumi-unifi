@@ -19,7 +19,7 @@ type User struct{}
 type UserArgs struct {
 	// Mac is the client MAC address (e.g. "00:11:22:33:44:55"). It is the unique
 	// key used to register and look up the client.
-	Mac string `pulumi:"mac"`
+	Mac string `pulumi:"mac" provider:"replaceOnChanges"`
 	// Name is a friendly name for the client.
 	Name *string `pulumi:"name,optional"`
 	// Note is free-form text stored alongside the client.
@@ -76,6 +76,31 @@ func (u *User) Annotate(a infer.Annotator) {
 		"address. Creating this resource registers the client on the controller; deleting it removes the "+
 		"user record. Supports assigning a friendly name, user group, fixed IP, local DNS record, virtual "+
 		"network (VLAN) override, fixed access point, and blocking the client.")
+}
+
+func (d *UserArgs) Annotate(a infer.Annotator) {
+	a.Describe(&d.Mac, "Mac is the client MAC address (e.g. \"00:11:22:33:44:55\"). It is the unique key used to register and look up the client.")
+	a.Describe(&d.Name, "Name is a friendly name for the client.")
+	a.Describe(&d.Note, "Note is free-form text stored alongside the client.")
+	a.Describe(&d.UserGroupId, "UserGroupId is the ID of the user group (bandwidth profile) this client belongs to.")
+	a.Describe(&d.NetworkId, "NetworkId is the ID of the network the fixed IP is assigned from.")
+	a.Describe(&d.FixedIp, "FixedIp is a static IPv4 address to assign to this client. Setting it enables UseFixedIp.")
+	a.Describe(&d.UseFixedIp, "UseFixedIp toggles assigning the FixedIp to the client. Defaults to true when FixedIp is set.")
+	a.Describe(&d.Blocked, "Blocked, when true, blocks this client from accessing the network.")
+	a.Describe(&d.LocalDnsRecord, "LocalDnsRecord is a local DNS hostname resolving to this client. Setting it enables LocalDnsRecordEnabled.")
+	a.Describe(&d.LocalDnsRecordEnabled, "LocalDnsRecordEnabled toggles publishing the LocalDnsRecord. Defaults to true when LocalDnsRecord is set.")
+	a.Describe(&d.DevIdOverride, "DevIdOverride overrides the detected device fingerprint (device type id). 0 clears the override.")
+	a.Describe(&d.VirtualNetworkOverrideEnabled, "VirtualNetworkOverrideEnabled toggles overriding the client's virtual network (VLAN). Defaults to true when VirtualNetworkOverrideId is set.")
+	a.Describe(&d.VirtualNetworkOverrideId, "VirtualNetworkOverrideId is the ID of the virtual network (VLAN) the client is pinned to.")
+	a.Describe(&d.FixedApEnabled, "FixedApEnabled toggles pinning the client to a fixed access point. Defaults to true when FixedApMac is set.")
+	a.Describe(&d.FixedApMac, "FixedApMac is the MAC address of the access point the client is pinned to.")
+}
+
+func (d *UserState) Annotate(a infer.Annotator) {
+	a.Describe(&d.UserId, "UserId is the controller-assigned identifier (the UniFi `_id`).")
+	a.Describe(&d.Hostname, "Hostname is the hostname the controller has observed for the client.")
+	a.Describe(&d.Ip, "Ip is the last-known IP address of the client (best-effort; may be empty).")
+	a.Describe(&d.LastSeen, "LastSeen is the Unix timestamp (seconds) the client was last seen.")
 }
 
 // toUnifi builds a go-unifi User from inputs. id is empty on create.
@@ -180,6 +205,9 @@ func (User) Create(ctx context.Context, req infer.CreateRequest[UserArgs]) (infe
 func (User) Read(ctx context.Context, req infer.ReadRequest[UserArgs, UserState]) (infer.ReadResponse[UserArgs, UserState], error) {
 	cfg := infer.GetConfig[config.Config](ctx)
 	u, err := cfg.Network().GetUser(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.ReadResponse[UserArgs, UserState]{}, nil
+	}
 	if err != nil {
 		return infer.ReadResponse[UserArgs, UserState]{}, err
 	}

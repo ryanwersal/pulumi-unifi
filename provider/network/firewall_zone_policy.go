@@ -172,26 +172,83 @@ func (p *FirewallZonePolicy) Annotate(a infer.Annotator) {
 
 // Annotate documents the source matching fields.
 func (s *FirewallZonePolicySourceArgs) Annotate(a infer.Annotator) {
+	a.Describe(&s.ZoneId, "ZoneId is the controller ID of the source firewall zone.")
 	a.Describe(&s.MatchingTarget, "What the source matches: ANY | CLIENT | NETWORK | IP | MAC.")
 	a.Describe(&s.MatchingTargetType, "Refines the source match: OBJECT (saved group) | SPECIFIC (inline values).")
+	a.Describe(&s.NetworkIds, "NetworkIds lists the source network IDs (when matchingTarget=NETWORK).")
+	a.Describe(&s.IpGroupId, "IpGroupId references a saved IP group as the source (when matchingTarget=IP, matchingTargetType=OBJECT).")
+	a.Describe(&s.Ips, "Ips lists inline source IPv4 addresses (when matchingTarget=IP, matchingTargetType=SPECIFIC).")
+	a.Describe(&s.Mac, "Mac is a single source MAC address (when matchingTarget=MAC).")
+	a.Describe(&s.Macs, "Macs lists source MAC addresses.")
+	a.Describe(&s.ClientMacs, "ClientMacs lists source client MAC addresses (when matchingTarget=CLIENT).")
+	a.Describe(&s.MatchMac, "MatchMac toggles MAC-based matching of the source.")
+	a.Describe(&s.Port, "Port is the source port or port range/list (e.g. \"80\", \"1000-2000\", \"80,443\").")
+	a.Describe(&s.PortGroupId, "PortGroupId references a saved port group as the source ports.")
+	a.Describe(&s.PortMatchingType, "PortMatchingType selects how source ports match: ANY | SPECIFIC | OBJECT.")
+	a.Describe(&s.MatchOppositeIps, "MatchOppositeIps inverts (negates) the source IP match.")
+	a.Describe(&s.MatchOppositePorts, "MatchOppositePorts inverts (negates) the source port match.")
+	a.Describe(&s.MatchOppositeNetworks, "MatchOppositeNetworks inverts (negates) the source network match.")
 }
 
 // Annotate documents the destination matching fields.
 func (d *FirewallZonePolicyDestinationArgs) Annotate(a infer.Annotator) {
+	a.Describe(&d.ZoneId, "ZoneId is the controller ID of the destination firewall zone.")
 	a.Describe(&d.MatchingTarget, "What the destination matches: ANY | APP | APP_CATEGORY | IP | REGION | WEB.")
 	a.Describe(&d.MatchingTargetType, "Refines the destination match: ANY | OBJECT (saved group) | SPECIFIC (inline values).")
+	a.Describe(&d.IpGroupId, "IpGroupId references a saved IP group as the destination (when matchingTarget=IP, matchingTargetType=OBJECT).")
+	a.Describe(&d.Ips, "Ips lists inline destination IPv4 addresses (when matchingTarget=IP, matchingTargetType=SPECIFIC).")
+	a.Describe(&d.AppIds, "AppIds lists application IDs to match (when matchingTarget=APP).")
+	a.Describe(&d.AppCategoryIds, "AppCategoryIds lists application category IDs to match (when matchingTarget=APP_CATEGORY).")
+	a.Describe(&d.Regions, "Regions lists geographic regions to match (when matchingTarget=REGION).")
+	a.Describe(&d.WebDomains, "WebDomains lists web domains to match (when matchingTarget=WEB).")
+	a.Describe(&d.Port, "Port is the destination port or port range/list (e.g. \"80\", \"1000-2000\", \"80,443\").")
+	a.Describe(&d.PortGroupId, "PortGroupId references a saved port group as the destination ports.")
+	a.Describe(&d.PortMatchingType, "PortMatchingType selects how destination ports match: ANY | SPECIFIC | OBJECT.")
+	a.Describe(&d.MatchOppositeIps, "MatchOppositeIps inverts (negates) the destination IP match.")
+	a.Describe(&d.MatchOppositePorts, "MatchOppositePorts inverts (negates) the destination port match.")
 }
 
 // Annotate documents the schedule fields.
 func (s *FirewallZonePolicyScheduleArgs) Annotate(a infer.Annotator) {
 	a.Describe(&s.Mode, "Schedule pattern: ALWAYS | EVERY_DAY | EVERY_WEEK | ONE_TIME_ONLY | CUSTOM.")
+	a.Describe(&s.TimeAllDay, "TimeAllDay applies the policy for the entire day (ignores the time range).")
+	a.Describe(&s.TimeRangeStart, "TimeRangeStart is the daily start time in HH:MM (24-hour) format.")
+	a.Describe(&s.TimeRangeEnd, "TimeRangeEnd is the daily end time in HH:MM (24-hour) format.")
+	a.Describe(&s.Date, "Date is a single enforcement date in YYYY-MM-DD format (mode=ONE_TIME_ONLY).")
+	a.Describe(&s.DateStart, "DateStart is the range start date in YYYY-MM-DD format.")
+	a.Describe(&s.DateEnd, "DateEnd is the range end date in YYYY-MM-DD format.")
+	a.Describe(&s.RepeatOnDays, "RepeatOnDays lists recurring days: mon | tue | wed | thu | fri | sat | sun (mode=EVERY_WEEK/CUSTOM).")
 }
 
 // Annotate documents the matching fields.
 func (m *FirewallZonePolicyMatchingArgs) Annotate(a infer.Annotator) {
 	a.Describe(&m.IpVersion, "L3 version the policy matches: BOTH | IPV4 | IPV6.")
+	a.Describe(&m.Protocol, "Protocol filters by IP protocol: all | tcp_udp | tcp | udp | icmp | icmpv6 | igmp | esp | ah | gre | ... (see UniFi docs).")
+	a.Describe(&m.MatchOppositeProtocol, "MatchOppositeProtocol inverts (negates) the protocol match.")
 	a.Describe(&m.ConnectionStateType, "Connection-state matching: ALL | RESPOND_ONLY | CUSTOM.")
+	a.Describe(&m.ConnectionStates, "ConnectionStates lists states to match when connectionStateType=CUSTOM: ESTABLISHED | NEW | RELATED | INVALID.")
+	a.Describe(&m.MatchIpSec, "MatchIpSec enables matching on IPsec-encapsulated traffic.")
 	a.Describe(&m.MatchIpSecType, "IPsec matching mode: MATCH_IP_SEC | MATCH_NON_IP_SEC.")
+}
+
+// Annotate documents the policy input fields.
+func (p *FirewallZonePolicyArgs) Annotate(a infer.Annotator) {
+	a.Describe(&p.Name, "Name is the policy identifier shown in the controller.")
+	a.Describe(&p.Action, "Action is the traffic disposition: ALLOW | BLOCK | REJECT.")
+	a.Describe(&p.Source, "Source is the source zone and matching criteria.")
+	a.Describe(&p.Destination, "Destination is the destination zone and matching criteria.")
+	a.Describe(&p.Enabled, "Enabled controls whether the policy is active. Defaults to true.")
+	a.Describe(&p.Description, "Description is free-form documentation for the policy.")
+	a.Describe(&p.Index, "Index is the policy priority/ordering rank (lower is evaluated first).")
+	a.Describe(&p.Logging, "Logging enables syslog logging for traffic matching this policy.")
+	a.Describe(&p.CreateAllowRespond, "CreateAllowRespond automatically allows reverse-direction (return) traffic.")
+	a.Describe(&p.Matching, "Matching groups the flow-level traffic-match criteria (protocol, IP version, connection-state, and IPsec selection).")
+	a.Describe(&p.Schedule, "Schedule is the optional temporal enforcement window. When unset the policy is always active.")
+}
+
+// Annotate documents the controller-assigned output fields.
+func (s *FirewallZonePolicyState) Annotate(a infer.Annotator) {
+	a.Describe(&s.FirewallZonePolicyId, "FirewallZonePolicyId is the controller-assigned identifier (the UniFi `_id`).")
 }
 
 // toUnifi builds a go-unifi FirewallZonePolicy from inputs. id is empty on create.
@@ -524,6 +581,9 @@ func (FirewallZonePolicy) Create(ctx context.Context, req infer.CreateRequest[Fi
 func (FirewallZonePolicy) Read(ctx context.Context, req infer.ReadRequest[FirewallZonePolicyArgs, FirewallZonePolicyState]) (infer.ReadResponse[FirewallZonePolicyArgs, FirewallZonePolicyState], error) {
 	cfg := infer.GetConfig[config.Config](ctx)
 	p, err := cfg.Network().GetFirewallZonePolicy(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.ReadResponse[FirewallZonePolicyArgs, FirewallZonePolicyState]{}, nil
+	}
 	if err != nil {
 		return infer.ReadResponse[FirewallZonePolicyArgs, FirewallZonePolicyState]{}, err
 	}

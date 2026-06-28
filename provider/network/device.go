@@ -261,7 +261,7 @@ type DeviceLcm struct {
 // vrrp, lcm); the large per-port/radio/ethernet override lists stay top-level.
 type DeviceArgs struct {
 	// Mac is the device MAC address (required). The device must already be adopted on the controller.
-	Mac string `pulumi:"mac"`
+	Mac string `pulumi:"mac" provider:"replaceOnChanges"`
 	// Name is the device's display name.
 	Name *string `pulumi:"name,optional"`
 	// Disabled administratively disables the device.
@@ -314,6 +314,156 @@ func (d *Device) Annotate(a infer.Annotator) {
 		"(gateway, switch, access point, PDU). Adoption model: binds to a device by MAC and "+
 		"read-modify-writes only the managed fields onto the controller's current device object; "+
 		"unmanaged settings and unlisted port/outlet/radio overrides are preserved. Delete is a no-op.")
+}
+
+func (e *DeviceEtherLightingArgs) Annotate(a infer.Annotator) {
+	a.Describe(&e.LedMode, "LedMode: standard | etherlighting.")
+	a.Describe(&e.Mode, "Mode of the lighting animation: speed | network.")
+	a.Describe(&e.Behavior, "Behavior of the lighting: breath | steady.")
+	a.Describe(&e.Brightness, "Brightness of the LED strip (1-100).")
+}
+
+func (o *DeviceOutletOverride) Annotate(a infer.Annotator) {
+	a.Describe(&o.Index, "Index is the 1-based outlet number (required key).")
+	a.Describe(&o.Name, "Name is the outlet label.")
+	a.Describe(&o.RelayState, "RelayState powers the outlet on (true) or off (false).")
+	a.Describe(&o.CycleEnabled, "CycleEnabled allows the outlet to be power-cycled.")
+}
+
+func (e *DeviceEthernetOverride) Annotate(a infer.Annotator) {
+	a.Describe(&e.Ifname, "Ifname is the interface name, e.g. \"eth1\" (required key).")
+	a.Describe(&e.NetworkGroup, "NetworkGroup is the assigned group, e.g. \"LAN\", \"LAN2\", \"WAN\", \"WAN2\".")
+}
+
+func (r *DeviceRadioOverride) Annotate(a infer.Annotator) {
+	a.Describe(&r.Radio, "Radio band identifying which radio to tune: ng (2.4GHz) | na (5GHz) | ad (60GHz) | 6e (6GHz). Required key.")
+	a.Describe(&r.Name, "Name is the controller's radio name (e.g. \"wifi0\").")
+	a.Describe(&r.Channel, "Channel is the radio channel, a number or \"auto\".")
+	a.Describe(&r.ChannelWidth, "ChannelWidth (HT) in MHz: 20 | 40 | 80 | 160 | 240 | 320 | 1080 | 2160 | 4320.")
+	a.Describe(&r.TxPower, "TxPower is the transmit power in dBm, or \"auto\". Honored only when txPowerMode is \"custom\".")
+	a.Describe(&r.TxPowerMode, "TxPowerMode: auto | medium | high | low | custom.")
+	a.Describe(&r.MinRssi, "MinRssi is the minimum RSSI (dBm, negative) below which clients are kicked. Setting it enables the feature unless minRssiEnabled is given.")
+	a.Describe(&r.MinRssiEnabled, "MinRssiEnabled toggles the minimum-RSSI kick feature.")
+	a.Describe(&r.AntennaGain, "AntennaGain in dBi (for devices with configurable antennas).")
+}
+
+func (p *DevicePortOverride) Annotate(a infer.Annotator) {
+	a.Describe(&p.PortIdx, "PortIdx is the 1-based physical port number (required key).")
+	a.Describe(&p.Name, "Name is the port label.")
+	a.Describe(&p.PoeMode, "PoeMode: auto | pasv24 | passthrough | off.")
+	a.Describe(&p.PortProfileId, "PortProfileId applies a saved port profile (the profile's `_id`, sent as portconf_id).")
+	a.Describe(&p.OpMode, "OpMode: switch | mirror | aggregate.")
+	a.Describe(&p.AggregateNumPorts, "AggregateNumPorts is the number of consecutive ports in a link aggregation group (1-8).")
+	a.Describe(&p.NativeNetworkId, "NativeNetworkId is the untagged/native network for the port (native_networkconf_id).")
+	a.Describe(&p.TaggedVlanMgmt, "TaggedVlanMgmt: auto | block_all | custom. With \"custom\", use excludedNetworkIds.")
+	a.Describe(&p.ExcludedNetworkIds, "ExcludedNetworkIds lists tagged networks to block on the port (excluded_networkconf_ids).")
+	a.Describe(&p.Forward, "Forward: all | native | customize | disabled.")
+	a.Describe(&p.Speed, "Speed forces a link speed in Mbps: 10 | 100 | 1000 | 2500 | 5000 | 10000 | 20000 | 25000 | 40000 | 50000 | 100000.")
+	a.Describe(&p.Autoneg, "Autoneg enables link speed/duplex auto-negotiation.")
+	a.Describe(&p.FullDuplex, "FullDuplex forces full-duplex when autoneg is off.")
+	a.Describe(&p.Isolation, "Isolation enables port isolation (no traffic to other isolated ports).")
+	a.Describe(&p.MirrorPortIdx, "MirrorPortIdx is the source port to mirror when opMode is \"mirror\".")
+	a.Describe(&p.StormctrlType, "StormctrlType: level | rate.")
+	a.Describe(&p.StormctrlBroadcastEnabled, "StormctrlBroadcastEnabled enables broadcast storm control.")
+	a.Describe(&p.StormctrlBroadcastLevel, "StormctrlBroadcastLevel is the broadcast storm control level (0-100, percent).")
+	a.Describe(&p.StormctrlBroadcastRate, "StormctrlBroadcastRate is the broadcast storm control rate (pps).")
+	a.Describe(&p.StormctrlMcastEnabled, "StormctrlMcastEnabled enables multicast storm control.")
+	a.Describe(&p.StormctrlMcastLevel, "StormctrlMcastLevel is the multicast storm control level (0-100, percent).")
+	a.Describe(&p.StormctrlMcastRate, "StormctrlMcastRate is the multicast storm control rate (pps).")
+	a.Describe(&p.StormctrlUcastEnabled, "StormctrlUcastEnabled enables unknown-unicast storm control.")
+	a.Describe(&p.StormctrlUcastLevel, "StormctrlUcastLevel is the unknown-unicast storm control level (0-100, percent).")
+	a.Describe(&p.StormctrlUcastRate, "StormctrlUcastRate is the unknown-unicast storm control rate (pps).")
+	a.Describe(&p.PortSecurityEnabled, "PortSecurityEnabled restricts the port to specific MAC addresses.")
+	a.Describe(&p.PortSecurityMacAddress, "PortSecurityMacAddress lists the MACs permitted when portSecurityEnabled is true.")
+	a.Describe(&p.Dot1xCtrl, "Dot1xCtrl: auto | force_authorized | force_unauthorized | mac_based | multi_host.")
+	a.Describe(&p.Dot1xIdleTimeout, "Dot1xIdleTimeout is the 802.1X idle timeout in seconds.")
+	a.Describe(&p.LldpmedEnabled, "LldpmedEnabled enables LLDP-MED on the port.")
+	a.Describe(&p.LldpmedNotifyEnabled, "LldpmedNotifyEnabled enables LLDP-MED topology-change notifications.")
+	a.Describe(&p.StpPortMode, "StpPortMode enables spanning-tree on the port.")
+	a.Describe(&p.EgressRateLimitKbps, "EgressRateLimitKbps caps egress bandwidth in kbps (requires egressRateLimitKbpsEnabled).")
+	a.Describe(&p.EgressRateLimitKbpsEnabled, "EgressRateLimitKbpsEnabled toggles the egress rate limit.")
+	a.Describe(&p.PriorityQueue1Level, "PriorityQueue1Level is the QoS priority-queue 1 level (0-100).")
+	a.Describe(&p.PriorityQueue2Level, "PriorityQueue2Level is the QoS priority-queue 2 level (0-100).")
+	a.Describe(&p.PriorityQueue3Level, "PriorityQueue3Level is the QoS priority-queue 3 level (0-100).")
+	a.Describe(&p.PriorityQueue4Level, "PriorityQueue4Level is the QoS priority-queue 4 level (0-100).")
+	a.Describe(&p.FecMode, "FecMode: rs-fec | fc-fec | default | disabled (for SFP+/SFP28 ports).")
+	a.Describe(&p.VoiceNetworkId, "VoiceNetworkId is the voice VLAN network for VoIP phones (voice_networkconf_id).")
+	a.Describe(&p.PortKeepaliveEnabled, "PortKeepaliveEnabled enables PoE keepalive for legacy powered devices.")
+	a.Describe(&p.SettingPreference, "SettingPreference: auto (inherit profile) | manual (use these overrides).")
+}
+
+func (l *DeviceLed) Annotate(a infer.Annotator) {
+	a.Describe(&l.Override, "Override controls the status LED: default | on | off.")
+	a.Describe(&l.OverrideColor, "OverrideColor is the LED color as a hex string, e.g. \"#0000ff\".")
+	a.Describe(&l.OverrideColorBrightness, "OverrideColorBrightness is the LED brightness (0-100).")
+	a.Describe(&l.EtherLighting, "EtherLighting configures the EtherLighting LED strip (supported switches).")
+}
+
+func (s *DeviceSnmp) Annotate(a infer.Annotator) {
+	a.Describe(&s.Contact, "Contact is the SNMP contact string.")
+	a.Describe(&s.Location, "Location is the SNMP location string.")
+}
+
+func (s *DeviceStp) Annotate(a infer.Annotator) {
+	a.Describe(&s.Priority, "Priority is the spanning-tree bridge priority: a multiple of 4096 from 0 to 61440.")
+	a.Describe(&s.Version, "Version: stp | rstp | disabled.")
+}
+
+func (s *DeviceSwitching) Annotate(a infer.Annotator) {
+	a.Describe(&s.VlanEnabled, "VlanEnabled enables 802.1Q VLAN switching on the device.")
+	a.Describe(&s.JumboFrameEnabled, "JumboFrameEnabled enables jumbo frames switch-wide.")
+	a.Describe(&s.FlowControlEnabled, "FlowControlEnabled enables 802.3x flow control switch-wide.")
+	a.Describe(&s.PoeMode, "PoeMode is the device-wide default PoE mode: auto | pasv24 | passthrough | off.")
+}
+
+func (x *DeviceDot1x) Annotate(a infer.Annotator) {
+	a.Describe(&x.PortControlEnabled, "PortControlEnabled enables 802.1X port control switch-wide.")
+	a.Describe(&x.FallbackNetworkId, "FallbackNetworkId is the fallback network for failed 802.1X auth (the network's `_id`).")
+}
+
+func (o *DeviceOutlet) Annotate(a infer.Annotator) {
+	a.Describe(&o.Enabled, "Enabled enables PDU outlet control.")
+	a.Describe(&o.PowerCycleEnabled, "PowerCycleEnabled enables scheduled power cycling for PDU outlets.")
+	a.Describe(&o.Overrides, "Overrides configures individual PDU outlets.")
+}
+
+func (v *DeviceVrrp) Annotate(a infer.Annotator) {
+	a.Describe(&v.Mode, "Mode is the gateway VRRP role: primary | secondary.")
+	a.Describe(&v.Priority, "Priority is the VRRP priority (10-200).")
+}
+
+func (l *DeviceLcm) Annotate(a infer.Annotator) {
+	a.Describe(&l.Brightness, "Brightness is the front display brightness (1-100). Setting it overrides the global default.")
+	a.Describe(&l.IdleTimeout, "IdleTimeout is the front display idle timeout in seconds (10-3600). Setting it overrides the global default.")
+	a.Describe(&l.NightModeBegins, "NightModeBegins is the night-mode start time, \"HH:MM\".")
+	a.Describe(&l.NightModeEnds, "NightModeEnds is the night-mode end time, \"HH:MM\".")
+	a.Describe(&l.OrientationOverride, "OrientationOverride rotates the front display: 0 | 90 | 180 | 270.")
+}
+
+func (d *DeviceArgs) Annotate(a infer.Annotator) {
+	a.Describe(&d.Mac, "Mac is the device MAC address (required). The device must already be adopted on the controller.")
+	a.Describe(&d.Name, "Name is the device's display name.")
+	a.Describe(&d.Disabled, "Disabled administratively disables the device.")
+	a.Describe(&d.MgmtNetworkId, "MgmtNetworkId pins the device's management network (the network's `_id`).")
+	a.Describe(&d.Led, "Led groups the status-LED indicator settings.")
+	a.Describe(&d.Snmp, "Snmp groups the SNMP agent strings.")
+	a.Describe(&d.Stp, "Stp groups the spanning-tree bridge settings.")
+	a.Describe(&d.Switching, "Switching groups the switch-wide L2 settings.")
+	a.Describe(&d.Dot1x, "Dot1x groups the switch-wide 802.1X settings.")
+	a.Describe(&d.Outlet, "Outlet groups the PDU outlet settings.")
+	a.Describe(&d.Vrrp, "Vrrp groups the gateway VRRP high-availability settings.")
+	a.Describe(&d.Lcm, "Lcm groups the front LCD/touchscreen display settings.")
+	a.Describe(&d.PortOverrides, "PortOverrides configures individual switch ports (the centerpiece for switches).")
+	a.Describe(&d.RadioTable, "RadioTable tunes individual access-point radios.")
+	a.Describe(&d.EthernetOverrides, "EthernetOverrides assigns network groups to physical ethernet ports (gateways).")
+}
+
+func (s *DeviceState) Annotate(a infer.Annotator) {
+	a.Describe(&s.DeviceId, "DeviceId is the controller-assigned identifier (the UniFi `_id`).")
+	a.Describe(&s.Model, "Model is the device model code, e.g. \"USPRPS\" or \"U6-Enterprise\" (read-only).")
+	a.Describe(&s.Type, "Type is the device type, e.g. \"usw\", \"uap\", \"ugw\" (read-only).")
+	a.Describe(&s.State, "State is the connection state, e.g. \"Connected\", \"Pending\" (read-only).")
+	a.Describe(&s.Adopted, "Adopted indicates whether the controller has adopted the device (read-only).")
 }
 
 // applyTo overlays the managed input fields onto a device fetched from the
@@ -876,6 +1026,9 @@ func (Device) Create(ctx context.Context, req infer.CreateRequest[DeviceArgs]) (
 func (Device) Read(ctx context.Context, req infer.ReadRequest[DeviceArgs, DeviceState]) (infer.ReadResponse[DeviceArgs, DeviceState], error) {
 	cfg := infer.GetConfig[config.Config](ctx)
 	d, err := cfg.Network().GetDevice(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.ReadResponse[DeviceArgs, DeviceState]{}, nil
+	}
 	if err != nil {
 		return infer.ReadResponse[DeviceArgs, DeviceState]{}, err
 	}

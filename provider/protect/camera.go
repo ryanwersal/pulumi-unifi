@@ -29,7 +29,7 @@ type Camera struct{}
 // CameraArgs are the user-supplied inputs.
 type CameraArgs struct {
 	// CameraId is the Protect camera ID (from the Protect API / bootstrap).
-	CameraId string `pulumi:"cameraId"`
+	CameraId string `pulumi:"cameraId" provider:"replaceOnChanges"`
 	// Name is the camera's display name.
 	Name *string `pulumi:"name,optional"`
 	// MicVolume sets the microphone volume (0-100). A value of 0 is not applied
@@ -80,6 +80,29 @@ type CameraState struct {
 func (c *Camera) Annotate(a infer.Annotator) {
 	a.Describe(&c, "Manage settings of an existing UniFi Protect camera (adoption model; cameras are not created or deleted via the API). "+
 		"Exposes the writable fields of the Protect CameraPatchRequest.")
+}
+
+func (d *CameraArgs) Annotate(a infer.Annotator) {
+	a.Describe(&d.CameraId, "CameraId is the Protect camera ID (from the Protect API / bootstrap).")
+	a.Describe(&d.Name, "Name is the camera's display name.")
+	a.Describe(&d.MicVolume, "MicVolume sets the microphone volume (0-100). A value of 0 is not applied by the Protect API (the field is omitted when zero).")
+	a.Describe(&d.VideoMode, "VideoMode selects the capture mode, e.g. \"default\", \"highFps\", \"sport\".")
+	a.Describe(&d.HdrType, "HdrType selects HDR behaviour, e.g. \"auto\", \"always\", \"off\".")
+	a.Describe(&d.LedEnabled, "LedEnabled toggles the status LED (ledSettings.isEnabled).")
+	a.Describe(&d.OsdNameEnabled, "OsdNameEnabled overlays the camera name on the video (osdSettings.isNameEnabled).")
+	a.Describe(&d.OsdDateEnabled, "OsdDateEnabled overlays the date/time on the video (osdSettings.isDateEnabled).")
+	a.Describe(&d.OsdLogoEnabled, "OsdLogoEnabled overlays the logo on the video (osdSettings.isLogoEnabled).")
+	a.Describe(&d.OsdDebugEnabled, "OsdDebugEnabled overlays debug telemetry on the video (osdSettings.isDebugEnabled).")
+	a.Describe(&d.LcdMessageType, "LcdMessageType is the doorbell LCD message type, e.g. \"CUSTOM_MESSAGE\", \"DO_NOT_DISTURB\", \"LEAVE_PACKAGE_AT_DOOR\" (doorbell cameras only).")
+	a.Describe(&d.LcdMessageText, "LcdMessageText is the doorbell LCD custom message text (used with type CUSTOM_MESSAGE).")
+	a.Describe(&d.LcdMessageResetAt, "LcdMessageResetAt is the epoch-millisecond timestamp at which the LCD message clears. 0 (or omitted) leaves the message until changed.")
+	a.Describe(&d.SmartDetectObjectTypes, "SmartDetectObjectTypes selects which objects trigger smart detections, e.g. \"person\", \"vehicle\", \"animal\", \"package\", \"licensePlate\".")
+	a.Describe(&d.SmartDetectAudioTypes, "SmartDetectAudioTypes selects which sounds trigger smart detections, e.g. \"smoke\", \"cmonitor\" (CO alarm), \"alrmSmoke\", \"alrmCmonitor\".")
+}
+
+func (s *CameraState) Annotate(a infer.Annotator) {
+	a.Describe(&s.Type, "Type is the camera model/type (read-only; the Protect modelKey).")
+	a.Describe(&s.State, "State is the connection state, e.g. \"CONNECTED\" (read-only).")
 }
 
 func (a CameraArgs) toPatch() *protecttypes.CameraPatchRequest {
@@ -211,6 +234,9 @@ func (Camera) Read(ctx context.Context, req infer.ReadRequest[CameraArgs, Camera
 		return infer.ReadResponse[CameraArgs, CameraState]{}, err
 	}
 	cam, err := pc.CameraDetails(protecttypes.CameraID(req.ID))
+	if isProtectNotFound(err) {
+		return infer.ReadResponse[CameraArgs, CameraState]{}, nil
+	}
 	if err != nil {
 		return infer.ReadResponse[CameraArgs, CameraState]{}, err
 	}

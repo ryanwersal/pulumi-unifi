@@ -36,37 +36,133 @@ export class Wlan extends pulumi.CustomResource {
         return obj['__pulumiType'] === Wlan.__pulumiType;
     }
 
+    /**
+     * ApGroups groups which AP groups/devices broadcast this SSID.
+     */
     declare public readonly apGroups: pulumi.Output<outputs.network.WlanApGroups | undefined>;
+    /**
+     * BandSteering groups radio band selection and band steering.
+     */
     declare public readonly bandSteering: pulumi.Output<outputs.network.WlanBandSteering | undefined>;
+    /**
+     * Dpi groups the Deep Packet Inspection toggle and group reference.
+     */
     declare public readonly dpi: pulumi.Output<outputs.network.WlanDpi | undefined>;
+    /**
+     * Dtim groups the DTIM interval control across bands.
+     */
     declare public readonly dtim: pulumi.Output<outputs.network.WlanDtim | undefined>;
+    /**
+     * Enabled controls whether the SSID is broadcast. Defaults to true.
+     */
     declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    /**
+     * HideSsid hides the SSID from broadcast. Defaults to false.
+     */
     declare public readonly hideSsid: pulumi.Output<boolean | undefined>;
+    /**
+     * Iot groups the IoT connectivity behaviors.
+     */
     declare public readonly iot: pulumi.Output<outputs.network.WlanIot | undefined>;
+    /**
+     * IsGuest marks this WLAN as a guest network (enables guest behaviors).
+     */
     declare public readonly isGuest: pulumi.Output<boolean | undefined>;
+    /**
+     * L2Isolation isolates wireless clients from each other at layer 2.
+     */
     declare public readonly l2Isolation: pulumi.Output<boolean | undefined>;
+    /**
+     * MacFilter groups the MAC access-control list.
+     */
     declare public readonly macFilter: pulumi.Output<outputs.network.WlanMacFilter | undefined>;
+    /**
+     * MinRate groups the minimum-data-rate control.
+     */
     declare public readonly minRate: pulumi.Output<outputs.network.WlanMinrate | undefined>;
+    /**
+     * MloEnabled enables Multi-Link Operation (WiFi 7).
+     */
     declare public readonly mloEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * Multicast groups the multicast/broadcast traffic handling.
+     */
     declare public readonly multicast: pulumi.Output<outputs.network.WlanMulticast | undefined>;
+    /**
+     * Name is the SSID.
+     */
     declare public readonly name: pulumi.Output<string>;
+    /**
+     * NetworkId binds the WLAN to a network/VLAN (the network's `_id`).
+     */
     declare public readonly networkId: pulumi.Output<string>;
+    /**
+     * P2p groups the peer-to-peer (client-to-client) traffic settings.
+     */
     declare public readonly p2p: pulumi.Output<outputs.network.WlanP2p | undefined>;
+    /**
+     * Passphrase is the WPA pre-shared key (8-63 chars). Secret.
+     */
     declare public readonly passphrase: pulumi.Output<string | undefined>;
+    /**
+     * Priority: medium | high | low.
+     */
     declare public readonly priority: pulumi.Output<string | undefined>;
+    /**
+     * PrivatePresharedKeys groups per-key network placement (PPSK).
+     */
     declare public readonly privatePresharedKeys: pulumi.Output<outputs.network.WlanPrivatePresharedKeys | undefined>;
+    /**
+     * Radius groups the RADIUS/802.1X plumbing.
+     */
     declare public readonly radius: pulumi.Output<outputs.network.WlanRadius | undefined>;
+    /**
+     * Roaming groups the general client roaming/handoff settings.
+     */
     declare public readonly roaming: pulumi.Output<outputs.network.WlanRoaming | undefined>;
+    /**
+     * Sae groups the WPA3 SAE handshake configuration.
+     */
     declare public readonly sae: pulumi.Output<outputs.network.WlanSae | undefined>;
+    /**
+     * Schedule groups the time-based broadcast scheduling.
+     */
     declare public readonly schedule: pulumi.Output<outputs.network.WlanSchedule | undefined>;
+    /**
+     * Security: open | wpapsk | wpaeap | wep | osen. Defaults to "wpapsk".
+     */
     declare public readonly security: pulumi.Output<string | undefined>;
+    /**
+     * UapsdEnabled enables Unscheduled Automatic Power Save Delivery.
+     */
     declare public readonly uapsdEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * UserGroupId is the user group (rate limiting / firewall) for clients.
+     */
     declare public readonly userGroupId: pulumi.Output<string | undefined>;
+    /**
+     * VlanTagging groups the VLAN tagging facet.
+     */
     declare public readonly vlanTagging: pulumi.Output<outputs.network.WlanVlanTagging | undefined>;
+    /**
+     * Wep groups the legacy WEP-only settings.
+     */
     declare public readonly wep: pulumi.Output<outputs.network.WlanWep | undefined>;
+    /**
+     * WlanGroupId is the WLAN group to attach to. Required on many controllers.
+     */
     declare public readonly wlanGroupId: pulumi.Output<string | undefined>;
+    /**
+     * WlanId is the controller-assigned identifier (the UniFi `_id`).
+     */
     declare public /*out*/ readonly wlanId: pulumi.Output<string>;
+    /**
+     * Wpa groups the core WPA/encryption tuning.
+     */
     declare public readonly wpa: pulumi.Output<outputs.network.WlanWpa | undefined>;
+    /**
+     * Wpa3 groups the WPA3 feature cluster.
+     */
     declare public readonly wpa3: pulumi.Output<outputs.network.WlanWpa3 | undefined>;
 
     /**
@@ -163,35 +259,128 @@ export class Wlan extends pulumi.CustomResource {
  * The set of arguments for constructing a Wlan resource.
  */
 export interface WlanArgs {
+    /**
+     * ApGroups groups which AP groups/devices broadcast this SSID.
+     */
     apGroups?: pulumi.Input<inputs.network.WlanApGroupsArgs | undefined>;
+    /**
+     * BandSteering groups radio band selection and band steering.
+     */
     bandSteering?: pulumi.Input<inputs.network.WlanBandSteeringArgs | undefined>;
+    /**
+     * Dpi groups the Deep Packet Inspection toggle and group reference.
+     */
     dpi?: pulumi.Input<inputs.network.WlanDpiArgs | undefined>;
+    /**
+     * Dtim groups the DTIM interval control across bands.
+     */
     dtim?: pulumi.Input<inputs.network.WlanDtimArgs | undefined>;
+    /**
+     * Enabled controls whether the SSID is broadcast. Defaults to true.
+     */
     enabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * HideSsid hides the SSID from broadcast. Defaults to false.
+     */
     hideSsid?: pulumi.Input<boolean | undefined>;
+    /**
+     * Iot groups the IoT connectivity behaviors.
+     */
     iot?: pulumi.Input<inputs.network.WlanIotArgs | undefined>;
+    /**
+     * IsGuest marks this WLAN as a guest network (enables guest behaviors).
+     */
     isGuest?: pulumi.Input<boolean | undefined>;
+    /**
+     * L2Isolation isolates wireless clients from each other at layer 2.
+     */
     l2Isolation?: pulumi.Input<boolean | undefined>;
+    /**
+     * MacFilter groups the MAC access-control list.
+     */
     macFilter?: pulumi.Input<inputs.network.WlanMacFilterArgs | undefined>;
+    /**
+     * MinRate groups the minimum-data-rate control.
+     */
     minRate?: pulumi.Input<inputs.network.WlanMinrateArgs | undefined>;
+    /**
+     * MloEnabled enables Multi-Link Operation (WiFi 7).
+     */
     mloEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * Multicast groups the multicast/broadcast traffic handling.
+     */
     multicast?: pulumi.Input<inputs.network.WlanMulticastArgs | undefined>;
+    /**
+     * Name is the SSID.
+     */
     name: pulumi.Input<string>;
+    /**
+     * NetworkId binds the WLAN to a network/VLAN (the network's `_id`).
+     */
     networkId: pulumi.Input<string>;
+    /**
+     * P2p groups the peer-to-peer (client-to-client) traffic settings.
+     */
     p2p?: pulumi.Input<inputs.network.WlanP2pArgs | undefined>;
+    /**
+     * Passphrase is the WPA pre-shared key (8-63 chars). Secret.
+     */
     passphrase?: pulumi.Input<string | undefined>;
+    /**
+     * Priority: medium | high | low.
+     */
     priority?: pulumi.Input<string | undefined>;
+    /**
+     * PrivatePresharedKeys groups per-key network placement (PPSK).
+     */
     privatePresharedKeys?: pulumi.Input<inputs.network.WlanPrivatePresharedKeysArgs | undefined>;
+    /**
+     * Radius groups the RADIUS/802.1X plumbing.
+     */
     radius?: pulumi.Input<inputs.network.WlanRadiusArgs | undefined>;
+    /**
+     * Roaming groups the general client roaming/handoff settings.
+     */
     roaming?: pulumi.Input<inputs.network.WlanRoamingArgs | undefined>;
+    /**
+     * Sae groups the WPA3 SAE handshake configuration.
+     */
     sae?: pulumi.Input<inputs.network.WlanSaeArgs | undefined>;
+    /**
+     * Schedule groups the time-based broadcast scheduling.
+     */
     schedule?: pulumi.Input<inputs.network.WlanScheduleArgs | undefined>;
+    /**
+     * Security: open | wpapsk | wpaeap | wep | osen. Defaults to "wpapsk".
+     */
     security?: pulumi.Input<string | undefined>;
+    /**
+     * UapsdEnabled enables Unscheduled Automatic Power Save Delivery.
+     */
     uapsdEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * UserGroupId is the user group (rate limiting / firewall) for clients.
+     */
     userGroupId?: pulumi.Input<string | undefined>;
+    /**
+     * VlanTagging groups the VLAN tagging facet.
+     */
     vlanTagging?: pulumi.Input<inputs.network.WlanVlanTaggingArgs | undefined>;
+    /**
+     * Wep groups the legacy WEP-only settings.
+     */
     wep?: pulumi.Input<inputs.network.WlanWepArgs | undefined>;
+    /**
+     * WlanGroupId is the WLAN group to attach to. Required on many controllers.
+     */
     wlanGroupId?: pulumi.Input<string | undefined>;
+    /**
+     * Wpa groups the core WPA/encryption tuning.
+     */
     wpa?: pulumi.Input<inputs.network.WlanWpaArgs | undefined>;
+    /**
+     * Wpa3 groups the WPA3 feature cluster.
+     */
     wpa3?: pulumi.Input<inputs.network.WlanWpa3Args | undefined>;
 }

@@ -34,24 +34,81 @@ export class User extends pulumi.CustomResource {
         return obj['__pulumiType'] === User.__pulumiType;
     }
 
+    /**
+     * Blocked, when true, blocks this client from accessing the network.
+     */
     declare public readonly blocked: pulumi.Output<boolean | undefined>;
+    /**
+     * DevIdOverride overrides the detected device fingerprint (device type id). 0 clears the override.
+     */
     declare public readonly devIdOverride: pulumi.Output<number | undefined>;
+    /**
+     * FixedApEnabled toggles pinning the client to a fixed access point. Defaults to true when FixedApMac is set.
+     */
     declare public readonly fixedApEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * FixedApMac is the MAC address of the access point the client is pinned to.
+     */
     declare public readonly fixedApMac: pulumi.Output<string | undefined>;
+    /**
+     * FixedIp is a static IPv4 address to assign to this client. Setting it enables UseFixedIp.
+     */
     declare public readonly fixedIp: pulumi.Output<string | undefined>;
+    /**
+     * Hostname is the hostname the controller has observed for the client.
+     */
     declare public /*out*/ readonly hostname: pulumi.Output<string>;
+    /**
+     * Ip is the last-known IP address of the client (best-effort; may be empty).
+     */
     declare public /*out*/ readonly ip: pulumi.Output<string>;
+    /**
+     * LastSeen is the Unix timestamp (seconds) the client was last seen.
+     */
     declare public /*out*/ readonly lastSeen: pulumi.Output<number>;
+    /**
+     * LocalDnsRecord is a local DNS hostname resolving to this client. Setting it enables LocalDnsRecordEnabled.
+     */
     declare public readonly localDnsRecord: pulumi.Output<string | undefined>;
+    /**
+     * LocalDnsRecordEnabled toggles publishing the LocalDnsRecord. Defaults to true when LocalDnsRecord is set.
+     */
     declare public readonly localDnsRecordEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * Mac is the client MAC address (e.g. "00:11:22:33:44:55"). It is the unique key used to register and look up the client.
+     */
     declare public readonly mac: pulumi.Output<string>;
+    /**
+     * Name is a friendly name for the client.
+     */
     declare public readonly name: pulumi.Output<string | undefined>;
+    /**
+     * NetworkId is the ID of the network the fixed IP is assigned from.
+     */
     declare public readonly networkId: pulumi.Output<string | undefined>;
+    /**
+     * Note is free-form text stored alongside the client.
+     */
     declare public readonly note: pulumi.Output<string | undefined>;
+    /**
+     * UseFixedIp toggles assigning the FixedIp to the client. Defaults to true when FixedIp is set.
+     */
     declare public readonly useFixedIp: pulumi.Output<boolean | undefined>;
+    /**
+     * UserGroupId is the ID of the user group (bandwidth profile) this client belongs to.
+     */
     declare public readonly userGroupId: pulumi.Output<string | undefined>;
+    /**
+     * UserId is the controller-assigned identifier (the UniFi `_id`).
+     */
     declare public /*out*/ readonly userId: pulumi.Output<string>;
+    /**
+     * VirtualNetworkOverrideEnabled toggles overriding the client's virtual network (VLAN). Defaults to true when VirtualNetworkOverrideId is set.
+     */
     declare public readonly virtualNetworkOverrideEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * VirtualNetworkOverrideId is the ID of the virtual network (VLAN) the client is pinned to.
+     */
     declare public readonly virtualNetworkOverrideId: pulumi.Output<string | undefined>;
 
     /**
@@ -109,6 +166,8 @@ export class User extends pulumi.CustomResource {
             resourceInputs["virtualNetworkOverrideId"] = undefined /*out*/;
         }
         opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+        const replaceOnChanges = { replaceOnChanges: ["mac"] };
+        opts = pulumi.mergeOptions(opts, replaceOnChanges);
         super(User.__pulumiType, name, resourceInputs, opts);
     }
 }
@@ -117,19 +176,64 @@ export class User extends pulumi.CustomResource {
  * The set of arguments for constructing a User resource.
  */
 export interface UserArgs {
+    /**
+     * Blocked, when true, blocks this client from accessing the network.
+     */
     blocked?: pulumi.Input<boolean | undefined>;
+    /**
+     * DevIdOverride overrides the detected device fingerprint (device type id). 0 clears the override.
+     */
     devIdOverride?: pulumi.Input<number | undefined>;
+    /**
+     * FixedApEnabled toggles pinning the client to a fixed access point. Defaults to true when FixedApMac is set.
+     */
     fixedApEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * FixedApMac is the MAC address of the access point the client is pinned to.
+     */
     fixedApMac?: pulumi.Input<string | undefined>;
+    /**
+     * FixedIp is a static IPv4 address to assign to this client. Setting it enables UseFixedIp.
+     */
     fixedIp?: pulumi.Input<string | undefined>;
+    /**
+     * LocalDnsRecord is a local DNS hostname resolving to this client. Setting it enables LocalDnsRecordEnabled.
+     */
     localDnsRecord?: pulumi.Input<string | undefined>;
+    /**
+     * LocalDnsRecordEnabled toggles publishing the LocalDnsRecord. Defaults to true when LocalDnsRecord is set.
+     */
     localDnsRecordEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * Mac is the client MAC address (e.g. "00:11:22:33:44:55"). It is the unique key used to register and look up the client.
+     */
     mac: pulumi.Input<string>;
+    /**
+     * Name is a friendly name for the client.
+     */
     name?: pulumi.Input<string | undefined>;
+    /**
+     * NetworkId is the ID of the network the fixed IP is assigned from.
+     */
     networkId?: pulumi.Input<string | undefined>;
+    /**
+     * Note is free-form text stored alongside the client.
+     */
     note?: pulumi.Input<string | undefined>;
+    /**
+     * UseFixedIp toggles assigning the FixedIp to the client. Defaults to true when FixedIp is set.
+     */
     useFixedIp?: pulumi.Input<boolean | undefined>;
+    /**
+     * UserGroupId is the ID of the user group (bandwidth profile) this client belongs to.
+     */
     userGroupId?: pulumi.Input<string | undefined>;
+    /**
+     * VirtualNetworkOverrideEnabled toggles overriding the client's virtual network (VLAN). Defaults to true when VirtualNetworkOverrideId is set.
+     */
     virtualNetworkOverrideEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * VirtualNetworkOverrideId is the ID of the virtual network (VLAN) the client is pinned to.
+     */
     virtualNetworkOverrideId?: pulumi.Input<string | undefined>;
 }

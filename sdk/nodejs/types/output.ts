@@ -7,169 +7,508 @@ import * as outputs from "../types/output";
 
 export namespace network {
     export interface DeviceDot1x {
+        /**
+         * FallbackNetworkId is the fallback network for failed 802.1X auth (the network's `_id`).
+         */
         fallbackNetworkId?: string;
+        /**
+         * PortControlEnabled enables 802.1X port control switch-wide.
+         */
         portControlEnabled?: boolean;
     }
 
     export interface DeviceEtherLightingArgs {
+        /**
+         * Behavior of the lighting: breath | steady.
+         */
         behavior?: string;
+        /**
+         * Brightness of the LED strip (1-100).
+         */
         brightness?: number;
+        /**
+         * LedMode: standard | etherlighting.
+         */
         ledMode?: string;
+        /**
+         * Mode of the lighting animation: speed | network.
+         */
         mode?: string;
     }
 
     export interface DeviceEthernetOverride {
+        /**
+         * Ifname is the interface name, e.g. "eth1" (required key).
+         */
         ifname: string;
+        /**
+         * NetworkGroup is the assigned group, e.g. "LAN", "LAN2", "WAN", "WAN2".
+         */
         networkGroup?: string;
     }
 
     export interface DeviceLcm {
+        /**
+         * Brightness is the front display brightness (1-100). Setting it overrides the global default.
+         */
         brightness?: number;
+        /**
+         * IdleTimeout is the front display idle timeout in seconds (10-3600). Setting it overrides the global default.
+         */
         idleTimeout?: number;
+        /**
+         * NightModeBegins is the night-mode start time, "HH:MM".
+         */
         nightModeBegins?: string;
+        /**
+         * NightModeEnds is the night-mode end time, "HH:MM".
+         */
         nightModeEnds?: string;
+        /**
+         * OrientationOverride rotates the front display: 0 | 90 | 180 | 270.
+         */
         orientationOverride?: number;
     }
 
     export interface DeviceLed {
+        /**
+         * EtherLighting configures the EtherLighting LED strip (supported switches).
+         */
         etherLighting?: outputs.network.DeviceEtherLightingArgs;
+        /**
+         * Override controls the status LED: default | on | off.
+         */
         override?: string;
+        /**
+         * OverrideColor is the LED color as a hex string, e.g. "#0000ff".
+         */
         overrideColor?: string;
+        /**
+         * OverrideColorBrightness is the LED brightness (0-100).
+         */
         overrideColorBrightness?: number;
     }
 
     export interface DeviceOutlet {
+        /**
+         * Enabled enables PDU outlet control.
+         */
         enabled?: boolean;
+        /**
+         * Overrides configures individual PDU outlets.
+         */
         overrides?: outputs.network.DeviceOutletOverride[];
+        /**
+         * PowerCycleEnabled enables scheduled power cycling for PDU outlets.
+         */
         powerCycleEnabled?: boolean;
     }
 
     export interface DeviceOutletOverride {
+        /**
+         * CycleEnabled allows the outlet to be power-cycled.
+         */
         cycleEnabled?: boolean;
+        /**
+         * Index is the 1-based outlet number (required key).
+         */
         index: number;
+        /**
+         * Name is the outlet label.
+         */
         name?: string;
+        /**
+         * RelayState powers the outlet on (true) or off (false).
+         */
         relayState?: boolean;
     }
 
     export interface DevicePortOverride {
+        /**
+         * AggregateNumPorts is the number of consecutive ports in a link aggregation group (1-8).
+         */
         aggregateNumPorts?: number;
+        /**
+         * Autoneg enables link speed/duplex auto-negotiation.
+         */
         autoneg?: boolean;
+        /**
+         * Dot1xCtrl: auto | force_authorized | force_unauthorized | mac_based | multi_host.
+         */
         dot1xCtrl?: string;
+        /**
+         * Dot1xIdleTimeout is the 802.1X idle timeout in seconds.
+         */
         dot1xIdleTimeout?: number;
+        /**
+         * EgressRateLimitKbps caps egress bandwidth in kbps (requires egressRateLimitKbpsEnabled).
+         */
         egressRateLimitKbps?: number;
+        /**
+         * EgressRateLimitKbpsEnabled toggles the egress rate limit.
+         */
         egressRateLimitKbpsEnabled?: boolean;
+        /**
+         * ExcludedNetworkIds lists tagged networks to block on the port (excluded_networkconf_ids).
+         */
         excludedNetworkIds?: string[];
+        /**
+         * FecMode: rs-fec | fc-fec | default | disabled (for SFP+/SFP28 ports).
+         */
         fecMode?: string;
+        /**
+         * Forward: all | native | customize | disabled.
+         */
         forward?: string;
+        /**
+         * FullDuplex forces full-duplex when autoneg is off.
+         */
         fullDuplex?: boolean;
+        /**
+         * Isolation enables port isolation (no traffic to other isolated ports).
+         */
         isolation?: boolean;
+        /**
+         * LldpmedEnabled enables LLDP-MED on the port.
+         */
         lldpmedEnabled?: boolean;
+        /**
+         * LldpmedNotifyEnabled enables LLDP-MED topology-change notifications.
+         */
         lldpmedNotifyEnabled?: boolean;
+        /**
+         * MirrorPortIdx is the source port to mirror when opMode is "mirror".
+         */
         mirrorPortIdx?: number;
+        /**
+         * Name is the port label.
+         */
         name?: string;
+        /**
+         * NativeNetworkId is the untagged/native network for the port (native_networkconf_id).
+         */
         nativeNetworkId?: string;
+        /**
+         * OpMode: switch | mirror | aggregate.
+         */
         opMode?: string;
+        /**
+         * PoeMode: auto | pasv24 | passthrough | off.
+         */
         poeMode?: string;
+        /**
+         * PortIdx is the 1-based physical port number (required key).
+         */
         portIdx: number;
+        /**
+         * PortKeepaliveEnabled enables PoE keepalive for legacy powered devices.
+         */
         portKeepaliveEnabled?: boolean;
+        /**
+         * PortProfileId applies a saved port profile (the profile's `_id`, sent as portconf_id).
+         */
         portProfileId?: string;
+        /**
+         * PortSecurityEnabled restricts the port to specific MAC addresses.
+         */
         portSecurityEnabled?: boolean;
+        /**
+         * PortSecurityMacAddress lists the MACs permitted when portSecurityEnabled is true.
+         */
         portSecurityMacAddress?: string[];
+        /**
+         * PriorityQueue1Level is the QoS priority-queue 1 level (0-100).
+         */
         priorityQueue1Level?: number;
+        /**
+         * PriorityQueue2Level is the QoS priority-queue 2 level (0-100).
+         */
         priorityQueue2Level?: number;
+        /**
+         * PriorityQueue3Level is the QoS priority-queue 3 level (0-100).
+         */
         priorityQueue3Level?: number;
+        /**
+         * PriorityQueue4Level is the QoS priority-queue 4 level (0-100).
+         */
         priorityQueue4Level?: number;
+        /**
+         * SettingPreference: auto (inherit profile) | manual (use these overrides).
+         */
         settingPreference?: string;
+        /**
+         * Speed forces a link speed in Mbps: 10 | 100 | 1000 | 2500 | 5000 | 10000 | 20000 | 25000 | 40000 | 50000 | 100000.
+         */
         speed?: number;
+        /**
+         * StormctrlBroadcastEnabled enables broadcast storm control.
+         */
         stormctrlBroadcastEnabled?: boolean;
+        /**
+         * StormctrlBroadcastLevel is the broadcast storm control level (0-100, percent).
+         */
         stormctrlBroadcastLevel?: number;
+        /**
+         * StormctrlBroadcastRate is the broadcast storm control rate (pps).
+         */
         stormctrlBroadcastRate?: number;
+        /**
+         * StormctrlMcastEnabled enables multicast storm control.
+         */
         stormctrlMcastEnabled?: boolean;
+        /**
+         * StormctrlMcastLevel is the multicast storm control level (0-100, percent).
+         */
         stormctrlMcastLevel?: number;
+        /**
+         * StormctrlMcastRate is the multicast storm control rate (pps).
+         */
         stormctrlMcastRate?: number;
+        /**
+         * StormctrlType: level | rate.
+         */
         stormctrlType?: string;
+        /**
+         * StormctrlUcastEnabled enables unknown-unicast storm control.
+         */
         stormctrlUcastEnabled?: boolean;
+        /**
+         * StormctrlUcastLevel is the unknown-unicast storm control level (0-100, percent).
+         */
         stormctrlUcastLevel?: number;
+        /**
+         * StormctrlUcastRate is the unknown-unicast storm control rate (pps).
+         */
         stormctrlUcastRate?: number;
+        /**
+         * StpPortMode enables spanning-tree on the port.
+         */
         stpPortMode?: boolean;
+        /**
+         * TaggedVlanMgmt: auto | block_all | custom. With "custom", use excludedNetworkIds.
+         */
         taggedVlanMgmt?: string;
+        /**
+         * VoiceNetworkId is the voice VLAN network for VoIP phones (voice_networkconf_id).
+         */
         voiceNetworkId?: string;
     }
 
     export interface DeviceRadioOverride {
+        /**
+         * AntennaGain in dBi (for devices with configurable antennas).
+         */
         antennaGain?: number;
+        /**
+         * Channel is the radio channel, a number or "auto".
+         */
         channel?: string;
+        /**
+         * ChannelWidth (HT) in MHz: 20 | 40 | 80 | 160 | 240 | 320 | 1080 | 2160 | 4320.
+         */
         channelWidth?: number;
+        /**
+         * MinRssi is the minimum RSSI (dBm, negative) below which clients are kicked. Setting it enables the feature unless minRssiEnabled is given.
+         */
         minRssi?: number;
+        /**
+         * MinRssiEnabled toggles the minimum-RSSI kick feature.
+         */
         minRssiEnabled?: boolean;
+        /**
+         * Name is the controller's radio name (e.g. "wifi0").
+         */
         name?: string;
+        /**
+         * Radio band identifying which radio to tune: ng (2.4GHz) | na (5GHz) | ad (60GHz) | 6e (6GHz). Required key.
+         */
         radio: string;
+        /**
+         * TxPower is the transmit power in dBm, or "auto". Honored only when txPowerMode is "custom".
+         */
         txPower?: string;
+        /**
+         * TxPowerMode: auto | medium | high | low | custom.
+         */
         txPowerMode?: string;
     }
 
     export interface DeviceSnmp {
+        /**
+         * Contact is the SNMP contact string.
+         */
         contact?: string;
+        /**
+         * Location is the SNMP location string.
+         */
         location?: string;
     }
 
     export interface DeviceStp {
+        /**
+         * Priority is the spanning-tree bridge priority: a multiple of 4096 from 0 to 61440.
+         */
         priority?: string;
+        /**
+         * Version: stp | rstp | disabled.
+         */
         version?: string;
     }
 
     export interface DeviceSwitching {
+        /**
+         * FlowControlEnabled enables 802.3x flow control switch-wide.
+         */
         flowControlEnabled?: boolean;
+        /**
+         * JumboFrameEnabled enables jumbo frames switch-wide.
+         */
         jumboFrameEnabled?: boolean;
+        /**
+         * PoeMode is the device-wide default PoE mode: auto | pasv24 | passthrough | off.
+         */
         poeMode?: string;
+        /**
+         * VlanEnabled enables 802.1Q VLAN switching on the device.
+         */
         vlanEnabled?: boolean;
     }
 
     export interface DeviceVrrp {
+        /**
+         * Mode is the gateway VRRP role: primary | secondary.
+         */
         mode?: string;
+        /**
+         * Priority is the VRRP priority (10-200).
+         */
         priority?: number;
     }
 
     export interface FirewallRuleConnectionState {
+        /**
+         * Established matches packets in the established connection state.
+         */
         established?: boolean;
+        /**
+         * Invalid matches packets in the invalid connection state.
+         */
         invalid?: boolean;
+        /**
+         * New matches packets in the new connection state.
+         */
         new?: boolean;
+        /**
+         * Related matches packets in the related connection state.
+         */
         related?: boolean;
     }
 
     export interface FirewallRuleDestination {
+        /**
+         * Address is the destination IPv4 address or CIDR to match.
+         */
         address?: string;
+        /**
+         * AddressIpv6 is the destination IPv6 address or CIDR to match.
+         */
         addressIpv6?: string;
+        /**
+         * FirewallGroupIds are the destination firewall group IDs to match.
+         */
         firewallGroupIds?: string[];
+        /**
+         * NetworkId is the destination network (firewall network conf) ID to match.
+         */
         networkId?: string;
+        /**
+         * NetworkType selects how NetworkId is interpreted: ADDRv4 | NETv4.
+         */
         networkType?: string;
+        /**
+         * Port is the destination port or port range to match.
+         */
         port?: string;
     }
 
     export interface FirewallRuleProtocolMatch {
+        /**
+         * IcmpTypename restricts an icmp rule to a specific ICMP type, e.g. echo-request, destination-unreachable, time-exceeded.
+         */
         icmpTypename?: string;
+        /**
+         * Icmpv6Typename restricts an icmpv6 rule to a specific ICMPv6 type, e.g. echo-request, packet-too-big, neighbor-solicitation.
+         */
         icmpv6Typename?: string;
+        /**
+         * MatchExcepted inverts the protocol match (match all except the specified protocol).
+         */
         matchExcepted?: boolean;
+        /**
+         * Protocol the rule matches (IPv4 rulesets), e.g. all | tcp | udp | tcp_udp | icmp | a numeric protocol number, or empty for any.
+         */
         protocol?: string;
+        /**
+         * ProtocolV6 the rule matches (IPv6 rulesets), e.g. all | tcp | udp | tcp_udp | icmpv6 | a numeric protocol number, or empty for any.
+         */
         protocolV6?: string;
     }
 
     export interface FirewallRuleSource {
+        /**
+         * Address is the source IPv4 address or CIDR to match.
+         */
         address?: string;
+        /**
+         * AddressIpv6 is the source IPv6 address or CIDR to match.
+         */
         addressIpv6?: string;
+        /**
+         * FirewallGroupIds are the source firewall group IDs to match.
+         */
         firewallGroupIds?: string[];
+        /**
+         * Mac is the source MAC address to match.
+         */
         mac?: string;
+        /**
+         * NetworkId is the source network (firewall network conf) ID to match.
+         */
         networkId?: string;
+        /**
+         * NetworkType selects how NetworkId is interpreted: ADDRv4 | NETv4.
+         */
         networkType?: string;
+        /**
+         * Port is the source port or port range to match.
+         */
         port?: string;
     }
 
     export interface FirewallZonePolicyDestinationArgs {
+        /**
+         * AppCategoryIds lists application category IDs to match (when matchingTarget=APP_CATEGORY).
+         */
         appCategoryIds?: string[];
+        /**
+         * AppIds lists application IDs to match (when matchingTarget=APP).
+         */
         appIds?: string[];
+        /**
+         * IpGroupId references a saved IP group as the destination (when matchingTarget=IP, matchingTargetType=OBJECT).
+         */
         ipGroupId?: string;
+        /**
+         * Ips lists inline destination IPv4 addresses (when matchingTarget=IP, matchingTargetType=SPECIFIC).
+         */
         ips?: string[];
+        /**
+         * MatchOppositeIps inverts (negates) the destination IP match.
+         */
         matchOppositeIps?: boolean;
+        /**
+         * MatchOppositePorts inverts (negates) the destination port match.
+         */
         matchOppositePorts?: boolean;
         /**
          * What the destination matches: ANY | APP | APP_CATEGORY | IP | REGION | WEB.
@@ -179,11 +518,29 @@ export namespace network {
          * Refines the destination match: ANY | OBJECT (saved group) | SPECIFIC (inline values).
          */
         matchingTargetType?: string;
+        /**
+         * Port is the destination port or port range/list (e.g. "80", "1000-2000", "80,443").
+         */
         port?: string;
+        /**
+         * PortGroupId references a saved port group as the destination ports.
+         */
         portGroupId?: string;
+        /**
+         * PortMatchingType selects how destination ports match: ANY | SPECIFIC | OBJECT.
+         */
         portMatchingType?: string;
+        /**
+         * Regions lists geographic regions to match (when matchingTarget=REGION).
+         */
         regions?: string[];
+        /**
+         * WebDomains lists web domains to match (when matchingTarget=WEB).
+         */
         webDomains?: string[];
+        /**
+         * ZoneId is the controller ID of the destination firewall zone.
+         */
         zoneId: string;
     }
 
@@ -192,43 +549,103 @@ export namespace network {
          * Connection-state matching: ALL | RESPOND_ONLY | CUSTOM.
          */
         connectionStateType?: string;
+        /**
+         * ConnectionStates lists states to match when connectionStateType=CUSTOM: ESTABLISHED | NEW | RELATED | INVALID.
+         */
         connectionStates?: string[];
         /**
          * L3 version the policy matches: BOTH | IPV4 | IPV6.
          */
         ipVersion?: string;
+        /**
+         * MatchIpSec enables matching on IPsec-encapsulated traffic.
+         */
         matchIpSec?: boolean;
         /**
          * IPsec matching mode: MATCH_IP_SEC | MATCH_NON_IP_SEC.
          */
         matchIpSecType?: string;
+        /**
+         * MatchOppositeProtocol inverts (negates) the protocol match.
+         */
         matchOppositeProtocol?: boolean;
+        /**
+         * Protocol filters by IP protocol: all | tcp_udp | tcp | udp | icmp | icmpv6 | igmp | esp | ah | gre | ... (see UniFi docs).
+         */
         protocol?: string;
     }
 
     export interface FirewallZonePolicyScheduleArgs {
+        /**
+         * Date is a single enforcement date in YYYY-MM-DD format (mode=ONE_TIME_ONLY).
+         */
         date?: string;
+        /**
+         * DateEnd is the range end date in YYYY-MM-DD format.
+         */
         dateEnd?: string;
+        /**
+         * DateStart is the range start date in YYYY-MM-DD format.
+         */
         dateStart?: string;
         /**
          * Schedule pattern: ALWAYS | EVERY_DAY | EVERY_WEEK | ONE_TIME_ONLY | CUSTOM.
          */
         mode?: string;
+        /**
+         * RepeatOnDays lists recurring days: mon | tue | wed | thu | fri | sat | sun (mode=EVERY_WEEK/CUSTOM).
+         */
         repeatOnDays?: string[];
+        /**
+         * TimeAllDay applies the policy for the entire day (ignores the time range).
+         */
         timeAllDay?: boolean;
+        /**
+         * TimeRangeEnd is the daily end time in HH:MM (24-hour) format.
+         */
         timeRangeEnd?: string;
+        /**
+         * TimeRangeStart is the daily start time in HH:MM (24-hour) format.
+         */
         timeRangeStart?: string;
     }
 
     export interface FirewallZonePolicySourceArgs {
+        /**
+         * ClientMacs lists source client MAC addresses (when matchingTarget=CLIENT).
+         */
         clientMacs?: string[];
+        /**
+         * IpGroupId references a saved IP group as the source (when matchingTarget=IP, matchingTargetType=OBJECT).
+         */
         ipGroupId?: string;
+        /**
+         * Ips lists inline source IPv4 addresses (when matchingTarget=IP, matchingTargetType=SPECIFIC).
+         */
         ips?: string[];
+        /**
+         * Mac is a single source MAC address (when matchingTarget=MAC).
+         */
         mac?: string;
+        /**
+         * Macs lists source MAC addresses.
+         */
         macs?: string[];
+        /**
+         * MatchMac toggles MAC-based matching of the source.
+         */
         matchMac?: boolean;
+        /**
+         * MatchOppositeIps inverts (negates) the source IP match.
+         */
         matchOppositeIps?: boolean;
+        /**
+         * MatchOppositeNetworks inverts (negates) the source network match.
+         */
         matchOppositeNetworks?: boolean;
+        /**
+         * MatchOppositePorts inverts (negates) the source port match.
+         */
         matchOppositePorts?: boolean;
         /**
          * What the source matches: ANY | CLIENT | NETWORK | IP | MAC.
@@ -238,20 +655,47 @@ export namespace network {
          * Refines the source match: OBJECT (saved group) | SPECIFIC (inline values).
          */
         matchingTargetType?: string;
+        /**
+         * NetworkIds lists the source network IDs (when matchingTarget=NETWORK).
+         */
         networkIds?: string[];
+        /**
+         * Port is the source port or port range/list (e.g. "80", "1000-2000", "80,443").
+         */
         port?: string;
+        /**
+         * PortGroupId references a saved port group as the source ports.
+         */
         portGroupId?: string;
+        /**
+         * PortMatchingType selects how source ports match: ANY | SPECIFIC | OBJECT.
+         */
         portMatchingType?: string;
+        /**
+         * ZoneId is the controller ID of the source firewall zone.
+         */
         zoneId: string;
     }
 
     export interface NetworkIgmpQuerierSwitch {
+        /**
+         * QuerierAddress is the IGMP querier IPv4 address.
+         */
         querierAddress: string;
+        /**
+         * SwitchMac is the MAC address of the switch acting as querier.
+         */
         switchMac: string;
     }
 
     export interface NetworkNatOutboundIp {
+        /**
+         * IpAddress is the single outbound NAT source IPv4 address.
+         */
         ipAddress?: string;
+        /**
+         * IpAddressPool is a list of outbound NAT source IPs/ranges.
+         */
         ipAddressPool?: string[];
         /**
          * Outbound NAT strategy: all | ip_address | ip_address_pool.
@@ -264,16 +708,31 @@ export namespace network {
     }
 
     export interface NetworkWanDhcpOption {
+        /**
+         * OptionNumber is the DHCP option code (1-254).
+         */
         optionNumber: number;
+        /**
+         * Value is the option value.
+         */
         value: string;
     }
 
     export interface NetworkWanProviderCapabilities {
+        /**
+         * DownloadKilobitsPerSecond is the ISP advertised download rate in kbps.
+         */
         downloadKilobitsPerSecond?: number;
+        /**
+         * UploadKilobitsPerSecond is the ISP advertised upload rate in kbps.
+         */
         uploadKilobitsPerSecond?: number;
     }
 
     export interface PortForwardDestinationIp {
+        /**
+         * DestinationIp is the public/destination IPv4 address this entry matches, or "any".
+         */
         destinationIp?: string;
         /**
          * WAN interface this destination IP binds to: wan | wan2.
@@ -282,313 +741,931 @@ export namespace network {
     }
 
     export interface PortProfileDot1x {
+        /**
+         * Ctrl is the 802.1X PNAC mode: auto | force_authorized | force_unauthorized | mac_based | multi_host. Defaults to "force_authorized".
+         */
         ctrl?: string;
+        /**
+         * IdleTimeout is the MAC-based 802.1X idle timeout in seconds (0-65535). Defaults to 300.
+         */
         idleTimeout?: number;
     }
 
     export interface PortProfileEgressRateLimit {
+        /**
+         * Enabled enables outbound rate limiting. Defaults to false.
+         */
         enabled?: boolean;
+        /**
+         * Kbps is the outbound rate limit in kbps (64-9999999). Only applied when enabled is true.
+         */
         kbps?: number;
     }
 
     export interface PortProfileLink {
+        /**
+         * Autoneg enables auto-negotiation of speed/duplex. Defaults to true. When true it overrides the manual speed and fullDuplex settings.
+         */
         autoneg?: boolean;
+        /**
+         * FecMode is the forward error correction mode: rs-fec | fc-fec | default | disabled.
+         */
         fecMode?: string;
+        /**
+         * FullDuplex enables full-duplex when autoneg is false. Defaults to false.
+         */
         fullDuplex?: boolean;
+        /**
+         * Speed is the fixed port speed in Mbps when autoneg is false: 10 | 100 | 1000 | 2500 | 5000 | 10000 | 20000 | 25000 | 40000 | 50000 | 100000.
+         */
         speed?: number;
     }
 
     export interface PortProfileLldpMed {
+        /**
+         * Enabled enables LLDP-MED. Defaults to true.
+         */
         enabled?: boolean;
+        /**
+         * NotifyEnabled enables LLDP-MED topology-change notifications. Defaults to false.
+         */
         notifyEnabled?: boolean;
     }
 
     export interface PortProfilePortSecurity {
+        /**
+         * Enabled enables MAC-based port security. Defaults to false.
+         */
         enabled?: boolean;
+        /**
+         * MacAddresses lists allowed MAC addresses when port security is on.
+         */
         macAddresses?: string[];
     }
 
     export interface PortProfilePriorityQueues {
+        /**
+         * Queue1Level is the QoS priority queue 1 level (0-100).
+         */
         queue1Level?: number;
+        /**
+         * Queue2Level is the QoS priority queue 2 level (0-100).
+         */
         queue2Level?: number;
+        /**
+         * Queue3Level is the QoS priority queue 3 level (0-100).
+         */
         queue3Level?: number;
+        /**
+         * Queue4Level is the QoS priority queue 4 level (0-100).
+         */
         queue4Level?: number;
     }
 
     export interface PortProfileStormControl {
+        /**
+         * BroadcastEnabled enables broadcast storm control. Defaults to false.
+         */
         broadcastEnabled?: boolean;
+        /**
+         * BroadcastLevel is the broadcast storm-control level (0-100).
+         */
         broadcastLevel?: number;
+        /**
+         * BroadcastRate is the broadcast rate in pps (0-14880000).
+         */
         broadcastRate?: number;
+        /**
+         * MulticastEnabled enables multicast storm control. Defaults to false.
+         */
         multicastEnabled?: boolean;
+        /**
+         * MulticastLevel is the multicast storm-control level (0-100).
+         */
         multicastLevel?: number;
+        /**
+         * MulticastRate is the multicast rate in pps (0-14880000).
+         */
         multicastRate?: number;
+        /**
+         * Type selects the storm-control metric: level | rate.
+         */
         type?: string;
+        /**
+         * UnknownUnicastEnabled enables unknown-unicast storm control. Defaults to false.
+         */
         unknownUnicastEnabled?: boolean;
+        /**
+         * UnknownUnicastLevel is the unknown-unicast storm-control level (0-100).
+         */
         unknownUnicastLevel?: number;
+        /**
+         * UnknownUnicastRate is the unknown-unicast rate in pps (0-14880000).
+         */
         unknownUnicastRate?: number;
     }
 
     export interface PortProfileVlan {
+        /**
+         * ExcludedNetworkIds lists network `_id`s to exclude when forward is "customize".
+         */
         excludedNetworkIds?: string[];
+        /**
+         * Forward sets the VLAN forwarding mode: all (trunk) | native (access) | customize (selective trunk, use with excludedNetworkIds) | disabled. Defaults to "native".
+         */
         forward?: string;
+        /**
+         * MulticastRouterNetworkIds lists network `_id`s acting as multicast routers.
+         */
         multicastRouterNetworkIds?: string[];
+        /**
+         * NativeNetworkId is the network `_id` used as the native (untagged) VLAN.
+         */
         nativeNetworkId?: string;
+        /**
+         * TaggedVlanMgmt controls tagged VLAN behavior: auto | block_all | custom.
+         */
         taggedVlanMgmt?: string;
+        /**
+         * VoiceNetworkId is the network `_id` used for VoIP (voice VLAN) traffic.
+         */
         voiceNetworkId?: string;
     }
 
     export interface VlanDhcp {
+        /**
+         * BootEnabled enables DHCP network-boot (PXE) options.
+         */
         bootEnabled?: boolean;
+        /**
+         * BootFilename is the boot file name handed to PXE clients.
+         */
         bootFilename?: string;
+        /**
+         * BootServer is the next-server (boot server) IPv4 address.
+         */
         bootServer?: string;
+        /**
+         * ConflictChecking probes for IP conflicts before leasing.
+         */
         conflictChecking?: boolean;
+        /**
+         * Dns1 is the first DHCP-advertised DNS server.
+         */
         dns1?: string;
+        /**
+         * Dns2 is the second DHCP-advertised DNS server.
+         */
         dns2?: string;
+        /**
+         * Dns3 is the third DHCP-advertised DNS server.
+         */
         dns3?: string;
+        /**
+         * Dns4 is the fourth DHCP-advertised DNS server.
+         */
         dns4?: string;
+        /**
+         * DnsEnabled advertises custom DNS servers via DHCP (otherwise the gateway is used).
+         */
         dnsEnabled?: boolean;
+        /**
+         * Enabled toggles the built-in DHCP server for this network.
+         */
         enabled?: boolean;
+        /**
+         * Gateway overrides the DHCP-advertised gateway address.
+         */
         gateway?: string;
+        /**
+         * GatewayEnabled toggles the custom DHCP gateway override.
+         */
         gatewayEnabled?: boolean;
+        /**
+         * GuardEnabled blocks rogue DHCP servers on this network.
+         */
         guardEnabled?: boolean;
+        /**
+         * Lease is the DHCP lease time in seconds (default 86400).
+         */
         lease?: number;
+        /**
+         * Ntp1 is the first DHCP-advertised NTP server.
+         */
         ntp1?: string;
+        /**
+         * Ntp2 is the second DHCP-advertised NTP server.
+         */
         ntp2?: string;
+        /**
+         * NtpEnabled advertises NTP servers via DHCP.
+         */
         ntpEnabled?: boolean;
+        /**
+         * RelayEnabled forwards DHCP requests to an external relay instead of serving locally.
+         */
         relayEnabled?: boolean;
+        /**
+         * Start is the first address of the DHCP range, e.g. 192.168.20.6.
+         */
         start?: string;
+        /**
+         * Stop is the last address of the DHCP range, e.g. 192.168.20.254.
+         */
         stop?: string;
+        /**
+         * TftpServer is the TFTP server advertised via DHCP option 66.
+         */
         tftpServer?: string;
+        /**
+         * TimeOffset is the DHCP time offset (option 2) in seconds.
+         */
         timeOffset?: number;
+        /**
+         * TimeOffsetEnabled toggles advertising the time offset.
+         */
         timeOffsetEnabled?: boolean;
+        /**
+         * UnifiController advertises the UniFi controller (inform) address via DHCP.
+         */
         unifiController?: string;
+        /**
+         * Wins1 is the first DHCP-advertised WINS server.
+         */
         wins1?: string;
+        /**
+         * Wins2 is the second DHCP-advertised WINS server.
+         */
         wins2?: string;
+        /**
+         * WinsEnabled advertises WINS servers via DHCP.
+         */
         winsEnabled?: boolean;
+        /**
+         * WpadUrl advertises a WPAD/proxy-autoconfig URL via DHCP.
+         */
         wpadUrl?: string;
     }
 
     export interface VlanDhcpV6 {
+        /**
+         * AllowSlaac allows SLAAC alongside DHCPv6.
+         */
         allowSlaac?: boolean;
+        /**
+         * Dns1 is the first DHCPv6-advertised DNS server.
+         */
         dns1?: string;
+        /**
+         * Dns2 is the second DHCPv6-advertised DNS server.
+         */
         dns2?: string;
+        /**
+         * Dns3 is the third DHCPv6-advertised DNS server.
+         */
         dns3?: string;
+        /**
+         * Dns4 is the fourth DHCPv6-advertised DNS server.
+         */
         dns4?: string;
+        /**
+         * DnsAuto uses upstream-provided DNS for DHCPv6 (default true) instead of manual servers.
+         */
         dnsAuto?: boolean;
+        /**
+         * Enabled enables the stateful DHCPv6 server.
+         */
         enabled?: boolean;
+        /**
+         * Lease is the DHCPv6 lease time in seconds (default 86400).
+         */
         lease?: number;
+        /**
+         * Start is the first address of the DHCPv6 range.
+         */
         start?: string;
+        /**
+         * Stop is the last address of the DHCPv6 range.
+         */
         stop?: string;
     }
 
     export interface VlanIgmp {
+        /**
+         * FastLeave enables IGMP fast-leave processing.
+         */
         fastLeave?: boolean;
+        /**
+         * ForwardUnknownMulticast forwards unregistered multicast groups.
+         */
         forwardUnknownMulticast?: boolean;
+        /**
+         * GroupMembership is the IGMP group membership interval (seconds).
+         */
         groupMembership?: number;
+        /**
+         * MaxResponse is the IGMP max response time (seconds).
+         */
         maxResponse?: number;
+        /**
+         * McrtrExpireTime is the multicast router expiry time (seconds).
+         */
         mcrtrExpireTime?: number;
+        /**
+         * ProxyDownstreamNetworkIds lists downstream networks when proxyFor=some.
+         */
         proxyDownstreamNetworkIds?: string[];
+        /**
+         * ProxyFor selects downstream proxy scope: all | some | none.
+         */
         proxyFor?: string;
+        /**
+         * ProxyUpstream marks this network as the IGMP proxy upstream.
+         */
         proxyUpstream?: boolean;
+        /**
+         * QuerierSwitches pins IGMP querier addresses to specific switches.
+         */
         querierSwitches?: outputs.network.NetworkIgmpQuerierSwitch[];
+        /**
+         * Snooping enables IGMP snooping to optimize multicast flooding.
+         */
         snooping?: boolean;
+        /**
+         * Suppression suppresses redundant IGMP membership reports.
+         */
         suppression?: boolean;
     }
 
     export interface VlanIpv6 {
+        /**
+         * ClientAddressAssignment: slaac | dhcpv6.
+         */
         clientAddressAssignment?: string;
+        /**
+         * InterfaceType: none | static | pd | single_network.
+         */
         interfaceType?: string;
+        /**
+         * PdAutoPrefixIdEnabled lets the controller auto-assign the PD prefix ID.
+         */
         pdAutoPrefixIdEnabled?: boolean;
+        /**
+         * PdInterface is the WAN used for prefix delegation: wan | wan2.
+         */
         pdInterface?: string;
+        /**
+         * PdPrefixId is the hex prefix ID carved from the delegated prefix.
+         */
         pdPrefixId?: string;
+        /**
+         * PdStart is the first address of the PD-derived range.
+         */
         pdStart?: string;
+        /**
+         * PdStop is the last address of the PD-derived range.
+         */
         pdStop?: string;
+        /**
+         * RaEnabled enables IPv6 Router Advertisements.
+         */
         raEnabled?: boolean;
+        /**
+         * RaPreferredLifetime is the RA preferred lifetime in seconds (default 14400).
+         */
         raPreferredLifetime?: number;
+        /**
+         * RaPriority: high | medium | low.
+         */
         raPriority?: string;
+        /**
+         * RaValidLifetime is the RA valid lifetime in seconds (default 86400).
+         */
         raValidLifetime?: number;
+        /**
+         * SettingPreference: auto | manual.
+         */
         settingPreference?: string;
+        /**
+         * SingleNetworkInterface is the source network for single_network IPv6 mode.
+         */
         singleNetworkInterface?: string;
+        /**
+         * Subnet is the static IPv6 subnet (CIDR) when interfaceType=static.
+         */
         subnet?: string;
+        /**
+         * WanDelegationType (WAN networks): pd | single_network | none.
+         */
         wanDelegationType?: string;
     }
 
     export interface VlanNat {
+        /**
+         * Masquerade enables source NAT (masquerade) for this network.
+         */
         masquerade?: boolean;
+        /**
+         * OutboundIpAddresses configures outbound (source) NAT IP mappings.
+         */
         outboundIpAddresses?: outputs.network.NetworkNatOutboundIp[];
     }
 
     export interface VlanWan {
+        /**
+         * DhcpCos is the 802.1p CoS applied to WAN DHCP traffic (0-7).
+         */
         dhcpCos?: number;
+        /**
+         * DhcpOptions are custom DHCP options requested on the WAN.
+         */
         dhcpOptions?: outputs.network.NetworkWanDhcpOption[];
+        /**
+         * Dhcpv6PdSize is the IPv6 PD size to request from the ISP (48-64).
+         */
         dhcpv6PdSize?: number;
+        /**
+         * Dns1 is the first WAN DNS server.
+         */
         dns1?: string;
+        /**
+         * Dns2 is the second WAN DNS server.
+         */
         dns2?: string;
+        /**
+         * Dns3 is the third WAN DNS server.
+         */
         dns3?: string;
+        /**
+         * Dns4 is the fourth WAN DNS server.
+         */
         dns4?: string;
+        /**
+         * DnsPreference: auto | manual.
+         */
         dnsPreference?: string;
+        /**
+         * DsliteRemoteHost is the DS-Lite AFTR remote host (type=dslite).
+         */
         dsliteRemoteHost?: string;
+        /**
+         * EgressQos is the 802.1p priority for WAN egress (1-7).
+         */
         egressQos?: number;
+        /**
+         * Gateway is the static WAN IPv4 gateway.
+         */
         gateway?: string;
+        /**
+         * GatewayV6 is the static WAN IPv6 gateway.
+         */
         gatewayV6?: string;
+        /**
+         * Ip is the static WAN IPv4 address.
+         */
         ip?: string;
+        /**
+         * IpAliases are additional WAN IP aliases (CIDR).
+         */
         ipAliases?: string[];
+        /**
+         * Ipv6 is the static WAN IPv6 address.
+         */
         ipv6?: string;
+        /**
+         * Ipv6Dns1 is the first WAN IPv6 DNS server.
+         */
         ipv6Dns1?: string;
+        /**
+         * Ipv6Dns2 is the second WAN IPv6 DNS server.
+         */
         ipv6Dns2?: string;
+        /**
+         * Ipv6DnsPreference: auto | manual.
+         */
         ipv6DnsPreference?: string;
+        /**
+         * LoadBalanceType: failover-only | weighted.
+         */
         loadBalanceType?: string;
+        /**
+         * LoadBalanceWeight is the weighted load-balance weight (1-99).
+         */
         loadBalanceWeight?: number;
+        /**
+         * Netmask is the static WAN IPv4 netmask.
+         */
         netmask?: string;
+        /**
+         * NetworkGroup is the WAN interface group: WAN | WAN2 | WAN_LTE_FAILOVER.
+         */
         networkGroup?: string;
+        /**
+         * Password is the PPPoE password (type=pppoe). Secret.
+         */
         password?: string;
+        /**
+         * PppoePasswordEnabled toggles sending the PPPoE password.
+         */
         pppoePasswordEnabled?: boolean;
+        /**
+         * PppoeUsernameEnabled toggles sending the PPPoE username.
+         */
         pppoeUsernameEnabled?: boolean;
+        /**
+         * Prefixlen is the static WAN IPv6 prefix length (1-128).
+         */
         prefixlen?: number;
+        /**
+         * ProviderCapabilities advertises the ISP plan rates for SmartQueue.
+         */
         providerCapabilities?: outputs.network.NetworkWanProviderCapabilities;
+        /**
+         * SmartqDownRate is the SmartQueue download limit in kbps.
+         */
         smartqDownRate?: number;
+        /**
+         * SmartqEnabled enables SmartQueue QoS on the WAN.
+         */
         smartqEnabled?: boolean;
+        /**
+         * SmartqUpRate is the SmartQueue upload limit in kbps.
+         */
         smartqUpRate?: number;
+        /**
+         * Type (purpose=wan): disabled | dhcp | static | pppoe | dslite.
+         */
         type?: string;
+        /**
+         * TypeV6 (purpose=wan): disabled | slaac | dhcpv6 | static.
+         */
         typeV6?: string;
+        /**
+         * Username is the PPPoE username (type=pppoe).
+         */
         username?: string;
+        /**
+         * Vlan tags the WAN interface with a VLAN ID. Setting it enables WAN VLAN tagging.
+         */
         vlan?: number;
+        /**
+         * VlanEnabled toggles WAN VLAN tagging explicitly.
+         */
         vlanEnabled?: boolean;
     }
 
     export interface WlanApGroups {
+        /**
+         * Ids are the AP groups that should broadcast this SSID.
+         */
         ids?: string[];
+        /**
+         * Mode controls AP selection: all | groups | devices.
+         */
         mode?: string;
     }
 
     export interface WlanBandSteering {
+        /**
+         * Band is the radio band: 2g | 5g | both.
+         */
         band?: string;
+        /**
+         * Bands are the radio bands to broadcast on: 2g | 5g | 6g.
+         */
         bands?: string[];
+        /**
+         * No2GhzOui steers high-performance clients to 5GHz only.
+         */
         no2GhzOui?: boolean;
     }
 
     export interface WlanDpi {
+        /**
+         * Enabled enables deep packet inspection for this WLAN.
+         */
         enabled?: boolean;
+        /**
+         * GroupId is the DPI group to apply.
+         */
         groupId?: string;
     }
 
     export interface WlanDtim {
+        /**
+         * Mode controls DTIM interval handling: default | custom.
+         */
         mode?: string;
+        /**
+         * Na is the DTIM interval for the 5GHz band (1-255).
+         */
         na?: number;
+        /**
+         * Ng is the DTIM interval for the 2.4GHz band (1-255).
+         */
         ng?: number;
+        /**
+         * SixE is the DTIM interval for the 6GHz band (1-255).
+         */
         sixE?: number;
     }
 
     export interface WlanIot {
+        /**
+         * Enhanced enables enhanced IoT connectivity behaviors.
+         */
         enhanced?: boolean;
+        /**
+         * OptimizeWifiConnectivity optimizes connectivity for IoT devices.
+         */
         optimizeWifiConnectivity?: boolean;
     }
 
     export interface WlanMacFilter {
+        /**
+         * Enabled enables MAC-based access control.
+         */
         enabled?: boolean;
+        /**
+         * List is the list of MACs (XX:XX:XX:XX:XX:XX) the policy applies to.
+         */
         list?: string[];
+        /**
+         * Policy: allow | deny.
+         */
         policy?: string;
     }
 
     export interface WlanMinrate {
+        /**
+         * NaAdvertisingRates advertises only allowed 5GHz rates.
+         */
         naAdvertisingRates?: boolean;
+        /**
+         * NaDataRateKbps is the minimum 5GHz data rate in Kbps.
+         */
         naDataRateKbps?: number;
+        /**
+         * NaEnabled enables the 5GHz minimum data rate control.
+         */
         naEnabled?: boolean;
+        /**
+         * NgAdvertisingRates advertises only allowed 2.4GHz rates.
+         */
         ngAdvertisingRates?: boolean;
+        /**
+         * NgDataRateKbps is the minimum 2.4GHz data rate in Kbps.
+         */
         ngDataRateKbps?: number;
+        /**
+         * NgEnabled enables the 2.4GHz minimum data rate control.
+         */
         ngEnabled?: boolean;
+        /**
+         * SettingPreference: auto | manual.
+         */
         settingPreference?: string;
     }
 
     export interface WlanMulticast {
+        /**
+         * BroadcastFilterEnabled enables filtering of broadcast/multicast traffic.
+         */
         broadcastFilterEnabled?: boolean;
+        /**
+         * BroadcastFilterList is the allow list of MACs exempt from filtering.
+         */
         broadcastFilterList?: string[];
+        /**
+         * EnhanceEnabled converts multicast to unicast for reliability.
+         */
         enhanceEnabled?: boolean;
+        /**
+         * ProxyArp lets APs proxy common broadcast frames as unicast.
+         */
         proxyArp?: boolean;
     }
 
     export interface WlanP2p {
+        /**
+         * CrossConnect allows P2P traffic across APs.
+         */
         crossConnect?: boolean;
+        /**
+         * Enabled enables peer-to-peer (client-to-client) traffic.
+         */
         enabled?: boolean;
     }
 
     export interface WlanPrivatePresharedKeys {
+        /**
+         * Enabled enables per-key network placement.
+         */
         enabled?: boolean;
+        /**
+         * Keys is the list of private pre-shared keys.
+         */
         keys?: outputs.network.WlanPrivatePsk[];
     }
 
     export interface WlanPrivatePsk {
+        /**
+         * NetworkId is the network/VLAN (`_id`) clients using this key are placed on.
+         */
         networkId?: string;
+        /**
+         * Password is the pre-shared key for this entry (8-255 chars). Secret.
+         */
         password: string;
     }
 
     export interface WlanRadius {
+        /**
+         * DasEnabled enables RADIUS Dynamic Authorization (CoA/DM).
+         */
         dasEnabled?: boolean;
+        /**
+         * MacAuthEnabled enables RADIUS-based MAC authentication.
+         */
         macAuthEnabled?: boolean;
+        /**
+         * MacaclEmptyPassword sends an empty password for MAC ACL auth.
+         */
         macaclEmptyPassword?: boolean;
+        /**
+         * MacaclFormat is the MAC ACL format: none_lower | hyphen_lower | colon_lower | none_upper | hyphen_upper | colon_upper.
+         */
         macaclFormat?: string;
+        /**
+         * NasIdentifier is the RADIUS NAS identifier value (0-48 chars).
+         */
         nasIdentifier?: string;
+        /**
+         * NasIdentifierType: ap_name | ap_mac | bssid | site_name | custom.
+         */
         nasIdentifierType?: string;
+        /**
+         * ProfileId is the RADIUS profile (`_id`) for wpaeap security.
+         */
         profileId?: string;
     }
 
     export interface WlanRoaming {
+        /**
+         * BssTransition enables 802.11v BSS transition management.
+         */
         bssTransition?: boolean;
+        /**
+         * FastRoamingEnabled enables 802.11r fast BSS transition.
+         */
         fastRoamingEnabled?: boolean;
+        /**
+         * IappKey is the inter-AP protocol key (32 hex chars). Secret.
+         */
         iappKey?: string;
     }
 
     export interface WlanSae {
+        /**
+         * AntiClogging is the SAE anti-clogging threshold.
+         */
         antiClogging?: number;
+        /**
+         * Groups are the SAE finite cyclic groups to allow.
+         */
         groups?: number[];
+        /**
+         * Psks is the list of WPA3 SAE pre-shared keys.
+         */
         psks?: outputs.network.WlanSaePsk[];
+        /**
+         * Sync is the SAE sync value.
+         */
         sync?: number;
     }
 
     export interface WlanSaePsk {
+        /**
+         * Id is an optional identifier for this SAE PSK entry.
+         */
         id?: string;
+        /**
+         * Mac optionally binds this key to a specific client MAC (XX:XX:XX:XX:XX:XX).
+         */
         mac?: string;
+        /**
+         * Psk is the SAE pre-shared key (8-255 chars). Secret.
+         */
         psk: string;
+        /**
+         * Vlan optionally places clients using this key onto the given VLAN ID.
+         */
         vlan?: number;
     }
 
     export interface WlanSchedule {
+        /**
+         * Enabled enables time-based broadcast scheduling.
+         */
         enabled?: boolean;
+        /**
+         * Entries is the duration-based broadcast schedule.
+         */
         entries?: outputs.network.WlanScheduleEntry[];
+        /**
+         * Legacy is the legacy schedule format entries (day|HHMM-HHMM).
+         */
         legacy?: string[];
     }
 
     export interface WlanScheduleEntry {
+        /**
+         * DurationMinutes is how long, in minutes, the SSID stays active once started.
+         */
         durationMinutes: number;
+        /**
+         * Name is an optional friendly label for the schedule entry.
+         */
         name?: string;
+        /**
+         * StartDaysOfWeek selects the days this entry applies to: sun|mon|tue|wed|thu|fri|sat.
+         */
         startDaysOfWeek?: string[];
+        /**
+         * StartHour is the start hour (0-23).
+         */
         startHour: number;
+        /**
+         * StartMinute is the start minute (0-59). Defaults to 0.
+         */
         startMinute?: number;
     }
 
     export interface WlanVlanTagging {
+        /**
+         * Enabled enables VLAN tagging for this WLAN.
+         */
         enabled?: boolean;
+        /**
+         * Vlan is the VLAN ID to tag client traffic with.
+         */
         vlan?: number;
     }
 
     export interface WlanWep {
+        /**
+         * Index is the WEP key index (1-4).
+         */
         index?: number;
+        /**
+         * Key is the WEP key. Secret. Only used when security is "wep".
+         */
         key?: string;
     }
 
     export interface WlanWpa {
+        /**
+         * Enc is the WPA encryption cipher: auto | ccmp | gcmp | ccmp-256 | gcmp-256.
+         */
         enc?: string;
+        /**
+         * GroupRekey is the group key rekey interval in seconds (0 disables).
+         */
         groupRekey?: number;
+        /**
+         * Mode is the WPA mode: auto | wpa1 | wpa2.
+         */
         mode?: string;
+        /**
+         * PmfCipher is the PMF cipher: auto | aes-128-cmac | bip-gmac-256.
+         */
         pmfCipher?: string;
+        /**
+         * PmfMode is Protected Management Frames mode: disabled | optional | required.
+         */
         pmfMode?: string;
+        /**
+         * PskRadius controls RADIUS PSK auth: disabled | optional | required. This is a mode enum, not a credential, so it is not marked secret.
+         */
         pskRadius?: string;
     }
 
     export interface WlanWpa3 {
+        /**
+         * Enhanced192 enables WPA3 Enterprise 192-bit mode.
+         */
         enhanced192?: boolean;
+        /**
+         * FastRoaming enables 802.11r fast roaming for WPA3.
+         */
         fastRoaming?: boolean;
+        /**
+         * Support enables WPA3 (requires wpapsk security and PMF enabled).
+         */
         support?: boolean;
+        /**
+         * Transition enables WPA3/WPA2 transition mode (requires support).
+         */
         transition?: boolean;
     }
 
@@ -596,26 +1673,62 @@ export namespace network {
 
 export namespace protect {
     export interface AlarmCondition {
+        /**
+         * Source is the detection trigger, e.g. "motion", "person", "vehicle", "ring", "sensor_door_opened", "sensor_water_leak", "audio_alarm_smoke".
+         */
         source: string;
+        /**
+         * Type is the match type. Defaults to "is".
+         */
         type?: string;
+        /**
+         * Value refines some sources (e.g. a crossing-line direction or a known license plate).
+         */
         value?: string;
     }
 
     export interface AlarmCooldown {
+        /**
+         * Enabled toggles the cooldown.
+         */
         enabled: boolean;
+        /**
+         * TimeoutMs is the suppression window in milliseconds.
+         */
         timeoutMs: number;
     }
 
     export interface AlarmSource {
+        /**
+         * Device is the device MAC address, uppercase hex without separators (e.g. "F4E2C6730625").
+         */
         device: string;
+        /**
+         * Type is "include" or "exclude". Defaults to "include".
+         */
         type?: string;
     }
 
     export interface AlarmWebhookAction {
+        /**
+         * Headers are extra request headers.
+         */
         headers?: {[key: string]: string};
+        /**
+         * Method is the HTTP method. Defaults to "POST".
+         */
         method?: string;
+        /**
+         * TimeoutMs is the request timeout in milliseconds. Defaults to 30000.
+         */
         timeoutMs?: number;
+        /**
+         * Url is the webhook target URL.
+         */
         url: string;
+        /**
+         * UseThumbnail attaches the event thumbnail to the request. Defaults to true.
+         */
         useThumbnail?: boolean;
     }
 

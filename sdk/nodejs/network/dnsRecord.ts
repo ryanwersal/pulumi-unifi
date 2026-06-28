@@ -34,14 +34,41 @@ export class DnsRecord extends pulumi.CustomResource {
         return obj['__pulumiType'] === DnsRecord.__pulumiType;
     }
 
+    /**
+     * DnsRecordId is the controller-assigned identifier (the UniFi `_id`).
+     */
     declare public /*out*/ readonly dnsRecordId: pulumi.Output<string>;
+    /**
+     * Enabled controls whether the record is active. Defaults to true.
+     */
     declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    /**
+     * Key is the hostname/record name the record answers for, e.g. "host.example.com".
+     */
     declare public readonly key: pulumi.Output<string>;
+    /**
+     * Port is the target port for SRV records.
+     */
     declare public readonly port: pulumi.Output<number | undefined>;
+    /**
+     * Priority is the preference value for MX and SRV records.
+     */
     declare public readonly priority: pulumi.Output<number | undefined>;
+    /**
+     * RecordType is the DNS record type: A | AAAA | CNAME | MX | NS | PTR | SOA | SRV | TXT.
+     */
     declare public readonly recordType: pulumi.Output<string>;
+    /**
+     * Ttl is the record time-to-live in seconds. 0 lets the controller pick a default.
+     */
     declare public readonly ttl: pulumi.Output<number | undefined>;
+    /**
+     * Value is the record payload (e.g. an IP for A/AAAA, a hostname for CNAME/MX/NS).
+     */
     declare public readonly value: pulumi.Output<string>;
+    /**
+     * Weight is the relative weight for SRV records.
+     */
     declare public readonly weight: pulumi.Output<number | undefined>;
 
     /**
@@ -93,12 +120,36 @@ export class DnsRecord extends pulumi.CustomResource {
  * The set of arguments for constructing a DnsRecord resource.
  */
 export interface DnsRecordArgs {
+    /**
+     * Enabled controls whether the record is active. Defaults to true.
+     */
     enabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * Key is the hostname/record name the record answers for, e.g. "host.example.com".
+     */
     key: pulumi.Input<string>;
+    /**
+     * Port is the target port for SRV records.
+     */
     port?: pulumi.Input<number | undefined>;
+    /**
+     * Priority is the preference value for MX and SRV records.
+     */
     priority?: pulumi.Input<number | undefined>;
+    /**
+     * RecordType is the DNS record type: A | AAAA | CNAME | MX | NS | PTR | SOA | SRV | TXT.
+     */
     recordType: pulumi.Input<string>;
+    /**
+     * Ttl is the record time-to-live in seconds. 0 lets the controller pick a default.
+     */
     ttl?: pulumi.Input<number | undefined>;
+    /**
+     * Value is the record payload (e.g. an IP for A/AAAA, a hostname for CNAME/MX/NS).
+     */
     value: pulumi.Input<string>;
+    /**
+     * Weight is the relative weight for SRV records.
+     */
     weight?: pulumi.Input<number | undefined>;
 }

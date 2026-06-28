@@ -34,22 +34,73 @@ export class Camera extends pulumi.CustomResource {
         return obj['__pulumiType'] === Camera.__pulumiType;
     }
 
+    /**
+     * CameraId is the Protect camera ID (from the Protect API / bootstrap).
+     */
     declare public readonly cameraId: pulumi.Output<string>;
+    /**
+     * HdrType selects HDR behaviour, e.g. "auto", "always", "off".
+     */
     declare public readonly hdrType: pulumi.Output<string | undefined>;
+    /**
+     * LcdMessageResetAt is the epoch-millisecond timestamp at which the LCD message clears. 0 (or omitted) leaves the message until changed.
+     */
     declare public readonly lcdMessageResetAt: pulumi.Output<number | undefined>;
+    /**
+     * LcdMessageText is the doorbell LCD custom message text (used with type CUSTOM_MESSAGE).
+     */
     declare public readonly lcdMessageText: pulumi.Output<string | undefined>;
+    /**
+     * LcdMessageType is the doorbell LCD message type, e.g. "CUSTOM_MESSAGE", "DO_NOT_DISTURB", "LEAVE_PACKAGE_AT_DOOR" (doorbell cameras only).
+     */
     declare public readonly lcdMessageType: pulumi.Output<string | undefined>;
+    /**
+     * LedEnabled toggles the status LED (ledSettings.isEnabled).
+     */
     declare public readonly ledEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * MicVolume sets the microphone volume (0-100). A value of 0 is not applied by the Protect API (the field is omitted when zero).
+     */
     declare public readonly micVolume: pulumi.Output<number | undefined>;
+    /**
+     * Name is the camera's display name.
+     */
     declare public readonly name: pulumi.Output<string | undefined>;
+    /**
+     * OsdDateEnabled overlays the date/time on the video (osdSettings.isDateEnabled).
+     */
     declare public readonly osdDateEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * OsdDebugEnabled overlays debug telemetry on the video (osdSettings.isDebugEnabled).
+     */
     declare public readonly osdDebugEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * OsdLogoEnabled overlays the logo on the video (osdSettings.isLogoEnabled).
+     */
     declare public readonly osdLogoEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * OsdNameEnabled overlays the camera name on the video (osdSettings.isNameEnabled).
+     */
     declare public readonly osdNameEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * SmartDetectAudioTypes selects which sounds trigger smart detections, e.g. "smoke", "cmonitor" (CO alarm), "alrmSmoke", "alrmCmonitor".
+     */
     declare public readonly smartDetectAudioTypes: pulumi.Output<string[] | undefined>;
+    /**
+     * SmartDetectObjectTypes selects which objects trigger smart detections, e.g. "person", "vehicle", "animal", "package", "licensePlate".
+     */
     declare public readonly smartDetectObjectTypes: pulumi.Output<string[] | undefined>;
+    /**
+     * State is the connection state, e.g. "CONNECTED" (read-only).
+     */
     declare public /*out*/ readonly state: pulumi.Output<string>;
+    /**
+     * Type is the camera model/type (read-only; the Protect modelKey).
+     */
     declare public /*out*/ readonly type: pulumi.Output<string>;
+    /**
+     * VideoMode selects the capture mode, e.g. "default", "highFps", "sport".
+     */
     declare public readonly videoMode: pulumi.Output<string | undefined>;
 
     /**
@@ -103,6 +154,8 @@ export class Camera extends pulumi.CustomResource {
             resourceInputs["videoMode"] = undefined /*out*/;
         }
         opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+        const replaceOnChanges = { replaceOnChanges: ["cameraId"] };
+        opts = pulumi.mergeOptions(opts, replaceOnChanges);
         super(Camera.__pulumiType, name, resourceInputs, opts);
     }
 }
@@ -111,19 +164,64 @@ export class Camera extends pulumi.CustomResource {
  * The set of arguments for constructing a Camera resource.
  */
 export interface CameraArgs {
+    /**
+     * CameraId is the Protect camera ID (from the Protect API / bootstrap).
+     */
     cameraId: pulumi.Input<string>;
+    /**
+     * HdrType selects HDR behaviour, e.g. "auto", "always", "off".
+     */
     hdrType?: pulumi.Input<string | undefined>;
+    /**
+     * LcdMessageResetAt is the epoch-millisecond timestamp at which the LCD message clears. 0 (or omitted) leaves the message until changed.
+     */
     lcdMessageResetAt?: pulumi.Input<number | undefined>;
+    /**
+     * LcdMessageText is the doorbell LCD custom message text (used with type CUSTOM_MESSAGE).
+     */
     lcdMessageText?: pulumi.Input<string | undefined>;
+    /**
+     * LcdMessageType is the doorbell LCD message type, e.g. "CUSTOM_MESSAGE", "DO_NOT_DISTURB", "LEAVE_PACKAGE_AT_DOOR" (doorbell cameras only).
+     */
     lcdMessageType?: pulumi.Input<string | undefined>;
+    /**
+     * LedEnabled toggles the status LED (ledSettings.isEnabled).
+     */
     ledEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * MicVolume sets the microphone volume (0-100). A value of 0 is not applied by the Protect API (the field is omitted when zero).
+     */
     micVolume?: pulumi.Input<number | undefined>;
+    /**
+     * Name is the camera's display name.
+     */
     name?: pulumi.Input<string | undefined>;
+    /**
+     * OsdDateEnabled overlays the date/time on the video (osdSettings.isDateEnabled).
+     */
     osdDateEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * OsdDebugEnabled overlays debug telemetry on the video (osdSettings.isDebugEnabled).
+     */
     osdDebugEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * OsdLogoEnabled overlays the logo on the video (osdSettings.isLogoEnabled).
+     */
     osdLogoEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * OsdNameEnabled overlays the camera name on the video (osdSettings.isNameEnabled).
+     */
     osdNameEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * SmartDetectAudioTypes selects which sounds trigger smart detections, e.g. "smoke", "cmonitor" (CO alarm), "alrmSmoke", "alrmCmonitor".
+     */
     smartDetectAudioTypes?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+    /**
+     * SmartDetectObjectTypes selects which objects trigger smart detections, e.g. "person", "vehicle", "animal", "package", "licensePlate".
+     */
     smartDetectObjectTypes?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+    /**
+     * VideoMode selects the capture mode, e.g. "default", "highFps", "sport".
+     */
     videoMode?: pulumi.Input<string | undefined>;
 }

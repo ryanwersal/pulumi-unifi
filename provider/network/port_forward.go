@@ -69,7 +69,31 @@ func (p *PortForward) Annotate(a infer.Annotator) {
 
 // Annotate documents the destination-IP list element.
 func (d *PortForwardDestinationIp) Annotate(a infer.Annotator) {
+	a.Describe(&d.DestinationIp, "DestinationIp is the public/destination IPv4 address this entry matches, or \"any\".")
 	a.Describe(&d.Interface, "WAN interface this destination IP binds to: wan | wan2.")
+}
+
+// Annotate documents the port-forwarding inputs.
+func (pf *PortForwardArgs) Annotate(a infer.Annotator) {
+	a.Describe(&pf.Name, "Name of the port-forwarding rule (1-128 characters).")
+	a.Describe(&pf.Enabled, "Enabled controls whether the rule is active. Defaults to true.")
+	a.Describe(&pf.FwdPort, "FwdPort is the internal destination port traffic is forwarded TO (single port or range).")
+	a.Describe(&pf.DstPort, "DstPort is the external/WAN port traffic arrives ON, i.e. forwarded FROM (single port or range).")
+	a.Describe(&pf.Fwd, "Fwd is the internal IPv4 address to forward traffic to.")
+	a.Describe(&pf.Proto, "Proto selects the matched protocol: tcp_udp | tcp | udp. Defaults to \"tcp_udp\".")
+	a.Describe(&pf.Src, "Src restricts the source address: a single IPv4, range, CIDR, negation (!addr), or \"any\". Defaults to \"any\".")
+	a.Describe(&pf.Log, "Log enables logging of forwarded traffic. Defaults to false.")
+	a.Describe(&pf.PfwdInterface, "PfwdInterface selects the inbound WAN interface: wan | wan2 | both | all.")
+	a.Describe(&pf.SrcFirewallGroupId, "SrcFirewallGroupId references a firewall group used to restrict the source (when srcLimitingType=firewall_group).")
+	a.Describe(&pf.SrcLimitingEnabled, "SrcLimitingEnabled enables restricting the rule by source address or firewall group.")
+	a.Describe(&pf.SrcLimitingType, "SrcLimitingType selects how the source is limited: ip | firewall_group.")
+	a.Describe(&pf.DestinationIp, "DestinationIp is the public/destination IPv4 address this rule matches, or \"any\".")
+	a.Describe(&pf.DestinationIps, "DestinationIps maps destination IPs to specific WAN interfaces for multi-WAN setups.")
+}
+
+// Annotate documents the controller-assigned output fields.
+func (st *PortForwardState) Annotate(a infer.Annotator) {
+	a.Describe(&st.PortForwardId, "PortForwardId is the controller-assigned identifier (the UniFi `_id`).")
 }
 
 // toUnifi builds a go-unifi PortForward from inputs. id is empty on create.
@@ -184,6 +208,9 @@ func (PortForward) Create(ctx context.Context, req infer.CreateRequest[PortForwa
 func (PortForward) Read(ctx context.Context, req infer.ReadRequest[PortForwardArgs, PortForwardState]) (infer.ReadResponse[PortForwardArgs, PortForwardState], error) {
 	cfg := infer.GetConfig[config.Config](ctx)
 	pf, err := cfg.Network().GetPortForward(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.ReadResponse[PortForwardArgs, PortForwardState]{}, nil
+	}
 	if err != nil {
 		return infer.ReadResponse[PortForwardArgs, PortForwardState]{}, err
 	}

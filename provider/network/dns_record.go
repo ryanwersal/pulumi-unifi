@@ -47,6 +47,21 @@ func (d *DnsRecord) Annotate(a infer.Annotator) {
 		"Maps to a controller static-dns object.")
 }
 
+func (d *DnsRecordArgs) Annotate(a infer.Annotator) {
+	a.Describe(&d.Key, `Key is the hostname/record name the record answers for, e.g. "host.example.com".`)
+	a.Describe(&d.RecordType, "RecordType is the DNS record type: A | AAAA | CNAME | MX | NS | PTR | SOA | SRV | TXT.")
+	a.Describe(&d.Value, "Value is the record payload (e.g. an IP for A/AAAA, a hostname for CNAME/MX/NS).")
+	a.Describe(&d.Enabled, "Enabled controls whether the record is active. Defaults to true.")
+	a.Describe(&d.Ttl, "Ttl is the record time-to-live in seconds. 0 lets the controller pick a default.")
+	a.Describe(&d.Priority, "Priority is the preference value for MX and SRV records.")
+	a.Describe(&d.Port, "Port is the target port for SRV records.")
+	a.Describe(&d.Weight, "Weight is the relative weight for SRV records.")
+}
+
+func (d *DnsRecordState) Annotate(a infer.Annotator) {
+	a.Describe(&d.DnsRecordId, "DnsRecordId is the controller-assigned identifier (the UniFi `_id`).")
+}
+
 // toUnifi builds a go-unifi DNSRecord from inputs. id is empty on create.
 func (a DnsRecordArgs) toUnifi(id string) *unifi.DNSRecord {
 	r := &unifi.DNSRecord{
@@ -112,6 +127,9 @@ func (DnsRecord) Create(ctx context.Context, req infer.CreateRequest[DnsRecordAr
 func (DnsRecord) Read(ctx context.Context, req infer.ReadRequest[DnsRecordArgs, DnsRecordState]) (infer.ReadResponse[DnsRecordArgs, DnsRecordState], error) {
 	cfg := infer.GetConfig[config.Config](ctx)
 	r, err := cfg.Network().GetDNSRecord(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.ReadResponse[DnsRecordArgs, DnsRecordState]{}, nil
+	}
 	if err != nil {
 		return infer.ReadResponse[DnsRecordArgs, DnsRecordState]{}, err
 	}

@@ -39,6 +39,16 @@ func (g *FirewallGroup) Annotate(a infer.Annotator) {
 	a.Describe(&g, "A UniFi firewall group: a reusable set of addresses or ports referenced by firewall rules.")
 }
 
+func (d *FirewallGroupArgs) Annotate(a infer.Annotator) {
+	a.Describe(&d.Name, "Name of the firewall group (1-64 characters).")
+	a.Describe(&d.GroupType, "GroupType selects the kind of group: address-group | port-group | ipv6-address-group.")
+	a.Describe(&d.GroupMembers, "GroupMembers are the entries in the group. The accepted format depends on GroupType: IPv4 addresses/CIDRs for address-group, port numbers/ranges for port-group, or IPv6 addresses/CIDRs for ipv6-address-group.")
+}
+
+func (s *FirewallGroupState) Annotate(a infer.Annotator) {
+	a.Describe(&s.FirewallGroupId, "FirewallGroupId is the controller-assigned identifier (the UniFi `_id`).")
+}
+
 // toUnifi builds a go-unifi FirewallGroup from inputs. id is empty on create.
 func (a FirewallGroupArgs) toUnifi(id string) *unifi.FirewallGroup {
 	g := &unifi.FirewallGroup{
@@ -87,6 +97,9 @@ func (FirewallGroup) Create(ctx context.Context, req infer.CreateRequest[Firewal
 func (FirewallGroup) Read(ctx context.Context, req infer.ReadRequest[FirewallGroupArgs, FirewallGroupState]) (infer.ReadResponse[FirewallGroupArgs, FirewallGroupState], error) {
 	cfg := infer.GetConfig[config.Config](ctx)
 	g, err := cfg.Network().GetFirewallGroup(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.ReadResponse[FirewallGroupArgs, FirewallGroupState]{}, nil
+	}
 	if err != nil {
 		return infer.ReadResponse[FirewallGroupArgs, FirewallGroupState]{}, err
 	}

@@ -34,9 +34,21 @@ export class UserGroup extends pulumi.CustomResource {
         return obj['__pulumiType'] === UserGroup.__pulumiType;
     }
 
+    /**
+     * Name of the user group.
+     */
     declare public readonly name: pulumi.Output<string>;
+    /**
+     * QosRateMaxDown is the maximum download rate in kbps. -1 means unlimited. Defaults to -1.
+     */
     declare public readonly qosRateMaxDown: pulumi.Output<number | undefined>;
+    /**
+     * QosRateMaxUp is the maximum upload rate in kbps. -1 means unlimited. Defaults to -1.
+     */
     declare public readonly qosRateMaxUp: pulumi.Output<number | undefined>;
+    /**
+     * UserGroupId is the controller-assigned identifier (the UniFi `_id`).
+     */
     declare public /*out*/ readonly userGroupId: pulumi.Output<string>;
 
     /**
@@ -72,7 +84,16 @@ export class UserGroup extends pulumi.CustomResource {
  * The set of arguments for constructing a UserGroup resource.
  */
 export interface UserGroupArgs {
+    /**
+     * Name of the user group.
+     */
     name: pulumi.Input<string>;
+    /**
+     * QosRateMaxDown is the maximum download rate in kbps. -1 means unlimited. Defaults to -1.
+     */
     qosRateMaxDown?: pulumi.Input<number | undefined>;
+    /**
+     * QosRateMaxUp is the maximum upload rate in kbps. -1 means unlimited. Defaults to -1.
+     */
     qosRateMaxUp?: pulumi.Input<number | undefined>;
 }

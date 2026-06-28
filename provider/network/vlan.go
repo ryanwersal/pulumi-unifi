@@ -348,8 +348,176 @@ func (v *Vlan) Annotate(a infer.Annotator) {
 
 // Annotate documents the outbound NAT mapping fields.
 func (m *NetworkNatOutboundIp) Annotate(a infer.Annotator) {
+	a.Describe(&m.IpAddress, "IpAddress is the single outbound NAT source IPv4 address.")
+	a.Describe(&m.IpAddressPool, "IpAddressPool is a list of outbound NAT source IPs/ranges.")
 	a.Describe(&m.Mode, "Outbound NAT strategy: all | ip_address | ip_address_pool.")
 	a.Describe(&m.WanNetworkGroup, "WAN interface group the mapping applies to: WAN | WAN2.")
+}
+
+func (s *NetworkIgmpQuerierSwitch) Annotate(a infer.Annotator) {
+	a.Describe(&s.QuerierAddress, "QuerierAddress is the IGMP querier IPv4 address.")
+	a.Describe(&s.SwitchMac, "SwitchMac is the MAC address of the switch acting as querier.")
+}
+
+func (o *NetworkWanDhcpOption) Annotate(a infer.Annotator) {
+	a.Describe(&o.OptionNumber, "OptionNumber is the DHCP option code (1-254).")
+	a.Describe(&o.Value, "Value is the option value.")
+}
+
+func (c *NetworkWanProviderCapabilities) Annotate(a infer.Annotator) {
+	a.Describe(&c.DownloadKilobitsPerSecond, "DownloadKilobitsPerSecond is the ISP advertised download rate in kbps.")
+	a.Describe(&c.UploadKilobitsPerSecond, "UploadKilobitsPerSecond is the ISP advertised upload rate in kbps.")
+}
+
+func (d *VlanDhcp) Annotate(a infer.Annotator) {
+	a.Describe(&d.Enabled, "Enabled toggles the built-in DHCP server for this network.")
+	a.Describe(&d.Start, "Start is the first address of the DHCP range, e.g. 192.168.20.6.")
+	a.Describe(&d.Stop, "Stop is the last address of the DHCP range, e.g. 192.168.20.254.")
+	a.Describe(&d.Lease, "Lease is the DHCP lease time in seconds (default 86400).")
+	a.Describe(&d.Dns1, "Dns1 is the first DHCP-advertised DNS server.")
+	a.Describe(&d.Dns2, "Dns2 is the second DHCP-advertised DNS server.")
+	a.Describe(&d.Dns3, "Dns3 is the third DHCP-advertised DNS server.")
+	a.Describe(&d.Dns4, "Dns4 is the fourth DHCP-advertised DNS server.")
+	a.Describe(&d.DnsEnabled, "DnsEnabled advertises custom DNS servers via DHCP (otherwise the gateway is used).")
+	a.Describe(&d.Gateway, "Gateway overrides the DHCP-advertised gateway address.")
+	a.Describe(&d.GatewayEnabled, "GatewayEnabled toggles the custom DHCP gateway override.")
+	a.Describe(&d.Ntp1, "Ntp1 is the first DHCP-advertised NTP server.")
+	a.Describe(&d.Ntp2, "Ntp2 is the second DHCP-advertised NTP server.")
+	a.Describe(&d.NtpEnabled, "NtpEnabled advertises NTP servers via DHCP.")
+	a.Describe(&d.Wins1, "Wins1 is the first DHCP-advertised WINS server.")
+	a.Describe(&d.Wins2, "Wins2 is the second DHCP-advertised WINS server.")
+	a.Describe(&d.WinsEnabled, "WinsEnabled advertises WINS servers via DHCP.")
+	a.Describe(&d.BootEnabled, "BootEnabled enables DHCP network-boot (PXE) options.")
+	a.Describe(&d.BootFilename, "BootFilename is the boot file name handed to PXE clients.")
+	a.Describe(&d.BootServer, "BootServer is the next-server (boot server) IPv4 address.")
+	a.Describe(&d.TftpServer, "TftpServer is the TFTP server advertised via DHCP option 66.")
+	a.Describe(&d.UnifiController, "UnifiController advertises the UniFi controller (inform) address via DHCP.")
+	a.Describe(&d.ConflictChecking, "ConflictChecking probes for IP conflicts before leasing.")
+	a.Describe(&d.TimeOffset, "TimeOffset is the DHCP time offset (option 2) in seconds.")
+	a.Describe(&d.TimeOffsetEnabled, "TimeOffsetEnabled toggles advertising the time offset.")
+	a.Describe(&d.WpadUrl, "WpadUrl advertises a WPAD/proxy-autoconfig URL via DHCP.")
+	a.Describe(&d.RelayEnabled, "RelayEnabled forwards DHCP requests to an external relay instead of serving locally.")
+	a.Describe(&d.GuardEnabled, "GuardEnabled blocks rogue DHCP servers on this network.")
+}
+
+func (d *VlanDhcpV6) Annotate(a infer.Annotator) {
+	a.Describe(&d.Enabled, "Enabled enables the stateful DHCPv6 server.")
+	a.Describe(&d.Dns1, "Dns1 is the first DHCPv6-advertised DNS server.")
+	a.Describe(&d.Dns2, "Dns2 is the second DHCPv6-advertised DNS server.")
+	a.Describe(&d.Dns3, "Dns3 is the third DHCPv6-advertised DNS server.")
+	a.Describe(&d.Dns4, "Dns4 is the fourth DHCPv6-advertised DNS server.")
+	a.Describe(&d.DnsAuto, "DnsAuto uses upstream-provided DNS for DHCPv6 (default true) instead of manual servers.")
+	a.Describe(&d.Lease, "Lease is the DHCPv6 lease time in seconds (default 86400).")
+	a.Describe(&d.Start, "Start is the first address of the DHCPv6 range.")
+	a.Describe(&d.Stop, "Stop is the last address of the DHCPv6 range.")
+	a.Describe(&d.AllowSlaac, "AllowSlaac allows SLAAC alongside DHCPv6.")
+}
+
+func (v6 *VlanIpv6) Annotate(a infer.Annotator) {
+	a.Describe(&v6.InterfaceType, "InterfaceType: none | static | pd | single_network.")
+	a.Describe(&v6.ClientAddressAssignment, "ClientAddressAssignment: slaac | dhcpv6.")
+	a.Describe(&v6.Subnet, "Subnet is the static IPv6 subnet (CIDR) when interfaceType=static.")
+	a.Describe(&v6.SettingPreference, "SettingPreference: auto | manual.")
+	a.Describe(&v6.RaEnabled, "RaEnabled enables IPv6 Router Advertisements.")
+	a.Describe(&v6.RaPriority, "RaPriority: high | medium | low.")
+	a.Describe(&v6.RaPreferredLifetime, "RaPreferredLifetime is the RA preferred lifetime in seconds (default 14400).")
+	a.Describe(&v6.RaValidLifetime, "RaValidLifetime is the RA valid lifetime in seconds (default 86400).")
+	a.Describe(&v6.PdInterface, "PdInterface is the WAN used for prefix delegation: wan | wan2.")
+	a.Describe(&v6.PdPrefixId, "PdPrefixId is the hex prefix ID carved from the delegated prefix.")
+	a.Describe(&v6.PdStart, "PdStart is the first address of the PD-derived range.")
+	a.Describe(&v6.PdStop, "PdStop is the last address of the PD-derived range.")
+	a.Describe(&v6.PdAutoPrefixIdEnabled, "PdAutoPrefixIdEnabled lets the controller auto-assign the PD prefix ID.")
+	a.Describe(&v6.SingleNetworkInterface, "SingleNetworkInterface is the source network for single_network IPv6 mode.")
+	a.Describe(&v6.WanDelegationType, "WanDelegationType (WAN networks): pd | single_network | none.")
+}
+
+func (g *VlanIgmp) Annotate(a infer.Annotator) {
+	a.Describe(&g.Snooping, "Snooping enables IGMP snooping to optimize multicast flooding.")
+	a.Describe(&g.ProxyUpstream, "ProxyUpstream marks this network as the IGMP proxy upstream.")
+	a.Describe(&g.ProxyFor, "ProxyFor selects downstream proxy scope: all | some | none.")
+	a.Describe(&g.ProxyDownstreamNetworkIds, "ProxyDownstreamNetworkIds lists downstream networks when proxyFor=some.")
+	a.Describe(&g.FastLeave, "FastLeave enables IGMP fast-leave processing.")
+	a.Describe(&g.ForwardUnknownMulticast, "ForwardUnknownMulticast forwards unregistered multicast groups.")
+	a.Describe(&g.GroupMembership, "GroupMembership is the IGMP group membership interval (seconds).")
+	a.Describe(&g.MaxResponse, "MaxResponse is the IGMP max response time (seconds).")
+	a.Describe(&g.McrtrExpireTime, "McrtrExpireTime is the multicast router expiry time (seconds).")
+	a.Describe(&g.Suppression, "Suppression suppresses redundant IGMP membership reports.")
+	a.Describe(&g.QuerierSwitches, "QuerierSwitches pins IGMP querier addresses to specific switches.")
+}
+
+func (w *VlanWan) Annotate(a infer.Annotator) {
+	a.Describe(&w.Type, "Type (purpose=wan): disabled | dhcp | static | pppoe | dslite.")
+	a.Describe(&w.TypeV6, "TypeV6 (purpose=wan): disabled | slaac | dhcpv6 | static.")
+	a.Describe(&w.Ip, "Ip is the static WAN IPv4 address.")
+	a.Describe(&w.Ipv6, "Ipv6 is the static WAN IPv6 address.")
+	a.Describe(&w.Netmask, "Netmask is the static WAN IPv4 netmask.")
+	a.Describe(&w.Gateway, "Gateway is the static WAN IPv4 gateway.")
+	a.Describe(&w.GatewayV6, "GatewayV6 is the static WAN IPv6 gateway.")
+	a.Describe(&w.Dns1, "Dns1 is the first WAN DNS server.")
+	a.Describe(&w.Dns2, "Dns2 is the second WAN DNS server.")
+	a.Describe(&w.Dns3, "Dns3 is the third WAN DNS server.")
+	a.Describe(&w.Dns4, "Dns4 is the fourth WAN DNS server.")
+	a.Describe(&w.DnsPreference, "DnsPreference: auto | manual.")
+	a.Describe(&w.Ipv6Dns1, "Ipv6Dns1 is the first WAN IPv6 DNS server.")
+	a.Describe(&w.Ipv6Dns2, "Ipv6Dns2 is the second WAN IPv6 DNS server.")
+	a.Describe(&w.Ipv6DnsPreference, "Ipv6DnsPreference: auto | manual.")
+	a.Describe(&w.NetworkGroup, "NetworkGroup is the WAN interface group: WAN | WAN2 | WAN_LTE_FAILOVER.")
+	a.Describe(&w.Vlan, "Vlan tags the WAN interface with a VLAN ID. Setting it enables WAN VLAN tagging.")
+	a.Describe(&w.VlanEnabled, "VlanEnabled toggles WAN VLAN tagging explicitly.")
+	a.Describe(&w.Username, "Username is the PPPoE username (type=pppoe).")
+	a.Describe(&w.Password, "Password is the PPPoE password (type=pppoe). Secret.")
+	a.Describe(&w.PppoeUsernameEnabled, "PppoeUsernameEnabled toggles sending the PPPoE username.")
+	a.Describe(&w.PppoePasswordEnabled, "PppoePasswordEnabled toggles sending the PPPoE password.")
+	a.Describe(&w.SmartqEnabled, "SmartqEnabled enables SmartQueue QoS on the WAN.")
+	a.Describe(&w.SmartqUpRate, "SmartqUpRate is the SmartQueue upload limit in kbps.")
+	a.Describe(&w.SmartqDownRate, "SmartqDownRate is the SmartQueue download limit in kbps.")
+	a.Describe(&w.LoadBalanceType, "LoadBalanceType: failover-only | weighted.")
+	a.Describe(&w.LoadBalanceWeight, "LoadBalanceWeight is the weighted load-balance weight (1-99).")
+	a.Describe(&w.DhcpCos, "DhcpCos is the 802.1p CoS applied to WAN DHCP traffic (0-7).")
+	a.Describe(&w.DhcpOptions, "DhcpOptions are custom DHCP options requested on the WAN.")
+	a.Describe(&w.Dhcpv6PdSize, "Dhcpv6PdSize is the IPv6 PD size to request from the ISP (48-64).")
+	a.Describe(&w.Prefixlen, "Prefixlen is the static WAN IPv6 prefix length (1-128).")
+	a.Describe(&w.EgressQos, "EgressQos is the 802.1p priority for WAN egress (1-7).")
+	a.Describe(&w.ProviderCapabilities, "ProviderCapabilities advertises the ISP plan rates for SmartQueue.")
+	a.Describe(&w.IpAliases, "IpAliases are additional WAN IP aliases (CIDR).")
+	a.Describe(&w.DsliteRemoteHost, "DsliteRemoteHost is the DS-Lite AFTR remote host (type=dslite).")
+}
+
+func (nat *VlanNat) Annotate(a infer.Annotator) {
+	a.Describe(&nat.Masquerade, "Masquerade enables source NAT (masquerade) for this network.")
+	a.Describe(&nat.OutboundIpAddresses, "OutboundIpAddresses configures outbound (source) NAT IP mappings.")
+}
+
+func (d *VlanArgs) Annotate(a infer.Annotator) {
+	a.Describe(&d.Name, "Name of the network.")
+	a.Describe(&d.Purpose, "Purpose: corporate | guest | vlan-only | wan | remote-user-vpn | site-vpn | vpn-client. Defaults to \"corporate\".")
+	a.Describe(&d.Vlan, "Vlan is the 802.1Q VLAN ID. When set, VLAN tagging is enabled.")
+	a.Describe(&d.Subnet, "Subnet is the gateway IP/CIDR for the network, e.g. 192.168.20.1/24.")
+	a.Describe(&d.Enabled, "Enabled controls whether the network is active. Defaults to true.")
+	a.Describe(&d.NetworkGroup, "NetworkGroup is the interface group: LAN, LAN2..LAN8 (or WAN/WAN2 for WAN networks). Defaults to \"LAN\".")
+	a.Describe(&d.DomainName, "DomainName is the DNS domain handed to clients.")
+	a.Describe(&d.MdnsEnabled, "MdnsEnabled enables multicast DNS (Bonjour/mDNS) repeating on this network.")
+	a.Describe(&d.InternetAccessEnabled, "InternetAccessEnabled controls whether clients may reach the internet. Defaults to true.")
+	a.Describe(&d.NetworkIsolationEnabled, "NetworkIsolationEnabled isolates clients from other networks. Defaults to false.")
+	a.Describe(&d.AutoScaleEnabled, "AutoScaleEnabled lets the controller auto-size the subnet.")
+	a.Describe(&d.DpiEnabled, "DpiEnabled enables Deep Packet Inspection on this network.")
+	a.Describe(&d.GatewayType, "GatewayType: default | switch.")
+	a.Describe(&d.SettingPreference, "SettingPreference: auto | manual. Controls whether device-specific overrides apply.")
+	a.Describe(&d.InterfaceMtu, "InterfaceMtu sets the interface MTU. Setting it enables the MTU override.")
+	a.Describe(&d.InterfaceMtuEnabled, "InterfaceMtuEnabled toggles the interface MTU override explicitly.")
+	a.Describe(&d.MacOverride, "MacOverride clones a MAC address on the interface (commonly used on WAN).")
+	a.Describe(&d.MacOverrideEnabled, "MacOverrideEnabled toggles the MAC clone override.")
+	a.Describe(&d.UpnpLanEnabled, "UpnpLanEnabled enables UPnP on this LAN.")
+	a.Describe(&d.Dhcp, "Dhcp groups the IPv4 DHCP-server settings.")
+	a.Describe(&d.DhcpV6, "DhcpV6 groups the stateful DHCPv6-server settings.")
+	a.Describe(&d.Ipv6, "Ipv6 groups the IPv6 addressing / RA / prefix-delegation settings.")
+	a.Describe(&d.Igmp, "Igmp groups the multicast / IGMP settings.")
+	a.Describe(&d.Wan, "Wan groups the WAN-uplink settings (used when purpose=wan).")
+	a.Describe(&d.Nat, "Nat groups the source/outbound NAT settings.")
+}
+
+func (s *VlanState) Annotate(a infer.Annotator) {
+	a.Describe(&s.NetworkId, "NetworkId is the controller-assigned identifier (the UniFi `_id`).")
 }
 
 // toUnifi builds a go-unifi Network from inputs. id is empty on create.
@@ -1131,6 +1299,9 @@ func (Vlan) Create(ctx context.Context, req infer.CreateRequest[VlanArgs]) (infe
 func (Vlan) Read(ctx context.Context, req infer.ReadRequest[VlanArgs, VlanState]) (infer.ReadResponse[VlanArgs, VlanState], error) {
 	cfg := infer.GetConfig[config.Config](ctx)
 	n, err := cfg.Network().GetNetwork(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.ReadResponse[VlanArgs, VlanState]{}, nil
+	}
 	if err != nil {
 		return infer.ReadResponse[VlanArgs, VlanState]{}, err
 	}

@@ -34,15 +34,45 @@ export class StaticRoute extends pulumi.CustomResource {
         return obj['__pulumiType'] === StaticRoute.__pulumiType;
     }
 
+    /**
+     * Distance is the administrative distance / metric of the route (1-255).
+     */
     declare public readonly distance: pulumi.Output<number | undefined>;
+    /**
+     * Enabled controls whether the route is active. Defaults to true.
+     */
     declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    /**
+     * GatewayDevice is the MAC address of the gateway device that hosts the route.
+     */
     declare public readonly gatewayDevice: pulumi.Output<string | undefined>;
+    /**
+     * GatewayType selects which gateway handles the route: default | switch.
+     */
     declare public readonly gatewayType: pulumi.Output<string | undefined>;
+    /**
+     * Interface is the egress interface when staticRouteType=interface-route: WAN1 | WAN2 | a network ID.
+     */
     declare public readonly interface: pulumi.Output<string | undefined>;
+    /**
+     * Name of the static route.
+     */
     declare public readonly name: pulumi.Output<string>;
+    /**
+     * Network is the destination network in CIDR notation (IPv4 or IPv6), e.g. 10.0.0.0/24.
+     */
     declare public readonly network: pulumi.Output<string>;
+    /**
+     * Nexthop is the next-hop IP address (required when staticRouteType=nexthop-route).
+     */
     declare public readonly nexthop: pulumi.Output<string | undefined>;
+    /**
+     * StaticRouteId is the controller-assigned identifier (the UniFi `_id`).
+     */
     declare public /*out*/ readonly staticRouteId: pulumi.Output<string>;
+    /**
+     * StaticRouteType selects the route kind: nexthop-route | interface-route | blackhole.
+     */
     declare public readonly staticRouteType: pulumi.Output<string>;
 
     /**
@@ -96,13 +126,40 @@ export class StaticRoute extends pulumi.CustomResource {
  * The set of arguments for constructing a StaticRoute resource.
  */
 export interface StaticRouteArgs {
+    /**
+     * Distance is the administrative distance / metric of the route (1-255).
+     */
     distance?: pulumi.Input<number | undefined>;
+    /**
+     * Enabled controls whether the route is active. Defaults to true.
+     */
     enabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * GatewayDevice is the MAC address of the gateway device that hosts the route.
+     */
     gatewayDevice?: pulumi.Input<string | undefined>;
+    /**
+     * GatewayType selects which gateway handles the route: default | switch.
+     */
     gatewayType?: pulumi.Input<string | undefined>;
+    /**
+     * Interface is the egress interface when staticRouteType=interface-route: WAN1 | WAN2 | a network ID.
+     */
     interface?: pulumi.Input<string | undefined>;
+    /**
+     * Name of the static route.
+     */
     name: pulumi.Input<string>;
+    /**
+     * Network is the destination network in CIDR notation (IPv4 or IPv6), e.g. 10.0.0.0/24.
+     */
     network: pulumi.Input<string>;
+    /**
+     * Nexthop is the next-hop IP address (required when staticRouteType=nexthop-route).
+     */
     nexthop?: pulumi.Input<string | undefined>;
+    /**
+     * StaticRouteType selects the route kind: nexthop-route | interface-route | blackhole.
+     */
     staticRouteType: pulumi.Input<string>;
 }

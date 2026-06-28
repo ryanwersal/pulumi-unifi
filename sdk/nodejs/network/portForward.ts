@@ -36,20 +36,65 @@ export class PortForward extends pulumi.CustomResource {
         return obj['__pulumiType'] === PortForward.__pulumiType;
     }
 
+    /**
+     * DestinationIp is the public/destination IPv4 address this rule matches, or "any".
+     */
     declare public readonly destinationIp: pulumi.Output<string | undefined>;
+    /**
+     * DestinationIps maps destination IPs to specific WAN interfaces for multi-WAN setups.
+     */
     declare public readonly destinationIps: pulumi.Output<outputs.network.PortForwardDestinationIp[] | undefined>;
+    /**
+     * DstPort is the external/WAN port traffic arrives ON, i.e. forwarded FROM (single port or range).
+     */
     declare public readonly dstPort: pulumi.Output<string | undefined>;
+    /**
+     * Enabled controls whether the rule is active. Defaults to true.
+     */
     declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    /**
+     * Fwd is the internal IPv4 address to forward traffic to.
+     */
     declare public readonly fwd: pulumi.Output<string | undefined>;
+    /**
+     * FwdPort is the internal destination port traffic is forwarded TO (single port or range).
+     */
     declare public readonly fwdPort: pulumi.Output<string | undefined>;
+    /**
+     * Log enables logging of forwarded traffic. Defaults to false.
+     */
     declare public readonly log: pulumi.Output<boolean | undefined>;
+    /**
+     * Name of the port-forwarding rule (1-128 characters).
+     */
     declare public readonly name: pulumi.Output<string | undefined>;
+    /**
+     * PfwdInterface selects the inbound WAN interface: wan | wan2 | both | all.
+     */
     declare public readonly pfwdInterface: pulumi.Output<string | undefined>;
+    /**
+     * PortForwardId is the controller-assigned identifier (the UniFi `_id`).
+     */
     declare public /*out*/ readonly portForwardId: pulumi.Output<string>;
+    /**
+     * Proto selects the matched protocol: tcp_udp | tcp | udp. Defaults to "tcp_udp".
+     */
     declare public readonly proto: pulumi.Output<string | undefined>;
+    /**
+     * Src restricts the source address: a single IPv4, range, CIDR, negation (!addr), or "any". Defaults to "any".
+     */
     declare public readonly src: pulumi.Output<string | undefined>;
+    /**
+     * SrcFirewallGroupId references a firewall group used to restrict the source (when srcLimitingType=firewall_group).
+     */
     declare public readonly srcFirewallGroupId: pulumi.Output<string | undefined>;
+    /**
+     * SrcLimitingEnabled enables restricting the rule by source address or firewall group.
+     */
     declare public readonly srcLimitingEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * SrcLimitingType selects how the source is limited: ip | firewall_group.
+     */
     declare public readonly srcLimitingType: pulumi.Output<string | undefined>;
 
     /**
@@ -104,18 +149,60 @@ export class PortForward extends pulumi.CustomResource {
  * The set of arguments for constructing a PortForward resource.
  */
 export interface PortForwardArgs {
+    /**
+     * DestinationIp is the public/destination IPv4 address this rule matches, or "any".
+     */
     destinationIp?: pulumi.Input<string | undefined>;
+    /**
+     * DestinationIps maps destination IPs to specific WAN interfaces for multi-WAN setups.
+     */
     destinationIps?: pulumi.Input<pulumi.Input<inputs.network.PortForwardDestinationIpArgs>[] | undefined>;
+    /**
+     * DstPort is the external/WAN port traffic arrives ON, i.e. forwarded FROM (single port or range).
+     */
     dstPort?: pulumi.Input<string | undefined>;
+    /**
+     * Enabled controls whether the rule is active. Defaults to true.
+     */
     enabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * Fwd is the internal IPv4 address to forward traffic to.
+     */
     fwd?: pulumi.Input<string | undefined>;
+    /**
+     * FwdPort is the internal destination port traffic is forwarded TO (single port or range).
+     */
     fwdPort?: pulumi.Input<string | undefined>;
+    /**
+     * Log enables logging of forwarded traffic. Defaults to false.
+     */
     log?: pulumi.Input<boolean | undefined>;
+    /**
+     * Name of the port-forwarding rule (1-128 characters).
+     */
     name?: pulumi.Input<string | undefined>;
+    /**
+     * PfwdInterface selects the inbound WAN interface: wan | wan2 | both | all.
+     */
     pfwdInterface?: pulumi.Input<string | undefined>;
+    /**
+     * Proto selects the matched protocol: tcp_udp | tcp | udp. Defaults to "tcp_udp".
+     */
     proto?: pulumi.Input<string | undefined>;
+    /**
+     * Src restricts the source address: a single IPv4, range, CIDR, negation (!addr), or "any". Defaults to "any".
+     */
     src?: pulumi.Input<string | undefined>;
+    /**
+     * SrcFirewallGroupId references a firewall group used to restrict the source (when srcLimitingType=firewall_group).
+     */
     srcFirewallGroupId?: pulumi.Input<string | undefined>;
+    /**
+     * SrcLimitingEnabled enables restricting the rule by source address or firewall group.
+     */
     srcLimitingEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * SrcLimitingType selects how the source is limited: ip | firewall_group.
+     */
     srcLimitingType?: pulumi.Input<string | undefined>;
 }

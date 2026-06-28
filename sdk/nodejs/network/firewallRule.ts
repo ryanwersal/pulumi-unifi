@@ -36,18 +36,57 @@ export class FirewallRule extends pulumi.CustomResource {
         return obj['__pulumiType'] === FirewallRule.__pulumiType;
     }
 
+    /**
+     * Action taken on matching traffic: accept | drop | reject.
+     */
     declare public readonly action: pulumi.Output<string | undefined>;
+    /**
+     * ConnectionState groups the conntrack-state match toggles.
+     */
     declare public readonly connectionState: pulumi.Output<outputs.network.FirewallRuleConnectionState | undefined>;
+    /**
+     * Destination groups the destination-side match selectors.
+     */
     declare public readonly destination: pulumi.Output<outputs.network.FirewallRuleDestination | undefined>;
+    /**
+     * Enabled controls whether the rule is active. Defaults to true.
+     */
     declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    /**
+     * FirewallRuleId is the controller-assigned identifier (the UniFi `_id`).
+     */
     declare public /*out*/ readonly firewallRuleId: pulumi.Output<string>;
+    /**
+     * IpSec matches on IPsec encapsulation: match-ipsec | match-none.
+     */
     declare public readonly ipSec: pulumi.Output<string | undefined>;
+    /**
+     * Logging enables logging of packets that match this rule.
+     */
     declare public readonly logging: pulumi.Output<boolean | undefined>;
+    /**
+     * Name of the firewall rule (1-128 characters).
+     */
     declare public readonly name: pulumi.Output<string>;
+    /**
+     * ProtocolMatch groups the protocol / ICMP-type match selectors.
+     */
     declare public readonly protocolMatch: pulumi.Output<outputs.network.FirewallRuleProtocolMatch | undefined>;
+    /**
+     * RuleIndex is the ordering index of the rule within its ruleset. Must be >= 2000 and < 3000, or >= 4000 and < 5000.
+     */
     declare public readonly ruleIndex: pulumi.Output<number>;
+    /**
+     * Ruleset the rule belongs to, from the perspective of the security gateway: WAN_IN | WAN_OUT | WAN_LOCAL | LAN_IN | LAN_OUT | LAN_LOCAL | GUEST_IN | GUEST_OUT | GUEST_LOCAL | WANv6_IN | WANv6_OUT | WANv6_LOCAL | LANv6_IN | LANv6_OUT | LANv6_LOCAL | GUESTv6_IN | GUESTv6_OUT | GUESTv6_LOCAL.
+     */
     declare public readonly ruleset: pulumi.Output<string | undefined>;
+    /**
+     * SettingPreference controls whether the rule uses automatic or manual settings: auto | manual.
+     */
     declare public readonly settingPreference: pulumi.Output<string | undefined>;
+    /**
+     * Source groups the source-side match selectors.
+     */
     declare public readonly source: pulumi.Output<outputs.network.FirewallRuleSource | undefined>;
 
     /**
@@ -104,16 +143,52 @@ export class FirewallRule extends pulumi.CustomResource {
  * The set of arguments for constructing a FirewallRule resource.
  */
 export interface FirewallRuleArgs {
+    /**
+     * Action taken on matching traffic: accept | drop | reject.
+     */
     action?: pulumi.Input<string | undefined>;
+    /**
+     * ConnectionState groups the conntrack-state match toggles.
+     */
     connectionState?: pulumi.Input<inputs.network.FirewallRuleConnectionStateArgs | undefined>;
+    /**
+     * Destination groups the destination-side match selectors.
+     */
     destination?: pulumi.Input<inputs.network.FirewallRuleDestinationArgs | undefined>;
+    /**
+     * Enabled controls whether the rule is active. Defaults to true.
+     */
     enabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * IpSec matches on IPsec encapsulation: match-ipsec | match-none.
+     */
     ipSec?: pulumi.Input<string | undefined>;
+    /**
+     * Logging enables logging of packets that match this rule.
+     */
     logging?: pulumi.Input<boolean | undefined>;
+    /**
+     * Name of the firewall rule (1-128 characters).
+     */
     name: pulumi.Input<string>;
+    /**
+     * ProtocolMatch groups the protocol / ICMP-type match selectors.
+     */
     protocolMatch?: pulumi.Input<inputs.network.FirewallRuleProtocolMatchArgs | undefined>;
+    /**
+     * RuleIndex is the ordering index of the rule within its ruleset. Must be >= 2000 and < 3000, or >= 4000 and < 5000.
+     */
     ruleIndex: pulumi.Input<number>;
+    /**
+     * Ruleset the rule belongs to, from the perspective of the security gateway: WAN_IN | WAN_OUT | WAN_LOCAL | LAN_IN | LAN_OUT | LAN_LOCAL | GUEST_IN | GUEST_OUT | GUEST_LOCAL | WANv6_IN | WANv6_OUT | WANv6_LOCAL | LANv6_IN | LANv6_OUT | LANv6_LOCAL | GUESTv6_IN | GUESTv6_OUT | GUESTv6_LOCAL.
+     */
     ruleset?: pulumi.Input<string | undefined>;
+    /**
+     * SettingPreference controls whether the rule uses automatic or manual settings: auto | manual.
+     */
     settingPreference?: pulumi.Input<string | undefined>;
+    /**
+     * Source groups the source-side match selectors.
+     */
     source?: pulumi.Input<inputs.network.FirewallRuleSourceArgs | undefined>;
 }

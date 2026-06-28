@@ -36,12 +36,33 @@ export class AlarmAutomation extends pulumi.CustomResource {
         return obj['__pulumiType'] === AlarmAutomation.__pulumiType;
     }
 
+    /**
+     * AutomationId is the controller-assigned rule identifier.
+     */
     declare public /*out*/ readonly automationId: pulumi.Output<string>;
+    /**
+     * Conditions are the trigger conditions (ANDed). At least one is required.
+     */
     declare public readonly conditions: pulumi.Output<outputs.protect.AlarmCondition[]>;
+    /**
+     * Cooldown suppresses repeat fires. Defaults to disabled with a 10-minute window.
+     */
     declare public readonly cooldown: pulumi.Output<outputs.protect.AlarmCooldown | undefined>;
+    /**
+     * Enabled controls whether the rule fires. Defaults to true.
+     */
     declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    /**
+     * Name is the rule's display name.
+     */
     declare public readonly name: pulumi.Output<string>;
+    /**
+     * Sources scopes the rule to devices. Empty means all devices.
+     */
     declare public readonly sources: pulumi.Output<outputs.protect.AlarmSource[] | undefined>;
+    /**
+     * WebhookActions fire when the rule matches. At least one is required.
+     */
     declare public readonly webhookActions: pulumi.Output<outputs.protect.AlarmWebhookAction[]>;
 
     /**
@@ -89,10 +110,28 @@ export class AlarmAutomation extends pulumi.CustomResource {
  * The set of arguments for constructing a AlarmAutomation resource.
  */
 export interface AlarmAutomationArgs {
+    /**
+     * Conditions are the trigger conditions (ANDed). At least one is required.
+     */
     conditions: pulumi.Input<pulumi.Input<inputs.protect.AlarmConditionArgs>[]>;
+    /**
+     * Cooldown suppresses repeat fires. Defaults to disabled with a 10-minute window.
+     */
     cooldown?: pulumi.Input<inputs.protect.AlarmCooldownArgs | undefined>;
+    /**
+     * Enabled controls whether the rule fires. Defaults to true.
+     */
     enabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * Name is the rule's display name.
+     */
     name: pulumi.Input<string>;
+    /**
+     * Sources scopes the rule to devices. Empty means all devices.
+     */
     sources?: pulumi.Input<pulumi.Input<inputs.protect.AlarmSourceArgs>[] | undefined>;
+    /**
+     * WebhookActions fire when the rule matches. At least one is required.
+     */
     webhookActions: pulumi.Input<pulumi.Input<inputs.protect.AlarmWebhookActionArgs>[]>;
 }

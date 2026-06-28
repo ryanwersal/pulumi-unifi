@@ -36,6 +36,11 @@ type AlarmSource struct {
 	Type *string `pulumi:"type,optional"`
 }
 
+func (s *AlarmSource) Annotate(a infer.Annotator) {
+	a.Describe(&s.Device, `Device is the device MAC address, uppercase hex without separators (e.g. "F4E2C6730625").`)
+	a.Describe(&s.Type, `Type is "include" or "exclude". Defaults to "include".`)
+}
+
 // AlarmCondition is a single trigger condition. Conditions are ANDed.
 type AlarmCondition struct {
 	// Source is the detection trigger, e.g. "motion", "person", "vehicle",
@@ -45,6 +50,12 @@ type AlarmCondition struct {
 	Type *string `pulumi:"type,optional"`
 	// Value refines some sources (e.g. a crossing-line direction or a known license plate).
 	Value *string `pulumi:"value,optional"`
+}
+
+func (c *AlarmCondition) Annotate(a infer.Annotator) {
+	a.Describe(&c.Source, `Source is the detection trigger, e.g. "motion", "person", "vehicle", "ring", "sensor_door_opened", "sensor_water_leak", "audio_alarm_smoke".`)
+	a.Describe(&c.Type, `Type is the match type. Defaults to "is".`)
+	a.Describe(&c.Value, `Value refines some sources (e.g. a crossing-line direction or a known license plate).`)
 }
 
 // AlarmWebhookAction sends an HTTP request when the rule fires.
@@ -61,12 +72,25 @@ type AlarmWebhookAction struct {
 	UseThumbnail *bool `pulumi:"useThumbnail,optional"`
 }
 
+func (w *AlarmWebhookAction) Annotate(a infer.Annotator) {
+	a.Describe(&w.Url, "Url is the webhook target URL.")
+	a.Describe(&w.Method, `Method is the HTTP method. Defaults to "POST".`)
+	a.Describe(&w.Headers, "Headers are extra request headers.")
+	a.Describe(&w.TimeoutMs, "TimeoutMs is the request timeout in milliseconds. Defaults to 30000.")
+	a.Describe(&w.UseThumbnail, "UseThumbnail attaches the event thumbnail to the request. Defaults to true.")
+}
+
 // AlarmCooldown suppresses repeat fires of the rule.
 type AlarmCooldown struct {
 	// Enabled toggles the cooldown.
 	Enabled bool `pulumi:"enabled"`
 	// TimeoutMs is the suppression window in milliseconds.
 	TimeoutMs int `pulumi:"timeoutMs"`
+}
+
+func (c *AlarmCooldown) Annotate(a infer.Annotator) {
+	a.Describe(&c.Enabled, "Enabled toggles the cooldown.")
+	a.Describe(&c.TimeoutMs, "TimeoutMs is the suppression window in milliseconds.")
 }
 
 // AlarmAutomationArgs are the user-supplied inputs.
@@ -85,11 +109,24 @@ type AlarmAutomationArgs struct {
 	Cooldown *AlarmCooldown `pulumi:"cooldown,optional"`
 }
 
+func (d *AlarmAutomationArgs) Annotate(a infer.Annotator) {
+	a.Describe(&d.Name, "Name is the rule's display name.")
+	a.Describe(&d.Enabled, "Enabled controls whether the rule fires. Defaults to true.")
+	a.Describe(&d.Sources, "Sources scopes the rule to devices. Empty means all devices.")
+	a.Describe(&d.Conditions, "Conditions are the trigger conditions (ANDed). At least one is required.")
+	a.Describe(&d.WebhookActions, "WebhookActions fire when the rule matches. At least one is required.")
+	a.Describe(&d.Cooldown, "Cooldown suppresses repeat fires. Defaults to disabled with a 10-minute window.")
+}
+
 // AlarmAutomationState is the persisted state: inputs plus the assigned ID.
 type AlarmAutomationState struct {
 	AlarmAutomationArgs
 	// AutomationId is the controller-assigned rule identifier.
 	AutomationId string `pulumi:"automationId"`
+}
+
+func (s *AlarmAutomationState) Annotate(a infer.Annotator) {
+	a.Describe(&s.AutomationId, "AutomationId is the controller-assigned rule identifier.")
 }
 
 func (a *AlarmAutomation) Annotate(an infer.Annotator) {

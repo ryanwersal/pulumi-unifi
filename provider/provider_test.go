@@ -38,11 +38,15 @@ func TestProviderSchemaBuilds(t *testing.T) {
 	}
 
 	type propSet map[string]struct {
-		Secret bool `json:"secret"`
+		Secret           bool   `json:"secret"`
+		Description      string `json:"description"`
+		ReplaceOnChanges bool   `json:"replaceOnChanges"`
 	}
 	var schema struct {
 		Resources map[string]struct {
+			Description     string  `json:"description"`
 			InputProperties propSet `json:"inputProperties"`
+			Properties      propSet `json:"properties"`
 		} `json:"resources"`
 		Types map[string]struct {
 			Properties propSet `json:"properties"`
@@ -136,6 +140,49 @@ func TestProviderSchemaBuilds(t *testing.T) {
 		}
 		if !prop.Secret {
 			t.Errorf("type %s.%s is not marked secret", tok, field)
+		}
+	}
+
+	// Every consumer-facing property must carry a description, else the
+	// generated SDK and Registry docs ship blank.
+	for tok, r := range schema.Resources {
+		if r.Description == "" {
+			t.Errorf("resource %s has no description", tok)
+		}
+		for name, p := range r.InputProperties {
+			if p.Description == "" {
+				t.Errorf("input %s.%s has no description", tok, name)
+			}
+		}
+		for name, p := range r.Properties {
+			if p.Description == "" {
+				t.Errorf("output %s.%s has no description", tok, name)
+			}
+		}
+	}
+	for tok, ty := range schema.Types {
+		for name, p := range ty.Properties {
+			if p.Description == "" {
+				t.Errorf("type %s.%s has no description", tok, name)
+			}
+		}
+	}
+
+	// Identity/bind-key fields must force replacement, not an in-place update
+	// that would patch the wrong object.
+	replaceOnChanges := map[string]string{
+		"unifi:network:Device": "mac",
+		"unifi:protect:Camera": "cameraId",
+		"unifi:network:User":   "mac",
+	}
+	for tok, field := range replaceOnChanges {
+		prop, ok := schema.Resources[tok].InputProperties[field]
+		if !ok {
+			t.Errorf("%s.%s missing", tok, field)
+			continue
+		}
+		if !prop.ReplaceOnChanges {
+			t.Errorf("%s.%s is not marked replaceOnChanges", tok, field)
 		}
 	}
 }

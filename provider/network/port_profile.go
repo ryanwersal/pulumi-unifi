@@ -32,6 +32,16 @@ type PortProfileVlan struct {
 	VoiceNetworkId *string `pulumi:"voiceNetworkId,optional"`
 }
 
+func (v *PortProfileVlan) Annotate(a infer.Annotator) {
+	a.Describe(&v.Forward, "Forward sets the VLAN forwarding mode: all (trunk) | native (access) | "+
+		"customize (selective trunk, use with excludedNetworkIds) | disabled. Defaults to \"native\".")
+	a.Describe(&v.NativeNetworkId, "NativeNetworkId is the network `_id` used as the native (untagged) VLAN.")
+	a.Describe(&v.TaggedVlanMgmt, "TaggedVlanMgmt controls tagged VLAN behavior: auto | block_all | custom.")
+	a.Describe(&v.ExcludedNetworkIds, "ExcludedNetworkIds lists network `_id`s to exclude when forward is \"customize\".")
+	a.Describe(&v.MulticastRouterNetworkIds, "MulticastRouterNetworkIds lists network `_id`s acting as multicast routers.")
+	a.Describe(&v.VoiceNetworkId, "VoiceNetworkId is the network `_id` used for VoIP (voice VLAN) traffic.")
+}
+
 // PortProfileLink groups the physical-layer link settings (speed/duplex/FEC).
 type PortProfileLink struct {
 	// Autoneg enables auto-negotiation of speed/duplex. Defaults to true. When
@@ -44,6 +54,15 @@ type PortProfileLink struct {
 	FullDuplex *bool `pulumi:"fullDuplex,optional"`
 	// FecMode is the forward error correction mode: rs-fec | fc-fec | default | disabled.
 	FecMode *string `pulumi:"fecMode,optional"`
+}
+
+func (l *PortProfileLink) Annotate(a infer.Annotator) {
+	a.Describe(&l.Autoneg, "Autoneg enables auto-negotiation of speed/duplex. Defaults to true. When "+
+		"true it overrides the manual speed and fullDuplex settings.")
+	a.Describe(&l.Speed, "Speed is the fixed port speed in Mbps when autoneg is false: 10 | 100 | "+
+		"1000 | 2500 | 5000 | 10000 | 20000 | 25000 | 40000 | 50000 | 100000.")
+	a.Describe(&l.FullDuplex, "FullDuplex enables full-duplex when autoneg is false. Defaults to false.")
+	a.Describe(&l.FecMode, "FecMode is the forward error correction mode: rs-fec | fc-fec | default | disabled.")
 }
 
 // PortProfileStormControl groups the broadcast/multicast/unknown-unicast
@@ -71,12 +90,30 @@ type PortProfileStormControl struct {
 	UnknownUnicastRate *int `pulumi:"unknownUnicastRate,optional"`
 }
 
+func (s *PortProfileStormControl) Annotate(a infer.Annotator) {
+	a.Describe(&s.Type, "Type selects the storm-control metric: level | rate.")
+	a.Describe(&s.BroadcastEnabled, "BroadcastEnabled enables broadcast storm control. Defaults to false.")
+	a.Describe(&s.BroadcastLevel, "BroadcastLevel is the broadcast storm-control level (0-100).")
+	a.Describe(&s.BroadcastRate, "BroadcastRate is the broadcast rate in pps (0-14880000).")
+	a.Describe(&s.MulticastEnabled, "MulticastEnabled enables multicast storm control. Defaults to false.")
+	a.Describe(&s.MulticastLevel, "MulticastLevel is the multicast storm-control level (0-100).")
+	a.Describe(&s.MulticastRate, "MulticastRate is the multicast rate in pps (0-14880000).")
+	a.Describe(&s.UnknownUnicastEnabled, "UnknownUnicastEnabled enables unknown-unicast storm control. Defaults to false.")
+	a.Describe(&s.UnknownUnicastLevel, "UnknownUnicastLevel is the unknown-unicast storm-control level (0-100).")
+	a.Describe(&s.UnknownUnicastRate, "UnknownUnicastRate is the unknown-unicast rate in pps (0-14880000).")
+}
+
 // PortProfilePortSecurity groups the MAC-based port-security settings.
 type PortProfilePortSecurity struct {
 	// Enabled enables MAC-based port security. Defaults to false.
 	Enabled *bool `pulumi:"enabled,optional"`
 	// MacAddresses lists allowed MAC addresses when port security is on.
 	MacAddresses []string `pulumi:"macAddresses,optional"`
+}
+
+func (ps *PortProfilePortSecurity) Annotate(a infer.Annotator) {
+	a.Describe(&ps.Enabled, "Enabled enables MAC-based port security. Defaults to false.")
+	a.Describe(&ps.MacAddresses, "MacAddresses lists allowed MAC addresses when port security is on.")
 }
 
 // PortProfileDot1x groups the 802.1X PNAC settings.
@@ -89,12 +126,24 @@ type PortProfileDot1x struct {
 	IdleTimeout *int `pulumi:"idleTimeout,optional"`
 }
 
+func (d *PortProfileDot1x) Annotate(a infer.Annotator) {
+	a.Describe(&d.Ctrl, "Ctrl is the 802.1X PNAC mode: auto | force_authorized | "+
+		"force_unauthorized | mac_based | multi_host. Defaults to \"force_authorized\".")
+	a.Describe(&d.IdleTimeout, "IdleTimeout is the MAC-based 802.1X idle timeout in seconds (0-65535). "+
+		"Defaults to 300.")
+}
+
 // PortProfileLldpMed groups the LLDP-MED protocol toggles.
 type PortProfileLldpMed struct {
 	// Enabled enables LLDP-MED. Defaults to true.
 	Enabled *bool `pulumi:"enabled,optional"`
 	// NotifyEnabled enables LLDP-MED topology-change notifications. Defaults to false.
 	NotifyEnabled *bool `pulumi:"notifyEnabled,optional"`
+}
+
+func (lm *PortProfileLldpMed) Annotate(a infer.Annotator) {
+	a.Describe(&lm.Enabled, "Enabled enables LLDP-MED. Defaults to true.")
+	a.Describe(&lm.NotifyEnabled, "NotifyEnabled enables LLDP-MED topology-change notifications. Defaults to false.")
 }
 
 // PortProfileEgressRateLimit groups the outbound rate-limiting settings.
@@ -104,6 +153,12 @@ type PortProfileEgressRateLimit struct {
 	Kbps *int `pulumi:"kbps,optional"`
 	// Enabled enables outbound rate limiting. Defaults to false.
 	Enabled *bool `pulumi:"enabled,optional"`
+}
+
+func (e *PortProfileEgressRateLimit) Annotate(a infer.Annotator) {
+	a.Describe(&e.Kbps, "Kbps is the outbound rate limit in kbps (64-9999999). Only applied when "+
+		"enabled is true.")
+	a.Describe(&e.Enabled, "Enabled enables outbound rate limiting. Defaults to false.")
 }
 
 // PortProfilePriorityQueues groups the four QoS priority-queue levels.
@@ -116,6 +171,13 @@ type PortProfilePriorityQueues struct {
 	Queue3Level *int `pulumi:"queue3Level,optional"`
 	// Queue4Level is the QoS priority queue 4 level (0-100).
 	Queue4Level *int `pulumi:"queue4Level,optional"`
+}
+
+func (pq *PortProfilePriorityQueues) Annotate(a infer.Annotator) {
+	a.Describe(&pq.Queue1Level, "Queue1Level is the QoS priority queue 1 level (0-100).")
+	a.Describe(&pq.Queue2Level, "Queue2Level is the QoS priority queue 2 level (0-100).")
+	a.Describe(&pq.Queue3Level, "Queue3Level is the QoS priority queue 3 level (0-100).")
+	a.Describe(&pq.Queue4Level, "Queue4Level is the QoS priority queue 4 level (0-100).")
 }
 
 // PortProfileArgs are the user-supplied inputs for a port profile.
@@ -157,12 +219,38 @@ type PortProfileArgs struct {
 	PriorityQueues *PortProfilePriorityQueues `pulumi:"priorityQueues,optional"`
 }
 
+func (args *PortProfileArgs) Annotate(a infer.Annotator) {
+	a.Describe(&args.Name, "Name is a descriptive name for the port profile.")
+	a.Describe(&args.OpMode, "OpMode is the operation mode. Only \"switch\" is supported. Defaults to \"switch\".")
+	a.Describe(&args.Isolation, "Isolation enables port isolation so devices on this profile cannot "+
+		"communicate with each other. Defaults to false.")
+	a.Describe(&args.PoeMode, "PoeMode controls Power-over-Ethernet: auto | off (the values go-unifi "+
+		"accepts for a port profile). Per-port passthrough/pasv24 modes are set via "+
+		"a Device port override's poeMode, not here.")
+	a.Describe(&args.StpPortMode, "StpPortMode enables Spanning Tree Protocol on the port. Defaults to true.")
+	a.Describe(&args.PortKeepaliveEnabled, "PortKeepaliveEnabled enables port keepalive. Defaults to false.")
+	a.Describe(&args.SettingPreference, "SettingPreference controls config source: auto | manual.")
+	a.Describe(&args.Vlan, "Vlan groups the VLAN / forwarding settings.")
+	a.Describe(&args.Link, "Link groups the physical-layer link settings (speed/duplex/FEC).")
+	a.Describe(&args.StormControl, "StormControl groups the storm-control settings.")
+	a.Describe(&args.PortSecurity, "PortSecurity groups the MAC-based port-security settings.")
+	a.Describe(&args.Dot1x, "Dot1x groups the 802.1X PNAC settings.")
+	a.Describe(&args.LldpMed, "LldpMed groups the LLDP-MED protocol toggles.")
+	a.Describe(&args.EgressRateLimit, "EgressRateLimit groups the outbound rate-limiting settings.")
+	a.Describe(&args.PriorityQueues, "PriorityQueues groups the QoS priority-queue levels.")
+}
+
 // PortProfileState is the persisted state: inputs plus controller-assigned fields.
 type PortProfileState struct {
 	PortProfileArgs
 	// PortProfileId is the controller-assigned identifier (the UniFi `_id`),
 	// referenced by a Device port override's portProfileId (portconf_id).
 	PortProfileId string `pulumi:"portProfileId"`
+}
+
+func (st *PortProfileState) Annotate(a infer.Annotator) {
+	a.Describe(&st.PortProfileId, "PortProfileId is the controller-assigned identifier (the UniFi `_id`), "+
+		"referenced by a Device port override's portProfileId (portconf_id).")
 }
 
 // Annotate documents the resource. Must use a pointer receiver so the
@@ -580,6 +668,9 @@ func (PortProfile) Create(ctx context.Context, req infer.CreateRequest[PortProfi
 func (PortProfile) Read(ctx context.Context, req infer.ReadRequest[PortProfileArgs, PortProfileState]) (infer.ReadResponse[PortProfileArgs, PortProfileState], error) {
 	cfg := infer.GetConfig[config.Config](ctx)
 	u, err := cfg.Network().GetPortProfile(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.ReadResponse[PortProfileArgs, PortProfileState]{}, nil
+	}
 	if err != nil {
 		return infer.ReadResponse[PortProfileArgs, PortProfileState]{}, err
 	}

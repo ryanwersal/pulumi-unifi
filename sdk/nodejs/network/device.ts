@@ -36,25 +36,85 @@ export class Device extends pulumi.CustomResource {
         return obj['__pulumiType'] === Device.__pulumiType;
     }
 
+    /**
+     * Adopted indicates whether the controller has adopted the device (read-only).
+     */
     declare public /*out*/ readonly adopted: pulumi.Output<boolean>;
+    /**
+     * DeviceId is the controller-assigned identifier (the UniFi `_id`).
+     */
     declare public /*out*/ readonly deviceId: pulumi.Output<string>;
+    /**
+     * Disabled administratively disables the device.
+     */
     declare public readonly disabled: pulumi.Output<boolean | undefined>;
+    /**
+     * Dot1x groups the switch-wide 802.1X settings.
+     */
     declare public readonly dot1x: pulumi.Output<outputs.network.DeviceDot1x | undefined>;
+    /**
+     * EthernetOverrides assigns network groups to physical ethernet ports (gateways).
+     */
     declare public readonly ethernetOverrides: pulumi.Output<outputs.network.DeviceEthernetOverride[] | undefined>;
+    /**
+     * Lcm groups the front LCD/touchscreen display settings.
+     */
     declare public readonly lcm: pulumi.Output<outputs.network.DeviceLcm | undefined>;
+    /**
+     * Led groups the status-LED indicator settings.
+     */
     declare public readonly led: pulumi.Output<outputs.network.DeviceLed | undefined>;
+    /**
+     * Mac is the device MAC address (required). The device must already be adopted on the controller.
+     */
     declare public readonly mac: pulumi.Output<string>;
+    /**
+     * MgmtNetworkId pins the device's management network (the network's `_id`).
+     */
     declare public readonly mgmtNetworkId: pulumi.Output<string | undefined>;
+    /**
+     * Model is the device model code, e.g. "USPRPS" or "U6-Enterprise" (read-only).
+     */
     declare public /*out*/ readonly model: pulumi.Output<string>;
+    /**
+     * Name is the device's display name.
+     */
     declare public readonly name: pulumi.Output<string | undefined>;
+    /**
+     * Outlet groups the PDU outlet settings.
+     */
     declare public readonly outlet: pulumi.Output<outputs.network.DeviceOutlet | undefined>;
+    /**
+     * PortOverrides configures individual switch ports (the centerpiece for switches).
+     */
     declare public readonly portOverrides: pulumi.Output<outputs.network.DevicePortOverride[] | undefined>;
+    /**
+     * RadioTable tunes individual access-point radios.
+     */
     declare public readonly radioTable: pulumi.Output<outputs.network.DeviceRadioOverride[] | undefined>;
+    /**
+     * Snmp groups the SNMP agent strings.
+     */
     declare public readonly snmp: pulumi.Output<outputs.network.DeviceSnmp | undefined>;
+    /**
+     * State is the connection state, e.g. "Connected", "Pending" (read-only).
+     */
     declare public /*out*/ readonly state: pulumi.Output<string>;
+    /**
+     * Stp groups the spanning-tree bridge settings.
+     */
     declare public readonly stp: pulumi.Output<outputs.network.DeviceStp | undefined>;
+    /**
+     * Switching groups the switch-wide L2 settings.
+     */
     declare public readonly switching: pulumi.Output<outputs.network.DeviceSwitching | undefined>;
+    /**
+     * Type is the device type, e.g. "usw", "uap", "ugw" (read-only).
+     */
     declare public /*out*/ readonly type: pulumi.Output<string>;
+    /**
+     * Vrrp groups the gateway VRRP high-availability settings.
+     */
     declare public readonly vrrp: pulumi.Output<outputs.network.DeviceVrrp | undefined>;
 
     /**
@@ -114,6 +174,8 @@ export class Device extends pulumi.CustomResource {
             resourceInputs["vrrp"] = undefined /*out*/;
         }
         opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
+        const replaceOnChanges = { replaceOnChanges: ["mac"] };
+        opts = pulumi.mergeOptions(opts, replaceOnChanges);
         super(Device.__pulumiType, name, resourceInputs, opts);
     }
 }
@@ -122,19 +184,64 @@ export class Device extends pulumi.CustomResource {
  * The set of arguments for constructing a Device resource.
  */
 export interface DeviceArgs {
+    /**
+     * Disabled administratively disables the device.
+     */
     disabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * Dot1x groups the switch-wide 802.1X settings.
+     */
     dot1x?: pulumi.Input<inputs.network.DeviceDot1xArgs | undefined>;
+    /**
+     * EthernetOverrides assigns network groups to physical ethernet ports (gateways).
+     */
     ethernetOverrides?: pulumi.Input<pulumi.Input<inputs.network.DeviceEthernetOverrideArgs>[] | undefined>;
+    /**
+     * Lcm groups the front LCD/touchscreen display settings.
+     */
     lcm?: pulumi.Input<inputs.network.DeviceLcmArgs | undefined>;
+    /**
+     * Led groups the status-LED indicator settings.
+     */
     led?: pulumi.Input<inputs.network.DeviceLedArgs | undefined>;
+    /**
+     * Mac is the device MAC address (required). The device must already be adopted on the controller.
+     */
     mac: pulumi.Input<string>;
+    /**
+     * MgmtNetworkId pins the device's management network (the network's `_id`).
+     */
     mgmtNetworkId?: pulumi.Input<string | undefined>;
+    /**
+     * Name is the device's display name.
+     */
     name?: pulumi.Input<string | undefined>;
+    /**
+     * Outlet groups the PDU outlet settings.
+     */
     outlet?: pulumi.Input<inputs.network.DeviceOutletArgs | undefined>;
+    /**
+     * PortOverrides configures individual switch ports (the centerpiece for switches).
+     */
     portOverrides?: pulumi.Input<pulumi.Input<inputs.network.DevicePortOverrideArgs>[] | undefined>;
+    /**
+     * RadioTable tunes individual access-point radios.
+     */
     radioTable?: pulumi.Input<pulumi.Input<inputs.network.DeviceRadioOverrideArgs>[] | undefined>;
+    /**
+     * Snmp groups the SNMP agent strings.
+     */
     snmp?: pulumi.Input<inputs.network.DeviceSnmpArgs | undefined>;
+    /**
+     * Stp groups the spanning-tree bridge settings.
+     */
     stp?: pulumi.Input<inputs.network.DeviceStpArgs | undefined>;
+    /**
+     * Switching groups the switch-wide L2 settings.
+     */
     switching?: pulumi.Input<inputs.network.DeviceSwitchingArgs | undefined>;
+    /**
+     * Vrrp groups the gateway VRRP high-availability settings.
+     */
     vrrp?: pulumi.Input<inputs.network.DeviceVrrpArgs | undefined>;
 }

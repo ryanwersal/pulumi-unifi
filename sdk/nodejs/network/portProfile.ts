@@ -36,21 +36,69 @@ export class PortProfile extends pulumi.CustomResource {
         return obj['__pulumiType'] === PortProfile.__pulumiType;
     }
 
+    /**
+     * Dot1x groups the 802.1X PNAC settings.
+     */
     declare public readonly dot1x: pulumi.Output<outputs.network.PortProfileDot1x | undefined>;
+    /**
+     * EgressRateLimit groups the outbound rate-limiting settings.
+     */
     declare public readonly egressRateLimit: pulumi.Output<outputs.network.PortProfileEgressRateLimit | undefined>;
+    /**
+     * Isolation enables port isolation so devices on this profile cannot communicate with each other. Defaults to false.
+     */
     declare public readonly isolation: pulumi.Output<boolean | undefined>;
+    /**
+     * Link groups the physical-layer link settings (speed/duplex/FEC).
+     */
     declare public readonly link: pulumi.Output<outputs.network.PortProfileLink | undefined>;
+    /**
+     * LldpMed groups the LLDP-MED protocol toggles.
+     */
     declare public readonly lldpMed: pulumi.Output<outputs.network.PortProfileLldpMed | undefined>;
+    /**
+     * Name is a descriptive name for the port profile.
+     */
     declare public readonly name: pulumi.Output<string>;
+    /**
+     * OpMode is the operation mode. Only "switch" is supported. Defaults to "switch".
+     */
     declare public readonly opMode: pulumi.Output<string | undefined>;
+    /**
+     * PoeMode controls Power-over-Ethernet: auto | off (the values go-unifi accepts for a port profile). Per-port passthrough/pasv24 modes are set via a Device port override's poeMode, not here.
+     */
     declare public readonly poeMode: pulumi.Output<string | undefined>;
+    /**
+     * PortKeepaliveEnabled enables port keepalive. Defaults to false.
+     */
     declare public readonly portKeepaliveEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * PortProfileId is the controller-assigned identifier (the UniFi `_id`), referenced by a Device port override's portProfileId (portconf_id).
+     */
     declare public /*out*/ readonly portProfileId: pulumi.Output<string>;
+    /**
+     * PortSecurity groups the MAC-based port-security settings.
+     */
     declare public readonly portSecurity: pulumi.Output<outputs.network.PortProfilePortSecurity | undefined>;
+    /**
+     * PriorityQueues groups the QoS priority-queue levels.
+     */
     declare public readonly priorityQueues: pulumi.Output<outputs.network.PortProfilePriorityQueues | undefined>;
+    /**
+     * SettingPreference controls config source: auto | manual.
+     */
     declare public readonly settingPreference: pulumi.Output<string | undefined>;
+    /**
+     * StormControl groups the storm-control settings.
+     */
     declare public readonly stormControl: pulumi.Output<outputs.network.PortProfileStormControl | undefined>;
+    /**
+     * StpPortMode enables Spanning Tree Protocol on the port. Defaults to true.
+     */
     declare public readonly stpPortMode: pulumi.Output<boolean | undefined>;
+    /**
+     * Vlan groups the VLAN / forwarding settings.
+     */
     declare public readonly vlan: pulumi.Output<outputs.network.PortProfileVlan | undefined>;
 
     /**
@@ -110,19 +158,64 @@ export class PortProfile extends pulumi.CustomResource {
  * The set of arguments for constructing a PortProfile resource.
  */
 export interface PortProfileArgs {
+    /**
+     * Dot1x groups the 802.1X PNAC settings.
+     */
     dot1x?: pulumi.Input<inputs.network.PortProfileDot1xArgs | undefined>;
+    /**
+     * EgressRateLimit groups the outbound rate-limiting settings.
+     */
     egressRateLimit?: pulumi.Input<inputs.network.PortProfileEgressRateLimitArgs | undefined>;
+    /**
+     * Isolation enables port isolation so devices on this profile cannot communicate with each other. Defaults to false.
+     */
     isolation?: pulumi.Input<boolean | undefined>;
+    /**
+     * Link groups the physical-layer link settings (speed/duplex/FEC).
+     */
     link?: pulumi.Input<inputs.network.PortProfileLinkArgs | undefined>;
+    /**
+     * LldpMed groups the LLDP-MED protocol toggles.
+     */
     lldpMed?: pulumi.Input<inputs.network.PortProfileLldpMedArgs | undefined>;
+    /**
+     * Name is a descriptive name for the port profile.
+     */
     name: pulumi.Input<string>;
+    /**
+     * OpMode is the operation mode. Only "switch" is supported. Defaults to "switch".
+     */
     opMode?: pulumi.Input<string | undefined>;
+    /**
+     * PoeMode controls Power-over-Ethernet: auto | off (the values go-unifi accepts for a port profile). Per-port passthrough/pasv24 modes are set via a Device port override's poeMode, not here.
+     */
     poeMode?: pulumi.Input<string | undefined>;
+    /**
+     * PortKeepaliveEnabled enables port keepalive. Defaults to false.
+     */
     portKeepaliveEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * PortSecurity groups the MAC-based port-security settings.
+     */
     portSecurity?: pulumi.Input<inputs.network.PortProfilePortSecurityArgs | undefined>;
+    /**
+     * PriorityQueues groups the QoS priority-queue levels.
+     */
     priorityQueues?: pulumi.Input<inputs.network.PortProfilePriorityQueuesArgs | undefined>;
+    /**
+     * SettingPreference controls config source: auto | manual.
+     */
     settingPreference?: pulumi.Input<string | undefined>;
+    /**
+     * StormControl groups the storm-control settings.
+     */
     stormControl?: pulumi.Input<inputs.network.PortProfileStormControlArgs | undefined>;
+    /**
+     * StpPortMode enables Spanning Tree Protocol on the port. Defaults to true.
+     */
     stpPortMode?: pulumi.Input<boolean | undefined>;
+    /**
+     * Vlan groups the VLAN / forwarding settings.
+     */
     vlan?: pulumi.Input<inputs.network.PortProfileVlanArgs | undefined>;
 }

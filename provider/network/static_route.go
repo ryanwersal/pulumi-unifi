@@ -54,6 +54,22 @@ func (r *StaticRoute) Annotate(a infer.Annotator) {
 		"directing traffic for a destination network via a next hop, an egress interface, or a blackhole.")
 }
 
+func (d *StaticRouteArgs) Annotate(a infer.Annotator) {
+	a.Describe(&d.Name, "Name of the static route.")
+	a.Describe(&d.Network, "Network is the destination network in CIDR notation (IPv4 or IPv6), e.g. 10.0.0.0/24.")
+	a.Describe(&d.StaticRouteType, "StaticRouteType selects the route kind: nexthop-route | interface-route | blackhole.")
+	a.Describe(&d.Enabled, "Enabled controls whether the route is active. Defaults to true.")
+	a.Describe(&d.Nexthop, "Nexthop is the next-hop IP address (required when staticRouteType=nexthop-route).")
+	a.Describe(&d.Distance, "Distance is the administrative distance / metric of the route (1-255).")
+	a.Describe(&d.Interface, "Interface is the egress interface when staticRouteType=interface-route: WAN1 | WAN2 | a network ID.")
+	a.Describe(&d.GatewayDevice, "GatewayDevice is the MAC address of the gateway device that hosts the route.")
+	a.Describe(&d.GatewayType, "GatewayType selects which gateway handles the route: default | switch.")
+}
+
+func (s *StaticRouteState) Annotate(a infer.Annotator) {
+	a.Describe(&s.StaticRouteId, "StaticRouteId is the controller-assigned identifier (the UniFi `_id`).")
+}
+
 // toUnifi builds a go-unifi Routing from inputs. id is empty on create. The
 // Type discriminator is always pinned to staticRouteType.
 func (a StaticRouteArgs) toUnifi(id string) *unifi.Routing {
@@ -131,6 +147,9 @@ func (StaticRoute) Create(ctx context.Context, req infer.CreateRequest[StaticRou
 func (StaticRoute) Read(ctx context.Context, req infer.ReadRequest[StaticRouteArgs, StaticRouteState]) (infer.ReadResponse[StaticRouteArgs, StaticRouteState], error) {
 	cfg := infer.GetConfig[config.Config](ctx)
 	r, err := cfg.Network().GetRouting(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.ReadResponse[StaticRouteArgs, StaticRouteState]{}, nil
+	}
 	if err != nil {
 		return infer.ReadResponse[StaticRouteArgs, StaticRouteState]{}, err
 	}

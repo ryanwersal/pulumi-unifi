@@ -7,169 +7,508 @@ import * as outputs from "../types/output";
 
 export namespace network {
     export interface DeviceDot1xArgs {
+        /**
+         * FallbackNetworkId is the fallback network for failed 802.1X auth (the network's `_id`).
+         */
         fallbackNetworkId?: pulumi.Input<string | undefined>;
+        /**
+         * PortControlEnabled enables 802.1X port control switch-wide.
+         */
         portControlEnabled?: pulumi.Input<boolean | undefined>;
     }
 
     export interface DeviceEtherLightingArgsArgs {
+        /**
+         * Behavior of the lighting: breath | steady.
+         */
         behavior?: pulumi.Input<string | undefined>;
+        /**
+         * Brightness of the LED strip (1-100).
+         */
         brightness?: pulumi.Input<number | undefined>;
+        /**
+         * LedMode: standard | etherlighting.
+         */
         ledMode?: pulumi.Input<string | undefined>;
+        /**
+         * Mode of the lighting animation: speed | network.
+         */
         mode?: pulumi.Input<string | undefined>;
     }
 
     export interface DeviceEthernetOverrideArgs {
+        /**
+         * Ifname is the interface name, e.g. "eth1" (required key).
+         */
         ifname: pulumi.Input<string>;
+        /**
+         * NetworkGroup is the assigned group, e.g. "LAN", "LAN2", "WAN", "WAN2".
+         */
         networkGroup?: pulumi.Input<string | undefined>;
     }
 
     export interface DeviceLcmArgs {
+        /**
+         * Brightness is the front display brightness (1-100). Setting it overrides the global default.
+         */
         brightness?: pulumi.Input<number | undefined>;
+        /**
+         * IdleTimeout is the front display idle timeout in seconds (10-3600). Setting it overrides the global default.
+         */
         idleTimeout?: pulumi.Input<number | undefined>;
+        /**
+         * NightModeBegins is the night-mode start time, "HH:MM".
+         */
         nightModeBegins?: pulumi.Input<string | undefined>;
+        /**
+         * NightModeEnds is the night-mode end time, "HH:MM".
+         */
         nightModeEnds?: pulumi.Input<string | undefined>;
+        /**
+         * OrientationOverride rotates the front display: 0 | 90 | 180 | 270.
+         */
         orientationOverride?: pulumi.Input<number | undefined>;
     }
 
     export interface DeviceLedArgs {
+        /**
+         * EtherLighting configures the EtherLighting LED strip (supported switches).
+         */
         etherLighting?: pulumi.Input<inputs.network.DeviceEtherLightingArgsArgs | undefined>;
+        /**
+         * Override controls the status LED: default | on | off.
+         */
         override?: pulumi.Input<string | undefined>;
+        /**
+         * OverrideColor is the LED color as a hex string, e.g. "#0000ff".
+         */
         overrideColor?: pulumi.Input<string | undefined>;
+        /**
+         * OverrideColorBrightness is the LED brightness (0-100).
+         */
         overrideColorBrightness?: pulumi.Input<number | undefined>;
     }
 
     export interface DeviceOutletArgs {
+        /**
+         * Enabled enables PDU outlet control.
+         */
         enabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * Overrides configures individual PDU outlets.
+         */
         overrides?: pulumi.Input<pulumi.Input<inputs.network.DeviceOutletOverrideArgs>[] | undefined>;
+        /**
+         * PowerCycleEnabled enables scheduled power cycling for PDU outlets.
+         */
         powerCycleEnabled?: pulumi.Input<boolean | undefined>;
     }
 
     export interface DeviceOutletOverrideArgs {
+        /**
+         * CycleEnabled allows the outlet to be power-cycled.
+         */
         cycleEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * Index is the 1-based outlet number (required key).
+         */
         index: pulumi.Input<number>;
+        /**
+         * Name is the outlet label.
+         */
         name?: pulumi.Input<string | undefined>;
+        /**
+         * RelayState powers the outlet on (true) or off (false).
+         */
         relayState?: pulumi.Input<boolean | undefined>;
     }
 
     export interface DevicePortOverrideArgs {
+        /**
+         * AggregateNumPorts is the number of consecutive ports in a link aggregation group (1-8).
+         */
         aggregateNumPorts?: pulumi.Input<number | undefined>;
+        /**
+         * Autoneg enables link speed/duplex auto-negotiation.
+         */
         autoneg?: pulumi.Input<boolean | undefined>;
+        /**
+         * Dot1xCtrl: auto | force_authorized | force_unauthorized | mac_based | multi_host.
+         */
         dot1xCtrl?: pulumi.Input<string | undefined>;
+        /**
+         * Dot1xIdleTimeout is the 802.1X idle timeout in seconds.
+         */
         dot1xIdleTimeout?: pulumi.Input<number | undefined>;
+        /**
+         * EgressRateLimitKbps caps egress bandwidth in kbps (requires egressRateLimitKbpsEnabled).
+         */
         egressRateLimitKbps?: pulumi.Input<number | undefined>;
+        /**
+         * EgressRateLimitKbpsEnabled toggles the egress rate limit.
+         */
         egressRateLimitKbpsEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * ExcludedNetworkIds lists tagged networks to block on the port (excluded_networkconf_ids).
+         */
         excludedNetworkIds?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * FecMode: rs-fec | fc-fec | default | disabled (for SFP+/SFP28 ports).
+         */
         fecMode?: pulumi.Input<string | undefined>;
+        /**
+         * Forward: all | native | customize | disabled.
+         */
         forward?: pulumi.Input<string | undefined>;
+        /**
+         * FullDuplex forces full-duplex when autoneg is off.
+         */
         fullDuplex?: pulumi.Input<boolean | undefined>;
+        /**
+         * Isolation enables port isolation (no traffic to other isolated ports).
+         */
         isolation?: pulumi.Input<boolean | undefined>;
+        /**
+         * LldpmedEnabled enables LLDP-MED on the port.
+         */
         lldpmedEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * LldpmedNotifyEnabled enables LLDP-MED topology-change notifications.
+         */
         lldpmedNotifyEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * MirrorPortIdx is the source port to mirror when opMode is "mirror".
+         */
         mirrorPortIdx?: pulumi.Input<number | undefined>;
+        /**
+         * Name is the port label.
+         */
         name?: pulumi.Input<string | undefined>;
+        /**
+         * NativeNetworkId is the untagged/native network for the port (native_networkconf_id).
+         */
         nativeNetworkId?: pulumi.Input<string | undefined>;
+        /**
+         * OpMode: switch | mirror | aggregate.
+         */
         opMode?: pulumi.Input<string | undefined>;
+        /**
+         * PoeMode: auto | pasv24 | passthrough | off.
+         */
         poeMode?: pulumi.Input<string | undefined>;
+        /**
+         * PortIdx is the 1-based physical port number (required key).
+         */
         portIdx: pulumi.Input<number>;
+        /**
+         * PortKeepaliveEnabled enables PoE keepalive for legacy powered devices.
+         */
         portKeepaliveEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * PortProfileId applies a saved port profile (the profile's `_id`, sent as portconf_id).
+         */
         portProfileId?: pulumi.Input<string | undefined>;
+        /**
+         * PortSecurityEnabled restricts the port to specific MAC addresses.
+         */
         portSecurityEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * PortSecurityMacAddress lists the MACs permitted when portSecurityEnabled is true.
+         */
         portSecurityMacAddress?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * PriorityQueue1Level is the QoS priority-queue 1 level (0-100).
+         */
         priorityQueue1Level?: pulumi.Input<number | undefined>;
+        /**
+         * PriorityQueue2Level is the QoS priority-queue 2 level (0-100).
+         */
         priorityQueue2Level?: pulumi.Input<number | undefined>;
+        /**
+         * PriorityQueue3Level is the QoS priority-queue 3 level (0-100).
+         */
         priorityQueue3Level?: pulumi.Input<number | undefined>;
+        /**
+         * PriorityQueue4Level is the QoS priority-queue 4 level (0-100).
+         */
         priorityQueue4Level?: pulumi.Input<number | undefined>;
+        /**
+         * SettingPreference: auto (inherit profile) | manual (use these overrides).
+         */
         settingPreference?: pulumi.Input<string | undefined>;
+        /**
+         * Speed forces a link speed in Mbps: 10 | 100 | 1000 | 2500 | 5000 | 10000 | 20000 | 25000 | 40000 | 50000 | 100000.
+         */
         speed?: pulumi.Input<number | undefined>;
+        /**
+         * StormctrlBroadcastEnabled enables broadcast storm control.
+         */
         stormctrlBroadcastEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * StormctrlBroadcastLevel is the broadcast storm control level (0-100, percent).
+         */
         stormctrlBroadcastLevel?: pulumi.Input<number | undefined>;
+        /**
+         * StormctrlBroadcastRate is the broadcast storm control rate (pps).
+         */
         stormctrlBroadcastRate?: pulumi.Input<number | undefined>;
+        /**
+         * StormctrlMcastEnabled enables multicast storm control.
+         */
         stormctrlMcastEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * StormctrlMcastLevel is the multicast storm control level (0-100, percent).
+         */
         stormctrlMcastLevel?: pulumi.Input<number | undefined>;
+        /**
+         * StormctrlMcastRate is the multicast storm control rate (pps).
+         */
         stormctrlMcastRate?: pulumi.Input<number | undefined>;
+        /**
+         * StormctrlType: level | rate.
+         */
         stormctrlType?: pulumi.Input<string | undefined>;
+        /**
+         * StormctrlUcastEnabled enables unknown-unicast storm control.
+         */
         stormctrlUcastEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * StormctrlUcastLevel is the unknown-unicast storm control level (0-100, percent).
+         */
         stormctrlUcastLevel?: pulumi.Input<number | undefined>;
+        /**
+         * StormctrlUcastRate is the unknown-unicast storm control rate (pps).
+         */
         stormctrlUcastRate?: pulumi.Input<number | undefined>;
+        /**
+         * StpPortMode enables spanning-tree on the port.
+         */
         stpPortMode?: pulumi.Input<boolean | undefined>;
+        /**
+         * TaggedVlanMgmt: auto | block_all | custom. With "custom", use excludedNetworkIds.
+         */
         taggedVlanMgmt?: pulumi.Input<string | undefined>;
+        /**
+         * VoiceNetworkId is the voice VLAN network for VoIP phones (voice_networkconf_id).
+         */
         voiceNetworkId?: pulumi.Input<string | undefined>;
     }
 
     export interface DeviceRadioOverrideArgs {
+        /**
+         * AntennaGain in dBi (for devices with configurable antennas).
+         */
         antennaGain?: pulumi.Input<number | undefined>;
+        /**
+         * Channel is the radio channel, a number or "auto".
+         */
         channel?: pulumi.Input<string | undefined>;
+        /**
+         * ChannelWidth (HT) in MHz: 20 | 40 | 80 | 160 | 240 | 320 | 1080 | 2160 | 4320.
+         */
         channelWidth?: pulumi.Input<number | undefined>;
+        /**
+         * MinRssi is the minimum RSSI (dBm, negative) below which clients are kicked. Setting it enables the feature unless minRssiEnabled is given.
+         */
         minRssi?: pulumi.Input<number | undefined>;
+        /**
+         * MinRssiEnabled toggles the minimum-RSSI kick feature.
+         */
         minRssiEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * Name is the controller's radio name (e.g. "wifi0").
+         */
         name?: pulumi.Input<string | undefined>;
+        /**
+         * Radio band identifying which radio to tune: ng (2.4GHz) | na (5GHz) | ad (60GHz) | 6e (6GHz). Required key.
+         */
         radio: pulumi.Input<string>;
+        /**
+         * TxPower is the transmit power in dBm, or "auto". Honored only when txPowerMode is "custom".
+         */
         txPower?: pulumi.Input<string | undefined>;
+        /**
+         * TxPowerMode: auto | medium | high | low | custom.
+         */
         txPowerMode?: pulumi.Input<string | undefined>;
     }
 
     export interface DeviceSnmpArgs {
+        /**
+         * Contact is the SNMP contact string.
+         */
         contact?: pulumi.Input<string | undefined>;
+        /**
+         * Location is the SNMP location string.
+         */
         location?: pulumi.Input<string | undefined>;
     }
 
     export interface DeviceStpArgs {
+        /**
+         * Priority is the spanning-tree bridge priority: a multiple of 4096 from 0 to 61440.
+         */
         priority?: pulumi.Input<string | undefined>;
+        /**
+         * Version: stp | rstp | disabled.
+         */
         version?: pulumi.Input<string | undefined>;
     }
 
     export interface DeviceSwitchingArgs {
+        /**
+         * FlowControlEnabled enables 802.3x flow control switch-wide.
+         */
         flowControlEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * JumboFrameEnabled enables jumbo frames switch-wide.
+         */
         jumboFrameEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * PoeMode is the device-wide default PoE mode: auto | pasv24 | passthrough | off.
+         */
         poeMode?: pulumi.Input<string | undefined>;
+        /**
+         * VlanEnabled enables 802.1Q VLAN switching on the device.
+         */
         vlanEnabled?: pulumi.Input<boolean | undefined>;
     }
 
     export interface DeviceVrrpArgs {
+        /**
+         * Mode is the gateway VRRP role: primary | secondary.
+         */
         mode?: pulumi.Input<string | undefined>;
+        /**
+         * Priority is the VRRP priority (10-200).
+         */
         priority?: pulumi.Input<number | undefined>;
     }
 
     export interface FirewallRuleConnectionStateArgs {
+        /**
+         * Established matches packets in the established connection state.
+         */
         established?: pulumi.Input<boolean | undefined>;
+        /**
+         * Invalid matches packets in the invalid connection state.
+         */
         invalid?: pulumi.Input<boolean | undefined>;
+        /**
+         * New matches packets in the new connection state.
+         */
         new?: pulumi.Input<boolean | undefined>;
+        /**
+         * Related matches packets in the related connection state.
+         */
         related?: pulumi.Input<boolean | undefined>;
     }
 
     export interface FirewallRuleDestinationArgs {
+        /**
+         * Address is the destination IPv4 address or CIDR to match.
+         */
         address?: pulumi.Input<string | undefined>;
+        /**
+         * AddressIpv6 is the destination IPv6 address or CIDR to match.
+         */
         addressIpv6?: pulumi.Input<string | undefined>;
+        /**
+         * FirewallGroupIds are the destination firewall group IDs to match.
+         */
         firewallGroupIds?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * NetworkId is the destination network (firewall network conf) ID to match.
+         */
         networkId?: pulumi.Input<string | undefined>;
+        /**
+         * NetworkType selects how NetworkId is interpreted: ADDRv4 | NETv4.
+         */
         networkType?: pulumi.Input<string | undefined>;
+        /**
+         * Port is the destination port or port range to match.
+         */
         port?: pulumi.Input<string | undefined>;
     }
 
     export interface FirewallRuleProtocolMatchArgs {
+        /**
+         * IcmpTypename restricts an icmp rule to a specific ICMP type, e.g. echo-request, destination-unreachable, time-exceeded.
+         */
         icmpTypename?: pulumi.Input<string | undefined>;
+        /**
+         * Icmpv6Typename restricts an icmpv6 rule to a specific ICMPv6 type, e.g. echo-request, packet-too-big, neighbor-solicitation.
+         */
         icmpv6Typename?: pulumi.Input<string | undefined>;
+        /**
+         * MatchExcepted inverts the protocol match (match all except the specified protocol).
+         */
         matchExcepted?: pulumi.Input<boolean | undefined>;
+        /**
+         * Protocol the rule matches (IPv4 rulesets), e.g. all | tcp | udp | tcp_udp | icmp | a numeric protocol number, or empty for any.
+         */
         protocol?: pulumi.Input<string | undefined>;
+        /**
+         * ProtocolV6 the rule matches (IPv6 rulesets), e.g. all | tcp | udp | tcp_udp | icmpv6 | a numeric protocol number, or empty for any.
+         */
         protocolV6?: pulumi.Input<string | undefined>;
     }
 
     export interface FirewallRuleSourceArgs {
+        /**
+         * Address is the source IPv4 address or CIDR to match.
+         */
         address?: pulumi.Input<string | undefined>;
+        /**
+         * AddressIpv6 is the source IPv6 address or CIDR to match.
+         */
         addressIpv6?: pulumi.Input<string | undefined>;
+        /**
+         * FirewallGroupIds are the source firewall group IDs to match.
+         */
         firewallGroupIds?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * Mac is the source MAC address to match.
+         */
         mac?: pulumi.Input<string | undefined>;
+        /**
+         * NetworkId is the source network (firewall network conf) ID to match.
+         */
         networkId?: pulumi.Input<string | undefined>;
+        /**
+         * NetworkType selects how NetworkId is interpreted: ADDRv4 | NETv4.
+         */
         networkType?: pulumi.Input<string | undefined>;
+        /**
+         * Port is the source port or port range to match.
+         */
         port?: pulumi.Input<string | undefined>;
     }
 
     export interface FirewallZonePolicyDestinationArgsArgs {
+        /**
+         * AppCategoryIds lists application category IDs to match (when matchingTarget=APP_CATEGORY).
+         */
         appCategoryIds?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * AppIds lists application IDs to match (when matchingTarget=APP).
+         */
         appIds?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * IpGroupId references a saved IP group as the destination (when matchingTarget=IP, matchingTargetType=OBJECT).
+         */
         ipGroupId?: pulumi.Input<string | undefined>;
+        /**
+         * Ips lists inline destination IPv4 addresses (when matchingTarget=IP, matchingTargetType=SPECIFIC).
+         */
         ips?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * MatchOppositeIps inverts (negates) the destination IP match.
+         */
         matchOppositeIps?: pulumi.Input<boolean | undefined>;
+        /**
+         * MatchOppositePorts inverts (negates) the destination port match.
+         */
         matchOppositePorts?: pulumi.Input<boolean | undefined>;
         /**
          * What the destination matches: ANY | APP | APP_CATEGORY | IP | REGION | WEB.
@@ -179,11 +518,29 @@ export namespace network {
          * Refines the destination match: ANY | OBJECT (saved group) | SPECIFIC (inline values).
          */
         matchingTargetType?: pulumi.Input<string | undefined>;
+        /**
+         * Port is the destination port or port range/list (e.g. "80", "1000-2000", "80,443").
+         */
         port?: pulumi.Input<string | undefined>;
+        /**
+         * PortGroupId references a saved port group as the destination ports.
+         */
         portGroupId?: pulumi.Input<string | undefined>;
+        /**
+         * PortMatchingType selects how destination ports match: ANY | SPECIFIC | OBJECT.
+         */
         portMatchingType?: pulumi.Input<string | undefined>;
+        /**
+         * Regions lists geographic regions to match (when matchingTarget=REGION).
+         */
         regions?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * WebDomains lists web domains to match (when matchingTarget=WEB).
+         */
         webDomains?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * ZoneId is the controller ID of the destination firewall zone.
+         */
         zoneId: pulumi.Input<string>;
     }
 
@@ -192,43 +549,103 @@ export namespace network {
          * Connection-state matching: ALL | RESPOND_ONLY | CUSTOM.
          */
         connectionStateType?: pulumi.Input<string | undefined>;
+        /**
+         * ConnectionStates lists states to match when connectionStateType=CUSTOM: ESTABLISHED | NEW | RELATED | INVALID.
+         */
         connectionStates?: pulumi.Input<pulumi.Input<string>[] | undefined>;
         /**
          * L3 version the policy matches: BOTH | IPV4 | IPV6.
          */
         ipVersion?: pulumi.Input<string | undefined>;
+        /**
+         * MatchIpSec enables matching on IPsec-encapsulated traffic.
+         */
         matchIpSec?: pulumi.Input<boolean | undefined>;
         /**
          * IPsec matching mode: MATCH_IP_SEC | MATCH_NON_IP_SEC.
          */
         matchIpSecType?: pulumi.Input<string | undefined>;
+        /**
+         * MatchOppositeProtocol inverts (negates) the protocol match.
+         */
         matchOppositeProtocol?: pulumi.Input<boolean | undefined>;
+        /**
+         * Protocol filters by IP protocol: all | tcp_udp | tcp | udp | icmp | icmpv6 | igmp | esp | ah | gre | ... (see UniFi docs).
+         */
         protocol?: pulumi.Input<string | undefined>;
     }
 
     export interface FirewallZonePolicyScheduleArgsArgs {
+        /**
+         * Date is a single enforcement date in YYYY-MM-DD format (mode=ONE_TIME_ONLY).
+         */
         date?: pulumi.Input<string | undefined>;
+        /**
+         * DateEnd is the range end date in YYYY-MM-DD format.
+         */
         dateEnd?: pulumi.Input<string | undefined>;
+        /**
+         * DateStart is the range start date in YYYY-MM-DD format.
+         */
         dateStart?: pulumi.Input<string | undefined>;
         /**
          * Schedule pattern: ALWAYS | EVERY_DAY | EVERY_WEEK | ONE_TIME_ONLY | CUSTOM.
          */
         mode?: pulumi.Input<string | undefined>;
+        /**
+         * RepeatOnDays lists recurring days: mon | tue | wed | thu | fri | sat | sun (mode=EVERY_WEEK/CUSTOM).
+         */
         repeatOnDays?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * TimeAllDay applies the policy for the entire day (ignores the time range).
+         */
         timeAllDay?: pulumi.Input<boolean | undefined>;
+        /**
+         * TimeRangeEnd is the daily end time in HH:MM (24-hour) format.
+         */
         timeRangeEnd?: pulumi.Input<string | undefined>;
+        /**
+         * TimeRangeStart is the daily start time in HH:MM (24-hour) format.
+         */
         timeRangeStart?: pulumi.Input<string | undefined>;
     }
 
     export interface FirewallZonePolicySourceArgsArgs {
+        /**
+         * ClientMacs lists source client MAC addresses (when matchingTarget=CLIENT).
+         */
         clientMacs?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * IpGroupId references a saved IP group as the source (when matchingTarget=IP, matchingTargetType=OBJECT).
+         */
         ipGroupId?: pulumi.Input<string | undefined>;
+        /**
+         * Ips lists inline source IPv4 addresses (when matchingTarget=IP, matchingTargetType=SPECIFIC).
+         */
         ips?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * Mac is a single source MAC address (when matchingTarget=MAC).
+         */
         mac?: pulumi.Input<string | undefined>;
+        /**
+         * Macs lists source MAC addresses.
+         */
         macs?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * MatchMac toggles MAC-based matching of the source.
+         */
         matchMac?: pulumi.Input<boolean | undefined>;
+        /**
+         * MatchOppositeIps inverts (negates) the source IP match.
+         */
         matchOppositeIps?: pulumi.Input<boolean | undefined>;
+        /**
+         * MatchOppositeNetworks inverts (negates) the source network match.
+         */
         matchOppositeNetworks?: pulumi.Input<boolean | undefined>;
+        /**
+         * MatchOppositePorts inverts (negates) the source port match.
+         */
         matchOppositePorts?: pulumi.Input<boolean | undefined>;
         /**
          * What the source matches: ANY | CLIENT | NETWORK | IP | MAC.
@@ -238,20 +655,47 @@ export namespace network {
          * Refines the source match: OBJECT (saved group) | SPECIFIC (inline values).
          */
         matchingTargetType?: pulumi.Input<string | undefined>;
+        /**
+         * NetworkIds lists the source network IDs (when matchingTarget=NETWORK).
+         */
         networkIds?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * Port is the source port or port range/list (e.g. "80", "1000-2000", "80,443").
+         */
         port?: pulumi.Input<string | undefined>;
+        /**
+         * PortGroupId references a saved port group as the source ports.
+         */
         portGroupId?: pulumi.Input<string | undefined>;
+        /**
+         * PortMatchingType selects how source ports match: ANY | SPECIFIC | OBJECT.
+         */
         portMatchingType?: pulumi.Input<string | undefined>;
+        /**
+         * ZoneId is the controller ID of the source firewall zone.
+         */
         zoneId: pulumi.Input<string>;
     }
 
     export interface NetworkIgmpQuerierSwitchArgs {
+        /**
+         * QuerierAddress is the IGMP querier IPv4 address.
+         */
         querierAddress: pulumi.Input<string>;
+        /**
+         * SwitchMac is the MAC address of the switch acting as querier.
+         */
         switchMac: pulumi.Input<string>;
     }
 
     export interface NetworkNatOutboundIpArgs {
+        /**
+         * IpAddress is the single outbound NAT source IPv4 address.
+         */
         ipAddress?: pulumi.Input<string | undefined>;
+        /**
+         * IpAddressPool is a list of outbound NAT source IPs/ranges.
+         */
         ipAddressPool?: pulumi.Input<pulumi.Input<string>[] | undefined>;
         /**
          * Outbound NAT strategy: all | ip_address | ip_address_pool.
@@ -264,16 +708,31 @@ export namespace network {
     }
 
     export interface NetworkWanDhcpOptionArgs {
+        /**
+         * OptionNumber is the DHCP option code (1-254).
+         */
         optionNumber: pulumi.Input<number>;
+        /**
+         * Value is the option value.
+         */
         value: pulumi.Input<string>;
     }
 
     export interface NetworkWanProviderCapabilitiesArgs {
+        /**
+         * DownloadKilobitsPerSecond is the ISP advertised download rate in kbps.
+         */
         downloadKilobitsPerSecond?: pulumi.Input<number | undefined>;
+        /**
+         * UploadKilobitsPerSecond is the ISP advertised upload rate in kbps.
+         */
         uploadKilobitsPerSecond?: pulumi.Input<number | undefined>;
     }
 
     export interface PortForwardDestinationIpArgs {
+        /**
+         * DestinationIp is the public/destination IPv4 address this entry matches, or "any".
+         */
         destinationIp?: pulumi.Input<string | undefined>;
         /**
          * WAN interface this destination IP binds to: wan | wan2.
@@ -282,339 +741,993 @@ export namespace network {
     }
 
     export interface PortProfileDot1xArgs {
+        /**
+         * Ctrl is the 802.1X PNAC mode: auto | force_authorized | force_unauthorized | mac_based | multi_host. Defaults to "force_authorized".
+         */
         ctrl?: pulumi.Input<string | undefined>;
+        /**
+         * IdleTimeout is the MAC-based 802.1X idle timeout in seconds (0-65535). Defaults to 300.
+         */
         idleTimeout?: pulumi.Input<number | undefined>;
     }
 
     export interface PortProfileEgressRateLimitArgs {
+        /**
+         * Enabled enables outbound rate limiting. Defaults to false.
+         */
         enabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * Kbps is the outbound rate limit in kbps (64-9999999). Only applied when enabled is true.
+         */
         kbps?: pulumi.Input<number | undefined>;
     }
 
     export interface PortProfileLinkArgs {
+        /**
+         * Autoneg enables auto-negotiation of speed/duplex. Defaults to true. When true it overrides the manual speed and fullDuplex settings.
+         */
         autoneg?: pulumi.Input<boolean | undefined>;
+        /**
+         * FecMode is the forward error correction mode: rs-fec | fc-fec | default | disabled.
+         */
         fecMode?: pulumi.Input<string | undefined>;
+        /**
+         * FullDuplex enables full-duplex when autoneg is false. Defaults to false.
+         */
         fullDuplex?: pulumi.Input<boolean | undefined>;
+        /**
+         * Speed is the fixed port speed in Mbps when autoneg is false: 10 | 100 | 1000 | 2500 | 5000 | 10000 | 20000 | 25000 | 40000 | 50000 | 100000.
+         */
         speed?: pulumi.Input<number | undefined>;
     }
 
     export interface PortProfileLldpMedArgs {
+        /**
+         * Enabled enables LLDP-MED. Defaults to true.
+         */
         enabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * NotifyEnabled enables LLDP-MED topology-change notifications. Defaults to false.
+         */
         notifyEnabled?: pulumi.Input<boolean | undefined>;
     }
 
     export interface PortProfilePortSecurityArgs {
+        /**
+         * Enabled enables MAC-based port security. Defaults to false.
+         */
         enabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * MacAddresses lists allowed MAC addresses when port security is on.
+         */
         macAddresses?: pulumi.Input<pulumi.Input<string>[] | undefined>;
     }
 
     export interface PortProfilePriorityQueuesArgs {
+        /**
+         * Queue1Level is the QoS priority queue 1 level (0-100).
+         */
         queue1Level?: pulumi.Input<number | undefined>;
+        /**
+         * Queue2Level is the QoS priority queue 2 level (0-100).
+         */
         queue2Level?: pulumi.Input<number | undefined>;
+        /**
+         * Queue3Level is the QoS priority queue 3 level (0-100).
+         */
         queue3Level?: pulumi.Input<number | undefined>;
+        /**
+         * Queue4Level is the QoS priority queue 4 level (0-100).
+         */
         queue4Level?: pulumi.Input<number | undefined>;
     }
 
     export interface PortProfileStormControlArgs {
+        /**
+         * BroadcastEnabled enables broadcast storm control. Defaults to false.
+         */
         broadcastEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * BroadcastLevel is the broadcast storm-control level (0-100).
+         */
         broadcastLevel?: pulumi.Input<number | undefined>;
+        /**
+         * BroadcastRate is the broadcast rate in pps (0-14880000).
+         */
         broadcastRate?: pulumi.Input<number | undefined>;
+        /**
+         * MulticastEnabled enables multicast storm control. Defaults to false.
+         */
         multicastEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * MulticastLevel is the multicast storm-control level (0-100).
+         */
         multicastLevel?: pulumi.Input<number | undefined>;
+        /**
+         * MulticastRate is the multicast rate in pps (0-14880000).
+         */
         multicastRate?: pulumi.Input<number | undefined>;
+        /**
+         * Type selects the storm-control metric: level | rate.
+         */
         type?: pulumi.Input<string | undefined>;
+        /**
+         * UnknownUnicastEnabled enables unknown-unicast storm control. Defaults to false.
+         */
         unknownUnicastEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * UnknownUnicastLevel is the unknown-unicast storm-control level (0-100).
+         */
         unknownUnicastLevel?: pulumi.Input<number | undefined>;
+        /**
+         * UnknownUnicastRate is the unknown-unicast rate in pps (0-14880000).
+         */
         unknownUnicastRate?: pulumi.Input<number | undefined>;
     }
 
     export interface PortProfileVlanArgs {
+        /**
+         * ExcludedNetworkIds lists network `_id`s to exclude when forward is "customize".
+         */
         excludedNetworkIds?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * Forward sets the VLAN forwarding mode: all (trunk) | native (access) | customize (selective trunk, use with excludedNetworkIds) | disabled. Defaults to "native".
+         */
         forward?: pulumi.Input<string | undefined>;
+        /**
+         * MulticastRouterNetworkIds lists network `_id`s acting as multicast routers.
+         */
         multicastRouterNetworkIds?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * NativeNetworkId is the network `_id` used as the native (untagged) VLAN.
+         */
         nativeNetworkId?: pulumi.Input<string | undefined>;
+        /**
+         * TaggedVlanMgmt controls tagged VLAN behavior: auto | block_all | custom.
+         */
         taggedVlanMgmt?: pulumi.Input<string | undefined>;
+        /**
+         * VoiceNetworkId is the network `_id` used for VoIP (voice VLAN) traffic.
+         */
         voiceNetworkId?: pulumi.Input<string | undefined>;
     }
 
     export interface VlanDhcpArgs {
+        /**
+         * BootEnabled enables DHCP network-boot (PXE) options.
+         */
         bootEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * BootFilename is the boot file name handed to PXE clients.
+         */
         bootFilename?: pulumi.Input<string | undefined>;
+        /**
+         * BootServer is the next-server (boot server) IPv4 address.
+         */
         bootServer?: pulumi.Input<string | undefined>;
+        /**
+         * ConflictChecking probes for IP conflicts before leasing.
+         */
         conflictChecking?: pulumi.Input<boolean | undefined>;
+        /**
+         * Dns1 is the first DHCP-advertised DNS server.
+         */
         dns1?: pulumi.Input<string | undefined>;
+        /**
+         * Dns2 is the second DHCP-advertised DNS server.
+         */
         dns2?: pulumi.Input<string | undefined>;
+        /**
+         * Dns3 is the third DHCP-advertised DNS server.
+         */
         dns3?: pulumi.Input<string | undefined>;
+        /**
+         * Dns4 is the fourth DHCP-advertised DNS server.
+         */
         dns4?: pulumi.Input<string | undefined>;
+        /**
+         * DnsEnabled advertises custom DNS servers via DHCP (otherwise the gateway is used).
+         */
         dnsEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * Enabled toggles the built-in DHCP server for this network.
+         */
         enabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * Gateway overrides the DHCP-advertised gateway address.
+         */
         gateway?: pulumi.Input<string | undefined>;
+        /**
+         * GatewayEnabled toggles the custom DHCP gateway override.
+         */
         gatewayEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * GuardEnabled blocks rogue DHCP servers on this network.
+         */
         guardEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * Lease is the DHCP lease time in seconds (default 86400).
+         */
         lease?: pulumi.Input<number | undefined>;
+        /**
+         * Ntp1 is the first DHCP-advertised NTP server.
+         */
         ntp1?: pulumi.Input<string | undefined>;
+        /**
+         * Ntp2 is the second DHCP-advertised NTP server.
+         */
         ntp2?: pulumi.Input<string | undefined>;
+        /**
+         * NtpEnabled advertises NTP servers via DHCP.
+         */
         ntpEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * RelayEnabled forwards DHCP requests to an external relay instead of serving locally.
+         */
         relayEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * Start is the first address of the DHCP range, e.g. 192.168.20.6.
+         */
         start?: pulumi.Input<string | undefined>;
+        /**
+         * Stop is the last address of the DHCP range, e.g. 192.168.20.254.
+         */
         stop?: pulumi.Input<string | undefined>;
+        /**
+         * TftpServer is the TFTP server advertised via DHCP option 66.
+         */
         tftpServer?: pulumi.Input<string | undefined>;
+        /**
+         * TimeOffset is the DHCP time offset (option 2) in seconds.
+         */
         timeOffset?: pulumi.Input<number | undefined>;
+        /**
+         * TimeOffsetEnabled toggles advertising the time offset.
+         */
         timeOffsetEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * UnifiController advertises the UniFi controller (inform) address via DHCP.
+         */
         unifiController?: pulumi.Input<string | undefined>;
+        /**
+         * Wins1 is the first DHCP-advertised WINS server.
+         */
         wins1?: pulumi.Input<string | undefined>;
+        /**
+         * Wins2 is the second DHCP-advertised WINS server.
+         */
         wins2?: pulumi.Input<string | undefined>;
+        /**
+         * WinsEnabled advertises WINS servers via DHCP.
+         */
         winsEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * WpadUrl advertises a WPAD/proxy-autoconfig URL via DHCP.
+         */
         wpadUrl?: pulumi.Input<string | undefined>;
     }
 
     export interface VlanDhcpV6Args {
+        /**
+         * AllowSlaac allows SLAAC alongside DHCPv6.
+         */
         allowSlaac?: pulumi.Input<boolean | undefined>;
+        /**
+         * Dns1 is the first DHCPv6-advertised DNS server.
+         */
         dns1?: pulumi.Input<string | undefined>;
+        /**
+         * Dns2 is the second DHCPv6-advertised DNS server.
+         */
         dns2?: pulumi.Input<string | undefined>;
+        /**
+         * Dns3 is the third DHCPv6-advertised DNS server.
+         */
         dns3?: pulumi.Input<string | undefined>;
+        /**
+         * Dns4 is the fourth DHCPv6-advertised DNS server.
+         */
         dns4?: pulumi.Input<string | undefined>;
+        /**
+         * DnsAuto uses upstream-provided DNS for DHCPv6 (default true) instead of manual servers.
+         */
         dnsAuto?: pulumi.Input<boolean | undefined>;
+        /**
+         * Enabled enables the stateful DHCPv6 server.
+         */
         enabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * Lease is the DHCPv6 lease time in seconds (default 86400).
+         */
         lease?: pulumi.Input<number | undefined>;
+        /**
+         * Start is the first address of the DHCPv6 range.
+         */
         start?: pulumi.Input<string | undefined>;
+        /**
+         * Stop is the last address of the DHCPv6 range.
+         */
         stop?: pulumi.Input<string | undefined>;
     }
 
     export interface VlanIgmpArgs {
+        /**
+         * FastLeave enables IGMP fast-leave processing.
+         */
         fastLeave?: pulumi.Input<boolean | undefined>;
+        /**
+         * ForwardUnknownMulticast forwards unregistered multicast groups.
+         */
         forwardUnknownMulticast?: pulumi.Input<boolean | undefined>;
+        /**
+         * GroupMembership is the IGMP group membership interval (seconds).
+         */
         groupMembership?: pulumi.Input<number | undefined>;
+        /**
+         * MaxResponse is the IGMP max response time (seconds).
+         */
         maxResponse?: pulumi.Input<number | undefined>;
+        /**
+         * McrtrExpireTime is the multicast router expiry time (seconds).
+         */
         mcrtrExpireTime?: pulumi.Input<number | undefined>;
+        /**
+         * ProxyDownstreamNetworkIds lists downstream networks when proxyFor=some.
+         */
         proxyDownstreamNetworkIds?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * ProxyFor selects downstream proxy scope: all | some | none.
+         */
         proxyFor?: pulumi.Input<string | undefined>;
+        /**
+         * ProxyUpstream marks this network as the IGMP proxy upstream.
+         */
         proxyUpstream?: pulumi.Input<boolean | undefined>;
+        /**
+         * QuerierSwitches pins IGMP querier addresses to specific switches.
+         */
         querierSwitches?: pulumi.Input<pulumi.Input<inputs.network.NetworkIgmpQuerierSwitchArgs>[] | undefined>;
+        /**
+         * Snooping enables IGMP snooping to optimize multicast flooding.
+         */
         snooping?: pulumi.Input<boolean | undefined>;
+        /**
+         * Suppression suppresses redundant IGMP membership reports.
+         */
         suppression?: pulumi.Input<boolean | undefined>;
     }
 
     export interface VlanIpv6Args {
+        /**
+         * ClientAddressAssignment: slaac | dhcpv6.
+         */
         clientAddressAssignment?: pulumi.Input<string | undefined>;
+        /**
+         * InterfaceType: none | static | pd | single_network.
+         */
         interfaceType?: pulumi.Input<string | undefined>;
+        /**
+         * PdAutoPrefixIdEnabled lets the controller auto-assign the PD prefix ID.
+         */
         pdAutoPrefixIdEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * PdInterface is the WAN used for prefix delegation: wan | wan2.
+         */
         pdInterface?: pulumi.Input<string | undefined>;
+        /**
+         * PdPrefixId is the hex prefix ID carved from the delegated prefix.
+         */
         pdPrefixId?: pulumi.Input<string | undefined>;
+        /**
+         * PdStart is the first address of the PD-derived range.
+         */
         pdStart?: pulumi.Input<string | undefined>;
+        /**
+         * PdStop is the last address of the PD-derived range.
+         */
         pdStop?: pulumi.Input<string | undefined>;
+        /**
+         * RaEnabled enables IPv6 Router Advertisements.
+         */
         raEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * RaPreferredLifetime is the RA preferred lifetime in seconds (default 14400).
+         */
         raPreferredLifetime?: pulumi.Input<number | undefined>;
+        /**
+         * RaPriority: high | medium | low.
+         */
         raPriority?: pulumi.Input<string | undefined>;
+        /**
+         * RaValidLifetime is the RA valid lifetime in seconds (default 86400).
+         */
         raValidLifetime?: pulumi.Input<number | undefined>;
+        /**
+         * SettingPreference: auto | manual.
+         */
         settingPreference?: pulumi.Input<string | undefined>;
+        /**
+         * SingleNetworkInterface is the source network for single_network IPv6 mode.
+         */
         singleNetworkInterface?: pulumi.Input<string | undefined>;
+        /**
+         * Subnet is the static IPv6 subnet (CIDR) when interfaceType=static.
+         */
         subnet?: pulumi.Input<string | undefined>;
+        /**
+         * WanDelegationType (WAN networks): pd | single_network | none.
+         */
         wanDelegationType?: pulumi.Input<string | undefined>;
     }
 
     export interface VlanNatArgs {
+        /**
+         * Masquerade enables source NAT (masquerade) for this network.
+         */
         masquerade?: pulumi.Input<boolean | undefined>;
+        /**
+         * OutboundIpAddresses configures outbound (source) NAT IP mappings.
+         */
         outboundIpAddresses?: pulumi.Input<pulumi.Input<inputs.network.NetworkNatOutboundIpArgs>[] | undefined>;
     }
 
     export interface VlanWanArgs {
+        /**
+         * DhcpCos is the 802.1p CoS applied to WAN DHCP traffic (0-7).
+         */
         dhcpCos?: pulumi.Input<number | undefined>;
+        /**
+         * DhcpOptions are custom DHCP options requested on the WAN.
+         */
         dhcpOptions?: pulumi.Input<pulumi.Input<inputs.network.NetworkWanDhcpOptionArgs>[] | undefined>;
+        /**
+         * Dhcpv6PdSize is the IPv6 PD size to request from the ISP (48-64).
+         */
         dhcpv6PdSize?: pulumi.Input<number | undefined>;
+        /**
+         * Dns1 is the first WAN DNS server.
+         */
         dns1?: pulumi.Input<string | undefined>;
+        /**
+         * Dns2 is the second WAN DNS server.
+         */
         dns2?: pulumi.Input<string | undefined>;
+        /**
+         * Dns3 is the third WAN DNS server.
+         */
         dns3?: pulumi.Input<string | undefined>;
+        /**
+         * Dns4 is the fourth WAN DNS server.
+         */
         dns4?: pulumi.Input<string | undefined>;
+        /**
+         * DnsPreference: auto | manual.
+         */
         dnsPreference?: pulumi.Input<string | undefined>;
+        /**
+         * DsliteRemoteHost is the DS-Lite AFTR remote host (type=dslite).
+         */
         dsliteRemoteHost?: pulumi.Input<string | undefined>;
+        /**
+         * EgressQos is the 802.1p priority for WAN egress (1-7).
+         */
         egressQos?: pulumi.Input<number | undefined>;
+        /**
+         * Gateway is the static WAN IPv4 gateway.
+         */
         gateway?: pulumi.Input<string | undefined>;
+        /**
+         * GatewayV6 is the static WAN IPv6 gateway.
+         */
         gatewayV6?: pulumi.Input<string | undefined>;
+        /**
+         * Ip is the static WAN IPv4 address.
+         */
         ip?: pulumi.Input<string | undefined>;
+        /**
+         * IpAliases are additional WAN IP aliases (CIDR).
+         */
         ipAliases?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * Ipv6 is the static WAN IPv6 address.
+         */
         ipv6?: pulumi.Input<string | undefined>;
+        /**
+         * Ipv6Dns1 is the first WAN IPv6 DNS server.
+         */
         ipv6Dns1?: pulumi.Input<string | undefined>;
+        /**
+         * Ipv6Dns2 is the second WAN IPv6 DNS server.
+         */
         ipv6Dns2?: pulumi.Input<string | undefined>;
+        /**
+         * Ipv6DnsPreference: auto | manual.
+         */
         ipv6DnsPreference?: pulumi.Input<string | undefined>;
+        /**
+         * LoadBalanceType: failover-only | weighted.
+         */
         loadBalanceType?: pulumi.Input<string | undefined>;
+        /**
+         * LoadBalanceWeight is the weighted load-balance weight (1-99).
+         */
         loadBalanceWeight?: pulumi.Input<number | undefined>;
+        /**
+         * Netmask is the static WAN IPv4 netmask.
+         */
         netmask?: pulumi.Input<string | undefined>;
+        /**
+         * NetworkGroup is the WAN interface group: WAN | WAN2 | WAN_LTE_FAILOVER.
+         */
         networkGroup?: pulumi.Input<string | undefined>;
+        /**
+         * Password is the PPPoE password (type=pppoe). Secret.
+         */
         password?: pulumi.Input<string | undefined>;
+        /**
+         * PppoePasswordEnabled toggles sending the PPPoE password.
+         */
         pppoePasswordEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * PppoeUsernameEnabled toggles sending the PPPoE username.
+         */
         pppoeUsernameEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * Prefixlen is the static WAN IPv6 prefix length (1-128).
+         */
         prefixlen?: pulumi.Input<number | undefined>;
+        /**
+         * ProviderCapabilities advertises the ISP plan rates for SmartQueue.
+         */
         providerCapabilities?: pulumi.Input<inputs.network.NetworkWanProviderCapabilitiesArgs | undefined>;
+        /**
+         * SmartqDownRate is the SmartQueue download limit in kbps.
+         */
         smartqDownRate?: pulumi.Input<number | undefined>;
+        /**
+         * SmartqEnabled enables SmartQueue QoS on the WAN.
+         */
         smartqEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * SmartqUpRate is the SmartQueue upload limit in kbps.
+         */
         smartqUpRate?: pulumi.Input<number | undefined>;
+        /**
+         * Type (purpose=wan): disabled | dhcp | static | pppoe | dslite.
+         */
         type?: pulumi.Input<string | undefined>;
+        /**
+         * TypeV6 (purpose=wan): disabled | slaac | dhcpv6 | static.
+         */
         typeV6?: pulumi.Input<string | undefined>;
+        /**
+         * Username is the PPPoE username (type=pppoe).
+         */
         username?: pulumi.Input<string | undefined>;
+        /**
+         * Vlan tags the WAN interface with a VLAN ID. Setting it enables WAN VLAN tagging.
+         */
         vlan?: pulumi.Input<number | undefined>;
+        /**
+         * VlanEnabled toggles WAN VLAN tagging explicitly.
+         */
         vlanEnabled?: pulumi.Input<boolean | undefined>;
     }
 
     export interface WlanApGroupsArgs {
+        /**
+         * Ids are the AP groups that should broadcast this SSID.
+         */
         ids?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * Mode controls AP selection: all | groups | devices.
+         */
         mode?: pulumi.Input<string | undefined>;
     }
 
     export interface WlanBandSteeringArgs {
+        /**
+         * Band is the radio band: 2g | 5g | both.
+         */
         band?: pulumi.Input<string | undefined>;
+        /**
+         * Bands are the radio bands to broadcast on: 2g | 5g | 6g.
+         */
         bands?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * No2GhzOui steers high-performance clients to 5GHz only.
+         */
         no2GhzOui?: pulumi.Input<boolean | undefined>;
     }
 
     export interface WlanDpiArgs {
+        /**
+         * Enabled enables deep packet inspection for this WLAN.
+         */
         enabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * GroupId is the DPI group to apply.
+         */
         groupId?: pulumi.Input<string | undefined>;
     }
 
     export interface WlanDtimArgs {
+        /**
+         * Mode controls DTIM interval handling: default | custom.
+         */
         mode?: pulumi.Input<string | undefined>;
+        /**
+         * Na is the DTIM interval for the 5GHz band (1-255).
+         */
         na?: pulumi.Input<number | undefined>;
+        /**
+         * Ng is the DTIM interval for the 2.4GHz band (1-255).
+         */
         ng?: pulumi.Input<number | undefined>;
+        /**
+         * SixE is the DTIM interval for the 6GHz band (1-255).
+         */
         sixE?: pulumi.Input<number | undefined>;
     }
 
     export interface WlanIotArgs {
+        /**
+         * Enhanced enables enhanced IoT connectivity behaviors.
+         */
         enhanced?: pulumi.Input<boolean | undefined>;
+        /**
+         * OptimizeWifiConnectivity optimizes connectivity for IoT devices.
+         */
         optimizeWifiConnectivity?: pulumi.Input<boolean | undefined>;
     }
 
     export interface WlanMacFilterArgs {
+        /**
+         * Enabled enables MAC-based access control.
+         */
         enabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * List is the list of MACs (XX:XX:XX:XX:XX:XX) the policy applies to.
+         */
         list?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * Policy: allow | deny.
+         */
         policy?: pulumi.Input<string | undefined>;
     }
 
     export interface WlanMinrateArgs {
+        /**
+         * NaAdvertisingRates advertises only allowed 5GHz rates.
+         */
         naAdvertisingRates?: pulumi.Input<boolean | undefined>;
+        /**
+         * NaDataRateKbps is the minimum 5GHz data rate in Kbps.
+         */
         naDataRateKbps?: pulumi.Input<number | undefined>;
+        /**
+         * NaEnabled enables the 5GHz minimum data rate control.
+         */
         naEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * NgAdvertisingRates advertises only allowed 2.4GHz rates.
+         */
         ngAdvertisingRates?: pulumi.Input<boolean | undefined>;
+        /**
+         * NgDataRateKbps is the minimum 2.4GHz data rate in Kbps.
+         */
         ngDataRateKbps?: pulumi.Input<number | undefined>;
+        /**
+         * NgEnabled enables the 2.4GHz minimum data rate control.
+         */
         ngEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * SettingPreference: auto | manual.
+         */
         settingPreference?: pulumi.Input<string | undefined>;
     }
 
     export interface WlanMulticastArgs {
+        /**
+         * BroadcastFilterEnabled enables filtering of broadcast/multicast traffic.
+         */
         broadcastFilterEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * BroadcastFilterList is the allow list of MACs exempt from filtering.
+         */
         broadcastFilterList?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * EnhanceEnabled converts multicast to unicast for reliability.
+         */
         enhanceEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * ProxyArp lets APs proxy common broadcast frames as unicast.
+         */
         proxyArp?: pulumi.Input<boolean | undefined>;
     }
 
     export interface WlanP2pArgs {
+        /**
+         * CrossConnect allows P2P traffic across APs.
+         */
         crossConnect?: pulumi.Input<boolean | undefined>;
+        /**
+         * Enabled enables peer-to-peer (client-to-client) traffic.
+         */
         enabled?: pulumi.Input<boolean | undefined>;
     }
 
     export interface WlanPrivatePresharedKeysArgs {
+        /**
+         * Enabled enables per-key network placement.
+         */
         enabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * Keys is the list of private pre-shared keys.
+         */
         keys?: pulumi.Input<pulumi.Input<inputs.network.WlanPrivatePskArgs>[] | undefined>;
     }
 
     export interface WlanPrivatePskArgs {
+        /**
+         * NetworkId is the network/VLAN (`_id`) clients using this key are placed on.
+         */
         networkId?: pulumi.Input<string | undefined>;
+        /**
+         * Password is the pre-shared key for this entry (8-255 chars). Secret.
+         */
         password: pulumi.Input<string>;
     }
 
     export interface WlanRadiusArgs {
+        /**
+         * DasEnabled enables RADIUS Dynamic Authorization (CoA/DM).
+         */
         dasEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * MacAuthEnabled enables RADIUS-based MAC authentication.
+         */
         macAuthEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * MacaclEmptyPassword sends an empty password for MAC ACL auth.
+         */
         macaclEmptyPassword?: pulumi.Input<boolean | undefined>;
+        /**
+         * MacaclFormat is the MAC ACL format: none_lower | hyphen_lower | colon_lower | none_upper | hyphen_upper | colon_upper.
+         */
         macaclFormat?: pulumi.Input<string | undefined>;
+        /**
+         * NasIdentifier is the RADIUS NAS identifier value (0-48 chars).
+         */
         nasIdentifier?: pulumi.Input<string | undefined>;
+        /**
+         * NasIdentifierType: ap_name | ap_mac | bssid | site_name | custom.
+         */
         nasIdentifierType?: pulumi.Input<string | undefined>;
+        /**
+         * ProfileId is the RADIUS profile (`_id`) for wpaeap security.
+         */
         profileId?: pulumi.Input<string | undefined>;
     }
 
     export interface WlanRoamingArgs {
+        /**
+         * BssTransition enables 802.11v BSS transition management.
+         */
         bssTransition?: pulumi.Input<boolean | undefined>;
+        /**
+         * FastRoamingEnabled enables 802.11r fast BSS transition.
+         */
         fastRoamingEnabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * IappKey is the inter-AP protocol key (32 hex chars). Secret.
+         */
         iappKey?: pulumi.Input<string | undefined>;
     }
 
     export interface WlanSaeArgs {
+        /**
+         * AntiClogging is the SAE anti-clogging threshold.
+         */
         antiClogging?: pulumi.Input<number | undefined>;
+        /**
+         * Groups are the SAE finite cyclic groups to allow.
+         */
         groups?: pulumi.Input<pulumi.Input<number>[] | undefined>;
+        /**
+         * Psks is the list of WPA3 SAE pre-shared keys.
+         */
         psks?: pulumi.Input<pulumi.Input<inputs.network.WlanSaePskArgs>[] | undefined>;
+        /**
+         * Sync is the SAE sync value.
+         */
         sync?: pulumi.Input<number | undefined>;
     }
 
     export interface WlanSaePskArgs {
+        /**
+         * Id is an optional identifier for this SAE PSK entry.
+         */
         id?: pulumi.Input<string | undefined>;
+        /**
+         * Mac optionally binds this key to a specific client MAC (XX:XX:XX:XX:XX:XX).
+         */
         mac?: pulumi.Input<string | undefined>;
+        /**
+         * Psk is the SAE pre-shared key (8-255 chars). Secret.
+         */
         psk: pulumi.Input<string>;
+        /**
+         * Vlan optionally places clients using this key onto the given VLAN ID.
+         */
         vlan?: pulumi.Input<number | undefined>;
     }
 
     export interface WlanScheduleArgs {
+        /**
+         * Enabled enables time-based broadcast scheduling.
+         */
         enabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * Entries is the duration-based broadcast schedule.
+         */
         entries?: pulumi.Input<pulumi.Input<inputs.network.WlanScheduleEntryArgs>[] | undefined>;
+        /**
+         * Legacy is the legacy schedule format entries (day|HHMM-HHMM).
+         */
         legacy?: pulumi.Input<pulumi.Input<string>[] | undefined>;
     }
 
     export interface WlanScheduleEntryArgs {
+        /**
+         * DurationMinutes is how long, in minutes, the SSID stays active once started.
+         */
         durationMinutes: pulumi.Input<number>;
+        /**
+         * Name is an optional friendly label for the schedule entry.
+         */
         name?: pulumi.Input<string | undefined>;
+        /**
+         * StartDaysOfWeek selects the days this entry applies to: sun|mon|tue|wed|thu|fri|sat.
+         */
         startDaysOfWeek?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * StartHour is the start hour (0-23).
+         */
         startHour: pulumi.Input<number>;
+        /**
+         * StartMinute is the start minute (0-59). Defaults to 0.
+         */
         startMinute?: pulumi.Input<number | undefined>;
     }
 
     export interface WlanVlanTaggingArgs {
+        /**
+         * Enabled enables VLAN tagging for this WLAN.
+         */
         enabled?: pulumi.Input<boolean | undefined>;
+        /**
+         * Vlan is the VLAN ID to tag client traffic with.
+         */
         vlan?: pulumi.Input<number | undefined>;
     }
 
     export interface WlanWepArgs {
+        /**
+         * Index is the WEP key index (1-4).
+         */
         index?: pulumi.Input<number | undefined>;
+        /**
+         * Key is the WEP key. Secret. Only used when security is "wep".
+         */
         key?: pulumi.Input<string | undefined>;
     }
 
     export interface WlanWpaArgs {
+        /**
+         * Enc is the WPA encryption cipher: auto | ccmp | gcmp | ccmp-256 | gcmp-256.
+         */
         enc?: pulumi.Input<string | undefined>;
+        /**
+         * GroupRekey is the group key rekey interval in seconds (0 disables).
+         */
         groupRekey?: pulumi.Input<number | undefined>;
+        /**
+         * Mode is the WPA mode: auto | wpa1 | wpa2.
+         */
         mode?: pulumi.Input<string | undefined>;
+        /**
+         * PmfCipher is the PMF cipher: auto | aes-128-cmac | bip-gmac-256.
+         */
         pmfCipher?: pulumi.Input<string | undefined>;
+        /**
+         * PmfMode is Protected Management Frames mode: disabled | optional | required.
+         */
         pmfMode?: pulumi.Input<string | undefined>;
+        /**
+         * PskRadius controls RADIUS PSK auth: disabled | optional | required. This is a mode enum, not a credential, so it is not marked secret.
+         */
         pskRadius?: pulumi.Input<string | undefined>;
     }
 
     export interface WlanWpa3Args {
+        /**
+         * Enhanced192 enables WPA3 Enterprise 192-bit mode.
+         */
         enhanced192?: pulumi.Input<boolean | undefined>;
+        /**
+         * FastRoaming enables 802.11r fast roaming for WPA3.
+         */
         fastRoaming?: pulumi.Input<boolean | undefined>;
+        /**
+         * Support enables WPA3 (requires wpapsk security and PMF enabled).
+         */
         support?: pulumi.Input<boolean | undefined>;
+        /**
+         * Transition enables WPA3/WPA2 transition mode (requires support).
+         */
         transition?: pulumi.Input<boolean | undefined>;
     }
 }
 
 export namespace protect {
     export interface AlarmConditionArgs {
+        /**
+         * Source is the detection trigger, e.g. "motion", "person", "vehicle", "ring", "sensor_door_opened", "sensor_water_leak", "audio_alarm_smoke".
+         */
         source: pulumi.Input<string>;
+        /**
+         * Type is the match type. Defaults to "is".
+         */
         type?: pulumi.Input<string | undefined>;
+        /**
+         * Value refines some sources (e.g. a crossing-line direction or a known license plate).
+         */
         value?: pulumi.Input<string | undefined>;
     }
 
     export interface AlarmCooldownArgs {
+        /**
+         * Enabled toggles the cooldown.
+         */
         enabled: pulumi.Input<boolean>;
+        /**
+         * TimeoutMs is the suppression window in milliseconds.
+         */
         timeoutMs: pulumi.Input<number>;
     }
 
     export interface AlarmSourceArgs {
+        /**
+         * Device is the device MAC address, uppercase hex without separators (e.g. "F4E2C6730625").
+         */
         device: pulumi.Input<string>;
+        /**
+         * Type is "include" or "exclude". Defaults to "include".
+         */
         type?: pulumi.Input<string | undefined>;
     }
 
     export interface AlarmWebhookActionArgs {
+        /**
+         * Headers are extra request headers.
+         */
         headers?: pulumi.Input<{[key: string]: pulumi.Input<string>} | undefined>;
+        /**
+         * Method is the HTTP method. Defaults to "POST".
+         */
         method?: pulumi.Input<string | undefined>;
+        /**
+         * TimeoutMs is the request timeout in milliseconds. Defaults to 30000.
+         */
         timeoutMs?: pulumi.Input<number | undefined>;
+        /**
+         * Url is the webhook target URL.
+         */
         url: pulumi.Input<string>;
+        /**
+         * UseThumbnail attaches the event thumbnail to the request. Defaults to true.
+         */
         useThumbnail?: pulumi.Input<boolean | undefined>;
     }
 }

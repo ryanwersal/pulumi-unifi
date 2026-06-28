@@ -32,6 +32,14 @@ type FirewallRuleProtocolMatch struct {
 	Icmpv6Typename *string `pulumi:"icmpv6Typename,optional"`
 }
 
+func (pm *FirewallRuleProtocolMatch) Annotate(a infer.Annotator) {
+	a.Describe(&pm.Protocol, "Protocol the rule matches (IPv4 rulesets), e.g. all | tcp | udp | tcp_udp | icmp | a numeric protocol number, or empty for any.")
+	a.Describe(&pm.ProtocolV6, "ProtocolV6 the rule matches (IPv6 rulesets), e.g. all | tcp | udp | tcp_udp | icmpv6 | a numeric protocol number, or empty for any.")
+	a.Describe(&pm.MatchExcepted, "MatchExcepted inverts the protocol match (match all except the specified protocol).")
+	a.Describe(&pm.IcmpTypename, "IcmpTypename restricts an icmp rule to a specific ICMP type, e.g. echo-request, destination-unreachable, time-exceeded.")
+	a.Describe(&pm.Icmpv6Typename, "Icmpv6Typename restricts an icmpv6 rule to a specific ICMPv6 type, e.g. echo-request, packet-too-big, neighbor-solicitation.")
+}
+
 // FirewallRuleSource groups the source-side match selectors.
 type FirewallRuleSource struct {
 	// Address is the source IPv4 address or CIDR to match.
@@ -48,6 +56,16 @@ type FirewallRuleSource struct {
 	NetworkType *string `pulumi:"networkType,optional"`
 	// FirewallGroupIds are the source firewall group IDs to match.
 	FirewallGroupIds []string `pulumi:"firewallGroupIds,optional"`
+}
+
+func (s *FirewallRuleSource) Annotate(a infer.Annotator) {
+	a.Describe(&s.Address, "Address is the source IPv4 address or CIDR to match.")
+	a.Describe(&s.AddressIpv6, "AddressIpv6 is the source IPv6 address or CIDR to match.")
+	a.Describe(&s.Port, "Port is the source port or port range to match.")
+	a.Describe(&s.Mac, "Mac is the source MAC address to match.")
+	a.Describe(&s.NetworkId, "NetworkId is the source network (firewall network conf) ID to match.")
+	a.Describe(&s.NetworkType, "NetworkType selects how NetworkId is interpreted: ADDRv4 | NETv4.")
+	a.Describe(&s.FirewallGroupIds, "FirewallGroupIds are the source firewall group IDs to match.")
 }
 
 // FirewallRuleDestination groups the destination-side match selectors. Note
@@ -67,6 +85,15 @@ type FirewallRuleDestination struct {
 	FirewallGroupIds []string `pulumi:"firewallGroupIds,optional"`
 }
 
+func (d *FirewallRuleDestination) Annotate(a infer.Annotator) {
+	a.Describe(&d.Address, "Address is the destination IPv4 address or CIDR to match.")
+	a.Describe(&d.AddressIpv6, "AddressIpv6 is the destination IPv6 address or CIDR to match.")
+	a.Describe(&d.Port, "Port is the destination port or port range to match.")
+	a.Describe(&d.NetworkId, "NetworkId is the destination network (firewall network conf) ID to match.")
+	a.Describe(&d.NetworkType, "NetworkType selects how NetworkId is interpreted: ADDRv4 | NETv4.")
+	a.Describe(&d.FirewallGroupIds, "FirewallGroupIds are the destination firewall group IDs to match.")
+}
+
 // FirewallRuleConnectionState groups the conntrack-state match toggles.
 type FirewallRuleConnectionState struct {
 	// Established matches packets in the established connection state.
@@ -77,6 +104,13 @@ type FirewallRuleConnectionState struct {
 	Related *bool `pulumi:"related,optional"`
 	// Invalid matches packets in the invalid connection state.
 	Invalid *bool `pulumi:"invalid,optional"`
+}
+
+func (cs *FirewallRuleConnectionState) Annotate(a infer.Annotator) {
+	a.Describe(&cs.Established, "Established matches packets in the established connection state.")
+	a.Describe(&cs.New, "New matches packets in the new connection state.")
+	a.Describe(&cs.Related, "Related matches packets in the related connection state.")
+	a.Describe(&cs.Invalid, "Invalid matches packets in the invalid connection state.")
 }
 
 // FirewallRuleArgs are the user-supplied inputs for a firewall rule.
@@ -114,11 +148,30 @@ type FirewallRuleArgs struct {
 	ConnectionState *FirewallRuleConnectionState `pulumi:"connectionState,optional"`
 }
 
+func (r *FirewallRuleArgs) Annotate(a infer.Annotator) {
+	a.Describe(&r.Name, "Name of the firewall rule (1-128 characters).")
+	a.Describe(&r.RuleIndex, "RuleIndex is the ordering index of the rule within its ruleset. Must be >= 2000 and < 3000, or >= 4000 and < 5000.")
+	a.Describe(&r.Action, "Action taken on matching traffic: accept | drop | reject.")
+	a.Describe(&r.Ruleset, "Ruleset the rule belongs to, from the perspective of the security gateway: WAN_IN | WAN_OUT | WAN_LOCAL | LAN_IN | LAN_OUT | LAN_LOCAL | GUEST_IN | GUEST_OUT | GUEST_LOCAL | WANv6_IN | WANv6_OUT | WANv6_LOCAL | LANv6_IN | LANv6_OUT | LANv6_LOCAL | GUESTv6_IN | GUESTv6_OUT | GUESTv6_LOCAL.")
+	a.Describe(&r.Enabled, "Enabled controls whether the rule is active. Defaults to true.")
+	a.Describe(&r.Logging, "Logging enables logging of packets that match this rule.")
+	a.Describe(&r.IpSec, "IpSec matches on IPsec encapsulation: match-ipsec | match-none.")
+	a.Describe(&r.SettingPreference, "SettingPreference controls whether the rule uses automatic or manual settings: auto | manual.")
+	a.Describe(&r.ProtocolMatch, "ProtocolMatch groups the protocol / ICMP-type match selectors.")
+	a.Describe(&r.Source, "Source groups the source-side match selectors.")
+	a.Describe(&r.Destination, "Destination groups the destination-side match selectors.")
+	a.Describe(&r.ConnectionState, "ConnectionState groups the conntrack-state match toggles.")
+}
+
 // FirewallRuleState is the persisted state: inputs plus controller-assigned fields.
 type FirewallRuleState struct {
 	FirewallRuleArgs
 	// FirewallRuleId is the controller-assigned identifier (the UniFi `_id`).
 	FirewallRuleId string `pulumi:"firewallRuleId"`
+}
+
+func (s *FirewallRuleState) Annotate(a infer.Annotator) {
+	a.Describe(&s.FirewallRuleId, "FirewallRuleId is the controller-assigned identifier (the UniFi `_id`).")
 }
 
 // Annotate documents the resource. Must use a pointer receiver so the
@@ -407,6 +460,9 @@ func (FirewallRule) Create(ctx context.Context, req infer.CreateRequest[Firewall
 func (FirewallRule) Read(ctx context.Context, req infer.ReadRequest[FirewallRuleArgs, FirewallRuleState]) (infer.ReadResponse[FirewallRuleArgs, FirewallRuleState], error) {
 	cfg := infer.GetConfig[config.Config](ctx)
 	u, err := cfg.Network().GetFirewallRule(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.ReadResponse[FirewallRuleArgs, FirewallRuleState]{}, nil
+	}
 	if err != nil {
 		return infer.ReadResponse[FirewallRuleArgs, FirewallRuleState]{}, err
 	}

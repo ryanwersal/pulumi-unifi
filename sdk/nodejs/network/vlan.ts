@@ -36,31 +36,109 @@ export class Vlan extends pulumi.CustomResource {
         return obj['__pulumiType'] === Vlan.__pulumiType;
     }
 
+    /**
+     * AutoScaleEnabled lets the controller auto-size the subnet.
+     */
     declare public readonly autoScaleEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * Dhcp groups the IPv4 DHCP-server settings.
+     */
     declare public readonly dhcp: pulumi.Output<outputs.network.VlanDhcp | undefined>;
+    /**
+     * DhcpV6 groups the stateful DHCPv6-server settings.
+     */
     declare public readonly dhcpV6: pulumi.Output<outputs.network.VlanDhcpV6 | undefined>;
+    /**
+     * DomainName is the DNS domain handed to clients.
+     */
     declare public readonly domainName: pulumi.Output<string | undefined>;
+    /**
+     * DpiEnabled enables Deep Packet Inspection on this network.
+     */
     declare public readonly dpiEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * Enabled controls whether the network is active. Defaults to true.
+     */
     declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    /**
+     * GatewayType: default | switch.
+     */
     declare public readonly gatewayType: pulumi.Output<string | undefined>;
+    /**
+     * Igmp groups the multicast / IGMP settings.
+     */
     declare public readonly igmp: pulumi.Output<outputs.network.VlanIgmp | undefined>;
+    /**
+     * InterfaceMtu sets the interface MTU. Setting it enables the MTU override.
+     */
     declare public readonly interfaceMtu: pulumi.Output<number | undefined>;
+    /**
+     * InterfaceMtuEnabled toggles the interface MTU override explicitly.
+     */
     declare public readonly interfaceMtuEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * InternetAccessEnabled controls whether clients may reach the internet. Defaults to true.
+     */
     declare public readonly internetAccessEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * Ipv6 groups the IPv6 addressing / RA / prefix-delegation settings.
+     */
     declare public readonly ipv6: pulumi.Output<outputs.network.VlanIpv6 | undefined>;
+    /**
+     * MacOverride clones a MAC address on the interface (commonly used on WAN).
+     */
     declare public readonly macOverride: pulumi.Output<string | undefined>;
+    /**
+     * MacOverrideEnabled toggles the MAC clone override.
+     */
     declare public readonly macOverrideEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * MdnsEnabled enables multicast DNS (Bonjour/mDNS) repeating on this network.
+     */
     declare public readonly mdnsEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * Name of the network.
+     */
     declare public readonly name: pulumi.Output<string>;
+    /**
+     * Nat groups the source/outbound NAT settings.
+     */
     declare public readonly nat: pulumi.Output<outputs.network.VlanNat | undefined>;
+    /**
+     * NetworkGroup is the interface group: LAN, LAN2..LAN8 (or WAN/WAN2 for WAN networks). Defaults to "LAN".
+     */
     declare public readonly networkGroup: pulumi.Output<string | undefined>;
+    /**
+     * NetworkId is the controller-assigned identifier (the UniFi `_id`).
+     */
     declare public /*out*/ readonly networkId: pulumi.Output<string>;
+    /**
+     * NetworkIsolationEnabled isolates clients from other networks. Defaults to false.
+     */
     declare public readonly networkIsolationEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * Purpose: corporate | guest | vlan-only | wan | remote-user-vpn | site-vpn | vpn-client. Defaults to "corporate".
+     */
     declare public readonly purpose: pulumi.Output<string | undefined>;
+    /**
+     * SettingPreference: auto | manual. Controls whether device-specific overrides apply.
+     */
     declare public readonly settingPreference: pulumi.Output<string | undefined>;
+    /**
+     * Subnet is the gateway IP/CIDR for the network, e.g. 192.168.20.1/24.
+     */
     declare public readonly subnet: pulumi.Output<string | undefined>;
+    /**
+     * UpnpLanEnabled enables UPnP on this LAN.
+     */
     declare public readonly upnpLanEnabled: pulumi.Output<boolean | undefined>;
+    /**
+     * Vlan is the 802.1Q VLAN ID. When set, VLAN tagging is enabled.
+     */
     declare public readonly vlan: pulumi.Output<number | undefined>;
+    /**
+     * Wan groups the WAN-uplink settings (used when purpose=wan).
+     */
     declare public readonly wan: pulumi.Output<outputs.network.VlanWan | undefined>;
 
     /**
@@ -140,29 +218,104 @@ export class Vlan extends pulumi.CustomResource {
  * The set of arguments for constructing a Vlan resource.
  */
 export interface VlanArgs {
+    /**
+     * AutoScaleEnabled lets the controller auto-size the subnet.
+     */
     autoScaleEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * Dhcp groups the IPv4 DHCP-server settings.
+     */
     dhcp?: pulumi.Input<inputs.network.VlanDhcpArgs | undefined>;
+    /**
+     * DhcpV6 groups the stateful DHCPv6-server settings.
+     */
     dhcpV6?: pulumi.Input<inputs.network.VlanDhcpV6Args | undefined>;
+    /**
+     * DomainName is the DNS domain handed to clients.
+     */
     domainName?: pulumi.Input<string | undefined>;
+    /**
+     * DpiEnabled enables Deep Packet Inspection on this network.
+     */
     dpiEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * Enabled controls whether the network is active. Defaults to true.
+     */
     enabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * GatewayType: default | switch.
+     */
     gatewayType?: pulumi.Input<string | undefined>;
+    /**
+     * Igmp groups the multicast / IGMP settings.
+     */
     igmp?: pulumi.Input<inputs.network.VlanIgmpArgs | undefined>;
+    /**
+     * InterfaceMtu sets the interface MTU. Setting it enables the MTU override.
+     */
     interfaceMtu?: pulumi.Input<number | undefined>;
+    /**
+     * InterfaceMtuEnabled toggles the interface MTU override explicitly.
+     */
     interfaceMtuEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * InternetAccessEnabled controls whether clients may reach the internet. Defaults to true.
+     */
     internetAccessEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * Ipv6 groups the IPv6 addressing / RA / prefix-delegation settings.
+     */
     ipv6?: pulumi.Input<inputs.network.VlanIpv6Args | undefined>;
+    /**
+     * MacOverride clones a MAC address on the interface (commonly used on WAN).
+     */
     macOverride?: pulumi.Input<string | undefined>;
+    /**
+     * MacOverrideEnabled toggles the MAC clone override.
+     */
     macOverrideEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * MdnsEnabled enables multicast DNS (Bonjour/mDNS) repeating on this network.
+     */
     mdnsEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * Name of the network.
+     */
     name: pulumi.Input<string>;
+    /**
+     * Nat groups the source/outbound NAT settings.
+     */
     nat?: pulumi.Input<inputs.network.VlanNatArgs | undefined>;
+    /**
+     * NetworkGroup is the interface group: LAN, LAN2..LAN8 (or WAN/WAN2 for WAN networks). Defaults to "LAN".
+     */
     networkGroup?: pulumi.Input<string | undefined>;
+    /**
+     * NetworkIsolationEnabled isolates clients from other networks. Defaults to false.
+     */
     networkIsolationEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * Purpose: corporate | guest | vlan-only | wan | remote-user-vpn | site-vpn | vpn-client. Defaults to "corporate".
+     */
     purpose?: pulumi.Input<string | undefined>;
+    /**
+     * SettingPreference: auto | manual. Controls whether device-specific overrides apply.
+     */
     settingPreference?: pulumi.Input<string | undefined>;
+    /**
+     * Subnet is the gateway IP/CIDR for the network, e.g. 192.168.20.1/24.
+     */
     subnet?: pulumi.Input<string | undefined>;
+    /**
+     * UpnpLanEnabled enables UPnP on this LAN.
+     */
     upnpLanEnabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * Vlan is the 802.1Q VLAN ID. When set, VLAN tagging is enabled.
+     */
     vlan?: pulumi.Input<number | undefined>;
+    /**
+     * Wan groups the WAN-uplink settings (used when purpose=wan).
+     */
     wan?: pulumi.Input<inputs.network.VlanWanArgs | undefined>;
 }

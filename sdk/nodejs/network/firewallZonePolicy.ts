@@ -36,17 +36,53 @@ export class FirewallZonePolicy extends pulumi.CustomResource {
         return obj['__pulumiType'] === FirewallZonePolicy.__pulumiType;
     }
 
+    /**
+     * Action is the traffic disposition: ALLOW | BLOCK | REJECT.
+     */
     declare public readonly action: pulumi.Output<string>;
+    /**
+     * CreateAllowRespond automatically allows reverse-direction (return) traffic.
+     */
     declare public readonly createAllowRespond: pulumi.Output<boolean | undefined>;
+    /**
+     * Description is free-form documentation for the policy.
+     */
     declare public readonly description: pulumi.Output<string | undefined>;
+    /**
+     * Destination is the destination zone and matching criteria.
+     */
     declare public readonly destination: pulumi.Output<outputs.network.FirewallZonePolicyDestinationArgs>;
+    /**
+     * Enabled controls whether the policy is active. Defaults to true.
+     */
     declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    /**
+     * FirewallZonePolicyId is the controller-assigned identifier (the UniFi `_id`).
+     */
     declare public /*out*/ readonly firewallZonePolicyId: pulumi.Output<string>;
+    /**
+     * Index is the policy priority/ordering rank (lower is evaluated first).
+     */
     declare public readonly index: pulumi.Output<number | undefined>;
+    /**
+     * Logging enables syslog logging for traffic matching this policy.
+     */
     declare public readonly logging: pulumi.Output<boolean | undefined>;
+    /**
+     * Matching groups the flow-level traffic-match criteria (protocol, IP version, connection-state, and IPsec selection).
+     */
     declare public readonly matching: pulumi.Output<outputs.network.FirewallZonePolicyMatchingArgs | undefined>;
+    /**
+     * Name is the policy identifier shown in the controller.
+     */
     declare public readonly name: pulumi.Output<string>;
+    /**
+     * Schedule is the optional temporal enforcement window. When unset the policy is always active.
+     */
     declare public readonly schedule: pulumi.Output<outputs.network.FirewallZonePolicyScheduleArgs | undefined>;
+    /**
+     * Source is the source zone and matching criteria.
+     */
     declare public readonly source: pulumi.Output<outputs.network.FirewallZonePolicySourceArgs>;
 
     /**
@@ -107,15 +143,48 @@ export class FirewallZonePolicy extends pulumi.CustomResource {
  * The set of arguments for constructing a FirewallZonePolicy resource.
  */
 export interface FirewallZonePolicyArgs {
+    /**
+     * Action is the traffic disposition: ALLOW | BLOCK | REJECT.
+     */
     action: pulumi.Input<string>;
+    /**
+     * CreateAllowRespond automatically allows reverse-direction (return) traffic.
+     */
     createAllowRespond?: pulumi.Input<boolean | undefined>;
+    /**
+     * Description is free-form documentation for the policy.
+     */
     description?: pulumi.Input<string | undefined>;
+    /**
+     * Destination is the destination zone and matching criteria.
+     */
     destination: pulumi.Input<inputs.network.FirewallZonePolicyDestinationArgsArgs>;
+    /**
+     * Enabled controls whether the policy is active. Defaults to true.
+     */
     enabled?: pulumi.Input<boolean | undefined>;
+    /**
+     * Index is the policy priority/ordering rank (lower is evaluated first).
+     */
     index?: pulumi.Input<number | undefined>;
+    /**
+     * Logging enables syslog logging for traffic matching this policy.
+     */
     logging?: pulumi.Input<boolean | undefined>;
+    /**
+     * Matching groups the flow-level traffic-match criteria (protocol, IP version, connection-state, and IPsec selection).
+     */
     matching?: pulumi.Input<inputs.network.FirewallZonePolicyMatchingArgsArgs | undefined>;
+    /**
+     * Name is the policy identifier shown in the controller.
+     */
     name: pulumi.Input<string>;
+    /**
+     * Schedule is the optional temporal enforcement window. When unset the policy is always active.
+     */
     schedule?: pulumi.Input<inputs.network.FirewallZonePolicyScheduleArgsArgs | undefined>;
+    /**
+     * Source is the source zone and matching criteria.
+     */
     source: pulumi.Input<inputs.network.FirewallZonePolicySourceArgsArgs>;
 }

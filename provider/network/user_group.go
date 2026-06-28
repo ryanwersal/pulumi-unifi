@@ -23,11 +23,21 @@ type UserGroupArgs struct {
 	QosRateMaxUp *int `pulumi:"qosRateMaxUp,optional"`
 }
 
+func (g *UserGroupArgs) Annotate(a infer.Annotator) {
+	a.Describe(&g.Name, "Name of the user group.")
+	a.Describe(&g.QosRateMaxDown, "QosRateMaxDown is the maximum download rate in kbps. -1 means unlimited. Defaults to -1.")
+	a.Describe(&g.QosRateMaxUp, "QosRateMaxUp is the maximum upload rate in kbps. -1 means unlimited. Defaults to -1.")
+}
+
 // UserGroupState is the persisted state: inputs plus controller-assigned fields.
 type UserGroupState struct {
 	UserGroupArgs
 	// UserGroupId is the controller-assigned identifier (the UniFi `_id`).
 	UserGroupId string `pulumi:"userGroupId"`
+}
+
+func (g *UserGroupState) Annotate(a infer.Annotator) {
+	a.Describe(&g.UserGroupId, "UserGroupId is the controller-assigned identifier (the UniFi `_id`).")
 }
 
 // Annotate documents the resource. Must use a pointer receiver so the
@@ -75,6 +85,9 @@ func (UserGroup) Create(ctx context.Context, req infer.CreateRequest[UserGroupAr
 func (UserGroup) Read(ctx context.Context, req infer.ReadRequest[UserGroupArgs, UserGroupState]) (infer.ReadResponse[UserGroupArgs, UserGroupState], error) {
 	cfg := infer.GetConfig[config.Config](ctx)
 	u, err := cfg.Network().GetUserGroup(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.ReadResponse[UserGroupArgs, UserGroupState]{}, nil
+	}
 	if err != nil {
 		return infer.ReadResponse[UserGroupArgs, UserGroupState]{}, err
 	}

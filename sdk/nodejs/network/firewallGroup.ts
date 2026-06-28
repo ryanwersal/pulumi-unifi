@@ -34,9 +34,21 @@ export class FirewallGroup extends pulumi.CustomResource {
         return obj['__pulumiType'] === FirewallGroup.__pulumiType;
     }
 
+    /**
+     * FirewallGroupId is the controller-assigned identifier (the UniFi `_id`).
+     */
     declare public /*out*/ readonly firewallGroupId: pulumi.Output<string>;
+    /**
+     * GroupMembers are the entries in the group. The accepted format depends on GroupType: IPv4 addresses/CIDRs for address-group, port numbers/ranges for port-group, or IPv6 addresses/CIDRs for ipv6-address-group.
+     */
     declare public readonly groupMembers: pulumi.Output<string[] | undefined>;
+    /**
+     * GroupType selects the kind of group: address-group | port-group | ipv6-address-group.
+     */
     declare public readonly groupType: pulumi.Output<string | undefined>;
+    /**
+     * Name of the firewall group (1-64 characters).
+     */
     declare public readonly name: pulumi.Output<string>;
 
     /**
@@ -72,7 +84,16 @@ export class FirewallGroup extends pulumi.CustomResource {
  * The set of arguments for constructing a FirewallGroup resource.
  */
 export interface FirewallGroupArgs {
+    /**
+     * GroupMembers are the entries in the group. The accepted format depends on GroupType: IPv4 addresses/CIDRs for address-group, port numbers/ranges for port-group, or IPv6 addresses/CIDRs for ipv6-address-group.
+     */
     groupMembers?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+    /**
+     * GroupType selects the kind of group: address-group | port-group | ipv6-address-group.
+     */
     groupType?: pulumi.Input<string | undefined>;
+    /**
+     * Name of the firewall group (1-64 characters).
+     */
     name: pulumi.Input<string>;
 }

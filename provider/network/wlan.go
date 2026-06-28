@@ -21,6 +21,11 @@ type WlanPrivatePsk struct {
 	NetworkId *string `pulumi:"networkId,optional"`
 }
 
+func (d *WlanPrivatePsk) Annotate(a infer.Annotator) {
+	a.Describe(&d.Password, "Password is the pre-shared key for this entry (8-255 chars). Secret.")
+	a.Describe(&d.NetworkId, "NetworkId is the network/VLAN (`_id`) clients using this key are placed on.")
+}
+
 // WlanSaePsk is a single WPA3 SAE pre-shared key entry, optionally bound to a
 // MAC address and placed onto a specific VLAN.
 type WlanSaePsk struct {
@@ -32,6 +37,13 @@ type WlanSaePsk struct {
 	Mac *string `pulumi:"mac,optional"`
 	// Vlan optionally places clients using this key onto the given VLAN ID.
 	Vlan *int `pulumi:"vlan,optional"`
+}
+
+func (d *WlanSaePsk) Annotate(a infer.Annotator) {
+	a.Describe(&d.Psk, "Psk is the SAE pre-shared key (8-255 chars). Secret.")
+	a.Describe(&d.Id, "Id is an optional identifier for this SAE PSK entry.")
+	a.Describe(&d.Mac, "Mac optionally binds this key to a specific client MAC (XX:XX:XX:XX:XX:XX).")
+	a.Describe(&d.Vlan, "Vlan optionally places clients using this key onto the given VLAN ID.")
 }
 
 // WlanScheduleEntry is a single entry of the duration-based broadcast schedule.
@@ -46,6 +58,14 @@ type WlanScheduleEntry struct {
 	StartDaysOfWeek []string `pulumi:"startDaysOfWeek,optional"`
 	// Name is an optional friendly label for the schedule entry.
 	Name *string `pulumi:"name,optional"`
+}
+
+func (d *WlanScheduleEntry) Annotate(a infer.Annotator) {
+	a.Describe(&d.DurationMinutes, "DurationMinutes is how long, in minutes, the SSID stays active once started.")
+	a.Describe(&d.StartHour, "StartHour is the start hour (0-23).")
+	a.Describe(&d.StartMinute, "StartMinute is the start minute (0-59). Defaults to 0.")
+	a.Describe(&d.StartDaysOfWeek, "StartDaysOfWeek selects the days this entry applies to: sun|mon|tue|wed|thu|fri|sat.")
+	a.Describe(&d.Name, "Name is an optional friendly label for the schedule entry.")
 }
 
 // WlanWpa groups the core WPA/encryption tuning applied on top of `security`.
@@ -65,6 +85,15 @@ type WlanWpa struct {
 	GroupRekey *int `pulumi:"groupRekey,optional"`
 }
 
+func (d *WlanWpa) Annotate(a infer.Annotator) {
+	a.Describe(&d.Mode, "Mode is the WPA mode: auto | wpa1 | wpa2.")
+	a.Describe(&d.Enc, "Enc is the WPA encryption cipher: auto | ccmp | gcmp | ccmp-256 | gcmp-256.")
+	a.Describe(&d.PskRadius, "PskRadius controls RADIUS PSK auth: disabled | optional | required. This is a mode enum, not a credential, so it is not marked secret.")
+	a.Describe(&d.PmfMode, "PmfMode is Protected Management Frames mode: disabled | optional | required.")
+	a.Describe(&d.PmfCipher, "PmfCipher is the PMF cipher: auto | aes-128-cmac | bip-gmac-256.")
+	a.Describe(&d.GroupRekey, "GroupRekey is the group key rekey interval in seconds (0 disables).")
+}
+
 // WlanWpa3 groups the WPA3 feature cluster.
 type WlanWpa3 struct {
 	// Support enables WPA3 (requires wpapsk security and PMF enabled).
@@ -75,6 +104,13 @@ type WlanWpa3 struct {
 	Enhanced192 *bool `pulumi:"enhanced192,optional"`
 	// FastRoaming enables 802.11r fast roaming for WPA3.
 	FastRoaming *bool `pulumi:"fastRoaming,optional"`
+}
+
+func (d *WlanWpa3) Annotate(a infer.Annotator) {
+	a.Describe(&d.Support, "Support enables WPA3 (requires wpapsk security and PMF enabled).")
+	a.Describe(&d.Transition, "Transition enables WPA3/WPA2 transition mode (requires support).")
+	a.Describe(&d.Enhanced192, "Enhanced192 enables WPA3 Enterprise 192-bit mode.")
+	a.Describe(&d.FastRoaming, "FastRoaming enables 802.11r fast roaming for WPA3.")
 }
 
 // WlanSae groups the WPA3 SAE handshake configuration.
@@ -89,6 +125,13 @@ type WlanSae struct {
 	Sync *int `pulumi:"sync,optional"`
 }
 
+func (d *WlanSae) Annotate(a infer.Annotator) {
+	a.Describe(&d.Psks, "Psks is the list of WPA3 SAE pre-shared keys.")
+	a.Describe(&d.Groups, "Groups are the SAE finite cyclic groups to allow.")
+	a.Describe(&d.AntiClogging, "AntiClogging is the SAE anti-clogging threshold.")
+	a.Describe(&d.Sync, "Sync is the SAE sync value.")
+}
+
 // WlanWep groups the legacy WEP-only settings (used when security="wep").
 type WlanWep struct {
 	// Key is the WEP key. Secret. Only used when security is "wep".
@@ -97,12 +140,22 @@ type WlanWep struct {
 	Index *int `pulumi:"index,optional"`
 }
 
+func (d *WlanWep) Annotate(a infer.Annotator) {
+	a.Describe(&d.Key, "Key is the WEP key. Secret. Only used when security is \"wep\".")
+	a.Describe(&d.Index, "Index is the WEP key index (1-4).")
+}
+
 // WlanPrivatePresharedKeys groups per-key network placement (PPSK).
 type WlanPrivatePresharedKeys struct {
 	// Enabled enables per-key network placement.
 	Enabled *bool `pulumi:"enabled,optional"`
 	// Keys is the list of private pre-shared keys.
 	Keys []WlanPrivatePsk `pulumi:"keys,optional"`
+}
+
+func (d *WlanPrivatePresharedKeys) Annotate(a infer.Annotator) {
+	a.Describe(&d.Enabled, "Enabled enables per-key network placement.")
+	a.Describe(&d.Keys, "Keys is the list of private pre-shared keys.")
 }
 
 // WlanRadius groups the RADIUS/802.1X plumbing for wpaeap and RADIUS-MAC auth.
@@ -124,12 +177,27 @@ type WlanRadius struct {
 	NasIdentifierType *string `pulumi:"nasIdentifierType,optional"`
 }
 
+func (d *WlanRadius) Annotate(a infer.Annotator) {
+	a.Describe(&d.ProfileId, "ProfileId is the RADIUS profile (`_id`) for wpaeap security.")
+	a.Describe(&d.MacAuthEnabled, "MacAuthEnabled enables RADIUS-based MAC authentication.")
+	a.Describe(&d.MacaclFormat, "MacaclFormat is the MAC ACL format: none_lower | hyphen_lower | colon_lower | none_upper | hyphen_upper | colon_upper.")
+	a.Describe(&d.MacaclEmptyPassword, "MacaclEmptyPassword sends an empty password for MAC ACL auth.")
+	a.Describe(&d.DasEnabled, "DasEnabled enables RADIUS Dynamic Authorization (CoA/DM).")
+	a.Describe(&d.NasIdentifier, "NasIdentifier is the RADIUS NAS identifier value (0-48 chars).")
+	a.Describe(&d.NasIdentifierType, "NasIdentifierType: ap_name | ap_mac | bssid | site_name | custom.")
+}
+
 // WlanVlanTagging groups the VLAN tagging facet.
 type WlanVlanTagging struct {
 	// Vlan is the VLAN ID to tag client traffic with.
 	Vlan *int `pulumi:"vlan,optional"`
 	// Enabled enables VLAN tagging for this WLAN.
 	Enabled *bool `pulumi:"enabled,optional"`
+}
+
+func (d *WlanVlanTagging) Annotate(a infer.Annotator) {
+	a.Describe(&d.Vlan, "Vlan is the VLAN ID to tag client traffic with.")
+	a.Describe(&d.Enabled, "Enabled enables VLAN tagging for this WLAN.")
 }
 
 // WlanBandSteering groups radio band selection and band steering.
@@ -142,6 +210,12 @@ type WlanBandSteering struct {
 	No2GhzOui *bool `pulumi:"no2GhzOui,optional"`
 }
 
+func (d *WlanBandSteering) Annotate(a infer.Annotator) {
+	a.Describe(&d.Band, "Band is the radio band: 2g | 5g | both.")
+	a.Describe(&d.Bands, "Bands are the radio bands to broadcast on: 2g | 5g | 6g.")
+	a.Describe(&d.No2GhzOui, "No2GhzOui steers high-performance clients to 5GHz only.")
+}
+
 // WlanDtim groups the DTIM interval control across bands.
 type WlanDtim struct {
 	// Mode controls DTIM interval handling: default | custom.
@@ -152,6 +226,13 @@ type WlanDtim struct {
 	Ng *int `pulumi:"ng,optional"`
 	// SixE is the DTIM interval for the 6GHz band (1-255).
 	SixE *int `pulumi:"sixE,optional"`
+}
+
+func (d *WlanDtim) Annotate(a infer.Annotator) {
+	a.Describe(&d.Mode, "Mode controls DTIM interval handling: default | custom.")
+	a.Describe(&d.Na, "Na is the DTIM interval for the 5GHz band (1-255).")
+	a.Describe(&d.Ng, "Ng is the DTIM interval for the 2.4GHz band (1-255).")
+	a.Describe(&d.SixE, "SixE is the DTIM interval for the 6GHz band (1-255).")
 }
 
 // WlanMinrate groups the minimum-data-rate control.
@@ -172,6 +253,16 @@ type WlanMinrate struct {
 	SettingPreference *string `pulumi:"settingPreference,optional"`
 }
 
+func (d *WlanMinrate) Annotate(a infer.Annotator) {
+	a.Describe(&d.NaEnabled, "NaEnabled enables the 5GHz minimum data rate control.")
+	a.Describe(&d.NaDataRateKbps, "NaDataRateKbps is the minimum 5GHz data rate in Kbps.")
+	a.Describe(&d.NaAdvertisingRates, "NaAdvertisingRates advertises only allowed 5GHz rates.")
+	a.Describe(&d.NgEnabled, "NgEnabled enables the 2.4GHz minimum data rate control.")
+	a.Describe(&d.NgDataRateKbps, "NgDataRateKbps is the minimum 2.4GHz data rate in Kbps.")
+	a.Describe(&d.NgAdvertisingRates, "NgAdvertisingRates advertises only allowed 2.4GHz rates.")
+	a.Describe(&d.SettingPreference, "SettingPreference: auto | manual.")
+}
+
 // WlanMacFilter groups the MAC access-control list.
 type WlanMacFilter struct {
 	// Enabled enables MAC-based access control.
@@ -180,6 +271,12 @@ type WlanMacFilter struct {
 	Policy *string `pulumi:"policy,optional"`
 	// List is the list of MACs (XX:XX:XX:XX:XX:XX) the policy applies to.
 	List []string `pulumi:"list,optional"`
+}
+
+func (d *WlanMacFilter) Annotate(a infer.Annotator) {
+	a.Describe(&d.Enabled, "Enabled enables MAC-based access control.")
+	a.Describe(&d.Policy, "Policy: allow | deny.")
+	a.Describe(&d.List, "List is the list of MACs (XX:XX:XX:XX:XX:XX) the policy applies to.")
 }
 
 // WlanMulticast groups the multicast/broadcast traffic handling.
@@ -194,6 +291,13 @@ type WlanMulticast struct {
 	BroadcastFilterList []string `pulumi:"broadcastFilterList,optional"`
 }
 
+func (d *WlanMulticast) Annotate(a infer.Annotator) {
+	a.Describe(&d.EnhanceEnabled, "EnhanceEnabled converts multicast to unicast for reliability.")
+	a.Describe(&d.ProxyArp, "ProxyArp lets APs proxy common broadcast frames as unicast.")
+	a.Describe(&d.BroadcastFilterEnabled, "BroadcastFilterEnabled enables filtering of broadcast/multicast traffic.")
+	a.Describe(&d.BroadcastFilterList, "BroadcastFilterList is the allow list of MACs exempt from filtering.")
+}
+
 // WlanSchedule groups the time-based broadcast scheduling.
 type WlanSchedule struct {
 	// Enabled enables time-based broadcast scheduling.
@@ -204,12 +308,23 @@ type WlanSchedule struct {
 	Entries []WlanScheduleEntry `pulumi:"entries,optional"`
 }
 
+func (d *WlanSchedule) Annotate(a infer.Annotator) {
+	a.Describe(&d.Enabled, "Enabled enables time-based broadcast scheduling.")
+	a.Describe(&d.Legacy, "Legacy is the legacy schedule format entries (day|HHMM-HHMM).")
+	a.Describe(&d.Entries, "Entries is the duration-based broadcast schedule.")
+}
+
 // WlanApGroups groups which AP groups/devices broadcast this SSID.
 type WlanApGroups struct {
 	// Ids are the AP groups that should broadcast this SSID.
 	Ids []string `pulumi:"ids,optional"`
 	// Mode controls AP selection: all | groups | devices.
 	Mode *string `pulumi:"mode,optional"`
+}
+
+func (d *WlanApGroups) Annotate(a infer.Annotator) {
+	a.Describe(&d.Ids, "Ids are the AP groups that should broadcast this SSID.")
+	a.Describe(&d.Mode, "Mode controls AP selection: all | groups | devices.")
 }
 
 // WlanDpi groups the Deep Packet Inspection toggle and group reference.
@@ -220,12 +335,22 @@ type WlanDpi struct {
 	GroupId *string `pulumi:"groupId,optional"`
 }
 
+func (d *WlanDpi) Annotate(a infer.Annotator) {
+	a.Describe(&d.Enabled, "Enabled enables deep packet inspection for this WLAN.")
+	a.Describe(&d.GroupId, "GroupId is the DPI group to apply.")
+}
+
 // WlanIot groups the IoT connectivity behaviors.
 type WlanIot struct {
 	// Enhanced enables enhanced IoT connectivity behaviors.
 	Enhanced *bool `pulumi:"enhanced,optional"`
 	// OptimizeWifiConnectivity optimizes connectivity for IoT devices.
 	OptimizeWifiConnectivity *bool `pulumi:"optimizeWifiConnectivity,optional"`
+}
+
+func (d *WlanIot) Annotate(a infer.Annotator) {
+	a.Describe(&d.Enhanced, "Enhanced enables enhanced IoT connectivity behaviors.")
+	a.Describe(&d.OptimizeWifiConnectivity, "OptimizeWifiConnectivity optimizes connectivity for IoT devices.")
 }
 
 // WlanP2p groups the peer-to-peer (client-to-client) traffic settings.
@@ -236,6 +361,11 @@ type WlanP2p struct {
 	CrossConnect *bool `pulumi:"crossConnect,optional"`
 }
 
+func (d *WlanP2p) Annotate(a infer.Annotator) {
+	a.Describe(&d.Enabled, "Enabled enables peer-to-peer (client-to-client) traffic.")
+	a.Describe(&d.CrossConnect, "CrossConnect allows P2P traffic across APs.")
+}
+
 // WlanRoaming groups the general client roaming/handoff settings.
 type WlanRoaming struct {
 	// FastRoamingEnabled enables 802.11r fast BSS transition.
@@ -244,6 +374,12 @@ type WlanRoaming struct {
 	BssTransition *bool `pulumi:"bssTransition,optional"`
 	// IappKey is the inter-AP protocol key (32 hex chars). Secret.
 	IappKey *string `pulumi:"iappKey,optional" provider:"secret"`
+}
+
+func (d *WlanRoaming) Annotate(a infer.Annotator) {
+	a.Describe(&d.FastRoamingEnabled, "FastRoamingEnabled enables 802.11r fast BSS transition.")
+	a.Describe(&d.BssTransition, "BssTransition enables 802.11v BSS transition management.")
+	a.Describe(&d.IappKey, "IappKey is the inter-AP protocol key (32 hex chars). Secret.")
 }
 
 // WlanArgs are the user-supplied inputs for a WLAN.
@@ -313,11 +449,49 @@ type WlanArgs struct {
 	Roaming *WlanRoaming `pulumi:"roaming,optional"`
 }
 
+func (d *WlanArgs) Annotate(a infer.Annotator) {
+	a.Describe(&d.Name, "Name is the SSID.")
+	a.Describe(&d.NetworkId, "NetworkId binds the WLAN to a network/VLAN (the network's `_id`).")
+	a.Describe(&d.WlanGroupId, "WlanGroupId is the WLAN group to attach to. Required on many controllers.")
+	a.Describe(&d.UserGroupId, "UserGroupId is the user group (rate limiting / firewall) for clients.")
+	a.Describe(&d.Enabled, "Enabled controls whether the SSID is broadcast. Defaults to true.")
+	a.Describe(&d.Security, "Security: open | wpapsk | wpaeap | wep | osen. Defaults to \"wpapsk\".")
+	a.Describe(&d.Passphrase, "Passphrase is the WPA pre-shared key (8-63 chars). Secret.")
+	a.Describe(&d.HideSsid, "HideSsid hides the SSID from broadcast. Defaults to false.")
+	a.Describe(&d.UapsdEnabled, "UapsdEnabled enables Unscheduled Automatic Power Save Delivery.")
+	a.Describe(&d.MloEnabled, "MloEnabled enables Multi-Link Operation (WiFi 7).")
+	a.Describe(&d.L2Isolation, "L2Isolation isolates wireless clients from each other at layer 2.")
+	a.Describe(&d.IsGuest, "IsGuest marks this WLAN as a guest network (enables guest behaviors).")
+	a.Describe(&d.Priority, "Priority: medium | high | low.")
+	a.Describe(&d.Wpa, "Wpa groups the core WPA/encryption tuning.")
+	a.Describe(&d.Wpa3, "Wpa3 groups the WPA3 feature cluster.")
+	a.Describe(&d.Sae, "Sae groups the WPA3 SAE handshake configuration.")
+	a.Describe(&d.Wep, "Wep groups the legacy WEP-only settings.")
+	a.Describe(&d.PrivatePresharedKeys, "PrivatePresharedKeys groups per-key network placement (PPSK).")
+	a.Describe(&d.Radius, "Radius groups the RADIUS/802.1X plumbing.")
+	a.Describe(&d.VlanTagging, "VlanTagging groups the VLAN tagging facet.")
+	a.Describe(&d.BandSteering, "BandSteering groups radio band selection and band steering.")
+	a.Describe(&d.Dtim, "Dtim groups the DTIM interval control across bands.")
+	a.Describe(&d.MinRate, "MinRate groups the minimum-data-rate control.")
+	a.Describe(&d.MacFilter, "MacFilter groups the MAC access-control list.")
+	a.Describe(&d.Multicast, "Multicast groups the multicast/broadcast traffic handling.")
+	a.Describe(&d.Schedule, "Schedule groups the time-based broadcast scheduling.")
+	a.Describe(&d.ApGroups, "ApGroups groups which AP groups/devices broadcast this SSID.")
+	a.Describe(&d.Dpi, "Dpi groups the Deep Packet Inspection toggle and group reference.")
+	a.Describe(&d.Iot, "Iot groups the IoT connectivity behaviors.")
+	a.Describe(&d.P2p, "P2p groups the peer-to-peer (client-to-client) traffic settings.")
+	a.Describe(&d.Roaming, "Roaming groups the general client roaming/handoff settings.")
+}
+
 // WlanState is the persisted state: inputs plus controller-assigned fields.
 type WlanState struct {
 	WlanArgs
 	// WlanId is the controller-assigned identifier (the UniFi `_id`).
 	WlanId string `pulumi:"wlanId"`
+}
+
+func (d *WlanState) Annotate(a infer.Annotator) {
+	a.Describe(&d.WlanId, "WlanId is the controller-assigned identifier (the UniFi `_id`).")
 }
 
 // Annotate documents the resource and its most important fields.
@@ -1192,6 +1366,9 @@ func (Wlan) Create(ctx context.Context, req infer.CreateRequest[WlanArgs]) (infe
 func (Wlan) Read(ctx context.Context, req infer.ReadRequest[WlanArgs, WlanState]) (infer.ReadResponse[WlanArgs, WlanState], error) {
 	cfg := infer.GetConfig[config.Config](ctx)
 	w, err := cfg.Network().GetWLAN(ctx, cfg.ResolvedSite(), req.ID)
+	if notFound(err) {
+		return infer.ReadResponse[WlanArgs, WlanState]{}, nil
+	}
 	if err != nil {
 		return infer.ReadResponse[WlanArgs, WlanState]{}, err
 	}
