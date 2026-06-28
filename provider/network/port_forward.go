@@ -29,6 +29,55 @@ func (PortForwardProtocol) Values() []infer.EnumValue[PortForwardProtocol] {
 	}
 }
 
+// PortForwardDestinationInterface is the WAN interface a destination-IP entry binds to.
+type PortForwardDestinationInterface string
+
+const (
+	PortForwardDestinationInterfaceWan  PortForwardDestinationInterface = "wan"
+	PortForwardDestinationInterfaceWan2 PortForwardDestinationInterface = "wan2"
+)
+
+func (PortForwardDestinationInterface) Values() []infer.EnumValue[PortForwardDestinationInterface] {
+	return []infer.EnumValue[PortForwardDestinationInterface]{
+		{Name: "Wan", Value: PortForwardDestinationInterfaceWan, Description: "Primary WAN interface."},
+		{Name: "Wan2", Value: PortForwardDestinationInterfaceWan2, Description: "Secondary WAN interface."},
+	}
+}
+
+// PortForwardPfwdInterface is the inbound WAN interface a port-forwarding rule matches on.
+type PortForwardPfwdInterface string
+
+const (
+	PortForwardPfwdInterfaceWan  PortForwardPfwdInterface = "wan"
+	PortForwardPfwdInterfaceWan2 PortForwardPfwdInterface = "wan2"
+	PortForwardPfwdInterfaceBoth PortForwardPfwdInterface = "both"
+	PortForwardPfwdInterfaceAll  PortForwardPfwdInterface = "all"
+)
+
+func (PortForwardPfwdInterface) Values() []infer.EnumValue[PortForwardPfwdInterface] {
+	return []infer.EnumValue[PortForwardPfwdInterface]{
+		{Name: "Wan", Value: PortForwardPfwdInterfaceWan, Description: "Primary WAN interface."},
+		{Name: "Wan2", Value: PortForwardPfwdInterfaceWan2, Description: "Secondary WAN interface."},
+		{Name: "Both", Value: PortForwardPfwdInterfaceBoth, Description: "Both WAN interfaces."},
+		{Name: "All", Value: PortForwardPfwdInterfaceAll, Description: "All WAN interfaces."},
+	}
+}
+
+// PortForwardSrcLimitingType selects how a rule restricts its source.
+type PortForwardSrcLimitingType string
+
+const (
+	PortForwardSrcLimitingTypeIp            PortForwardSrcLimitingType = "ip"
+	PortForwardSrcLimitingTypeFirewallGroup PortForwardSrcLimitingType = "firewall_group"
+)
+
+func (PortForwardSrcLimitingType) Values() []infer.EnumValue[PortForwardSrcLimitingType] {
+	return []infer.EnumValue[PortForwardSrcLimitingType]{
+		{Name: "Ip", Value: PortForwardSrcLimitingTypeIp, Description: "Limit by source IP address."},
+		{Name: "FirewallGroup", Value: PortForwardSrcLimitingTypeFirewallGroup, Description: "Limit by firewall group."},
+	}
+}
+
 // PortForward is the controlling (marker) struct for a UniFi port-forwarding rule.
 type PortForward struct{}
 
@@ -39,7 +88,7 @@ type PortForwardDestinationIp struct {
 	// DestinationIp is the public/destination IPv4 address this entry matches, or "any".
 	DestinationIp *string `pulumi:"destinationIp,optional"`
 	// Interface binds the entry to a WAN interface: wan | wan2.
-	Interface *string `pulumi:"interface,optional"`
+	Interface *PortForwardDestinationInterface `pulumi:"interface,optional"`
 }
 
 // PortForwardArgs are the user-supplied inputs for a port-forwarding rule.
@@ -61,13 +110,13 @@ type PortForwardArgs struct {
 	// Log enables logging of forwarded traffic. Defaults to false.
 	Log *bool `pulumi:"log,optional"`
 	// PfwdInterface selects the inbound WAN interface: wan | wan2 | both | all.
-	PfwdInterface *string `pulumi:"pfwdInterface,optional"`
+	PfwdInterface *PortForwardPfwdInterface `pulumi:"pfwdInterface,optional"`
 	// SrcFirewallGroupId references a firewall group used to restrict the source (when srcLimitingType=firewall_group).
 	SrcFirewallGroupId *string `pulumi:"srcFirewallGroupId,optional"`
 	// SrcLimitingEnabled enables restricting the rule by source address or firewall group.
 	SrcLimitingEnabled *bool `pulumi:"srcLimitingEnabled,optional"`
 	// SrcLimitingType selects how the source is limited: ip | firewall_group.
-	SrcLimitingType *string `pulumi:"srcLimitingType,optional"`
+	SrcLimitingType *PortForwardSrcLimitingType `pulumi:"srcLimitingType,optional"`
 	// DestinationIp is the public/destination IPv4 address this rule matches, or "any".
 	DestinationIp *string `pulumi:"destinationIp,optional"`
 	// DestinationIps maps destination IPs to specific WAN interfaces for multi-WAN setups.
@@ -141,7 +190,7 @@ func (a PortForwardArgs) toUnifi(id string) *unifi.PortForward {
 		pf.Fwd = *a.Fwd
 	}
 	if a.PfwdInterface != nil {
-		pf.PfwdInterface = *a.PfwdInterface
+		pf.PfwdInterface = string(*a.PfwdInterface)
 	}
 	if a.SrcFirewallGroupId != nil {
 		pf.SrcFirewallGroupID = *a.SrcFirewallGroupId
@@ -150,7 +199,7 @@ func (a PortForwardArgs) toUnifi(id string) *unifi.PortForward {
 		pf.SrcLimitingEnabled = *a.SrcLimitingEnabled
 	}
 	if a.SrcLimitingType != nil {
-		pf.SrcLimitingType = *a.SrcLimitingType
+		pf.SrcLimitingType = string(*a.SrcLimitingType)
 	}
 	if a.DestinationIp != nil {
 		pf.DestinationIP = *a.DestinationIp
@@ -161,7 +210,7 @@ func (a PortForwardArgs) toUnifi(id string) *unifi.PortForward {
 			item.DestinationIP = *dip.DestinationIp
 		}
 		if dip.Interface != nil {
-			item.Interface = *dip.Interface
+			item.Interface = string(*dip.Interface)
 		}
 		pf.DestinationIPs = append(pf.DestinationIPs, item)
 	}
@@ -194,9 +243,17 @@ func portForwardStateFrom(pf *unifi.PortForward, prior PortForwardArgs) PortForw
 		args.Proto = prior.Proto
 	}
 	args.Src = portForwardStrPtr(pf.Src, prior.Src)
-	args.PfwdInterface = portForwardStrPtr(pf.PfwdInterface, prior.PfwdInterface)
+	if pf.PfwdInterface != "" {
+		args.PfwdInterface = ptr(PortForwardPfwdInterface(pf.PfwdInterface))
+	} else {
+		args.PfwdInterface = prior.PfwdInterface
+	}
 	args.SrcFirewallGroupId = portForwardStrPtr(pf.SrcFirewallGroupID, prior.SrcFirewallGroupId)
-	args.SrcLimitingType = portForwardStrPtr(pf.SrcLimitingType, prior.SrcLimitingType)
+	if pf.SrcLimitingType != "" {
+		args.SrcLimitingType = ptr(PortForwardSrcLimitingType(pf.SrcLimitingType))
+	} else {
+		args.SrcLimitingType = prior.SrcLimitingType
+	}
 	args.DestinationIp = portForwardStrPtr(pf.DestinationIP, prior.DestinationIp)
 	if prior.SrcLimitingEnabled != nil || pf.SrcLimitingEnabled {
 		args.SrcLimitingEnabled = ptr(pf.SrcLimitingEnabled)
@@ -208,7 +265,7 @@ func portForwardStateFrom(pf *unifi.PortForward, prior PortForwardArgs) PortForw
 				item.DestinationIp = ptr(dip.DestinationIP)
 			}
 			if dip.Interface != "" {
-				item.Interface = ptr(dip.Interface)
+				item.Interface = ptr(PortForwardDestinationInterface(dip.Interface))
 			}
 			args.DestinationIps = append(args.DestinationIps, item)
 		}

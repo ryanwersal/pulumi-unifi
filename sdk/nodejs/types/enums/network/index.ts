@@ -2,6 +2,265 @@
 // *** Do not edit by hand unless you're certain you know what you are doing! ***
 
 
+export const DeviceDot1xCtrl = {
+    /**
+     * 802.1X authentication.
+     */
+    Auto: "auto",
+    /**
+     * Always authorized.
+     */
+    ForceAuthorized: "force_authorized",
+    /**
+     * Always unauthorized.
+     */
+    ForceUnauthorized: "force_unauthorized",
+    /**
+     * Per-MAC authentication.
+     */
+    MacBased: "mac_based",
+    /**
+     * Multi-host authentication.
+     */
+    MultiHost: "multi_host",
+} as const;
+
+export type DeviceDot1xCtrl = (typeof DeviceDot1xCtrl)[keyof typeof DeviceDot1xCtrl];
+
+export const DeviceEtherLightingBehavior = {
+    /**
+     * Breathing animation.
+     */
+    Breath: "breath",
+    /**
+     * Steady (no animation).
+     */
+    Steady: "steady",
+} as const;
+
+export type DeviceEtherLightingBehavior = (typeof DeviceEtherLightingBehavior)[keyof typeof DeviceEtherLightingBehavior];
+
+export const DeviceEtherLightingMode = {
+    /**
+     * Animate by port speed.
+     */
+    Speed: "speed",
+    /**
+     * Animate by network.
+     */
+    Network: "network",
+} as const;
+
+export type DeviceEtherLightingMode = (typeof DeviceEtherLightingMode)[keyof typeof DeviceEtherLightingMode];
+
+export const DeviceFecMode = {
+    /**
+     * Reed-Solomon FEC.
+     */
+    RsFec: "rs-fec",
+    /**
+     * Fire-code FEC.
+     */
+    FcFec: "fc-fec",
+    /**
+     * Device default FEC.
+     */
+    Default: "default",
+    /**
+     * FEC disabled.
+     */
+    Disabled: "disabled",
+} as const;
+
+export type DeviceFecMode = (typeof DeviceFecMode)[keyof typeof DeviceFecMode];
+
+export const DeviceLedMode = {
+    /**
+     * Standard status LED.
+     */
+    Standard: "standard",
+    /**
+     * EtherLighting LED strip mode.
+     */
+    Etherlighting: "etherlighting",
+} as const;
+
+export type DeviceLedMode = (typeof DeviceLedMode)[keyof typeof DeviceLedMode];
+
+export const DeviceLedOverride = {
+    /**
+     * Use the global LED setting.
+     */
+    Default: "default",
+    /**
+     * LED on.
+     */
+    On: "on",
+    /**
+     * LED off.
+     */
+    Off: "off",
+} as const;
+
+export type DeviceLedOverride = (typeof DeviceLedOverride)[keyof typeof DeviceLedOverride];
+
+export const DevicePoeMode = {
+    /**
+     * Automatic PoE based on device class.
+     */
+    Auto: "auto",
+    /**
+     * Passive 24V PoE.
+     */
+    Pasv24: "pasv24",
+    /**
+     * PoE passthrough from uplink.
+     */
+    Passthrough: "passthrough",
+    /**
+     * PoE disabled.
+     */
+    Off: "off",
+} as const;
+
+export type DevicePoeMode = (typeof DevicePoeMode)[keyof typeof DevicePoeMode];
+
+export const DevicePortForward = {
+    /**
+     * Forward all VLANs.
+     */
+    All: "all",
+    /**
+     * Forward only the native VLAN.
+     */
+    Native: "native",
+    /**
+     * Forward a custom VLAN set.
+     */
+    Customize: "customize",
+    /**
+     * Forward nothing.
+     */
+    Disabled: "disabled",
+} as const;
+
+export type DevicePortForward = (typeof DevicePortForward)[keyof typeof DevicePortForward];
+
+export const DevicePortOpMode = {
+    /**
+     * Normal switching.
+     */
+    Switch: "switch",
+    /**
+     * Port mirroring.
+     */
+    Mirror: "mirror",
+    /**
+     * Link aggregation.
+     */
+    Aggregate: "aggregate",
+} as const;
+
+export type DevicePortOpMode = (typeof DevicePortOpMode)[keyof typeof DevicePortOpMode];
+
+export const DeviceSettingPreference = {
+    /**
+     * Inherit profile.
+     */
+    Auto: "auto",
+    /**
+     * Use these overrides.
+     */
+    Manual: "manual",
+} as const;
+
+export type DeviceSettingPreference = (typeof DeviceSettingPreference)[keyof typeof DeviceSettingPreference];
+
+export const DeviceStormctrlType = {
+    /**
+     * Percent-of-line-rate threshold.
+     */
+    Level: "level",
+    /**
+     * Packets-per-second threshold.
+     */
+    Rate: "rate",
+} as const;
+
+export type DeviceStormctrlType = (typeof DeviceStormctrlType)[keyof typeof DeviceStormctrlType];
+
+export const DeviceStpVersion = {
+    /**
+     * Classic spanning tree.
+     */
+    Stp: "stp",
+    /**
+     * Rapid spanning tree.
+     */
+    Rstp: "rstp",
+    /**
+     * Spanning tree disabled.
+     */
+    Disabled: "disabled",
+} as const;
+
+export type DeviceStpVersion = (typeof DeviceStpVersion)[keyof typeof DeviceStpVersion];
+
+export const DeviceTaggedVlanMgmt = {
+    /**
+     * Allow all tagged VLANs.
+     */
+    Auto: "auto",
+    /**
+     * Block all tagged VLANs.
+     */
+    BlockAll: "block_all",
+    /**
+     * Use excludedNetworkIds.
+     */
+    Custom: "custom",
+} as const;
+
+export type DeviceTaggedVlanMgmt = (typeof DeviceTaggedVlanMgmt)[keyof typeof DeviceTaggedVlanMgmt];
+
+export const DeviceTxPowerMode = {
+    /**
+     * Automatic transmit power.
+     */
+    Auto: "auto",
+    /**
+     * Medium transmit power.
+     */
+    Medium: "medium",
+    /**
+     * High transmit power.
+     */
+    High: "high",
+    /**
+     * Low transmit power.
+     */
+    Low: "low",
+    /**
+     * Custom transmit power (use txPower).
+     */
+    Custom: "custom",
+} as const;
+
+export type DeviceTxPowerMode = (typeof DeviceTxPowerMode)[keyof typeof DeviceTxPowerMode];
+
+export const DeviceVrrpMode = {
+    /**
+     * VRRP primary.
+     */
+    Primary: "primary",
+    /**
+     * VRRP secondary.
+     */
+    Secondary: "secondary",
+} as const;
+
+export type DeviceVrrpMode = (typeof DeviceVrrpMode)[keyof typeof DeviceVrrpMode];
+
 export const DnsRecordType = {
     /**
      * IPv4 address record.
@@ -60,6 +319,62 @@ export const FirewallGroupType = {
 
 export type FirewallGroupType = (typeof FirewallGroupType)[keyof typeof FirewallGroupType];
 
+export const FirewallRuleAction = {
+    /**
+     * Permit matching traffic.
+     */
+    Accept: "accept",
+    /**
+     * Silently discard matching traffic.
+     */
+    Drop: "drop",
+    /**
+     * Discard matching traffic and send a rejection.
+     */
+    Reject: "reject",
+} as const;
+
+export type FirewallRuleAction = (typeof FirewallRuleAction)[keyof typeof FirewallRuleAction];
+
+export const FirewallRuleIpSec = {
+    /**
+     * Match IPsec-encapsulated traffic.
+     */
+    MatchIpsec: "match-ipsec",
+    /**
+     * Match non-IPsec traffic.
+     */
+    MatchNone: "match-none",
+} as const;
+
+export type FirewallRuleIpSec = (typeof FirewallRuleIpSec)[keyof typeof FirewallRuleIpSec];
+
+export const FirewallRuleNetworkType = {
+    /**
+     * Interpret the network ID as an IPv4 host address.
+     */
+    Addrv4: "ADDRv4",
+    /**
+     * Interpret the network ID as an IPv4 network.
+     */
+    Netv4: "NETv4",
+} as const;
+
+export type FirewallRuleNetworkType = (typeof FirewallRuleNetworkType)[keyof typeof FirewallRuleNetworkType];
+
+export const FirewallRuleSettingPreference = {
+    /**
+     * Use automatic settings.
+     */
+    Auto: "auto",
+    /**
+     * Use manual settings.
+     */
+    Manual: "manual",
+} as const;
+
+export type FirewallRuleSettingPreference = (typeof FirewallRuleSettingPreference)[keyof typeof FirewallRuleSettingPreference];
+
 export const FirewallZonePolicyAction = {
     /**
      * Permit matching traffic.
@@ -94,6 +409,52 @@ export const FirewallZonePolicyConnectionStateType = {
 
 export type FirewallZonePolicyConnectionStateType = (typeof FirewallZonePolicyConnectionStateType)[keyof typeof FirewallZonePolicyConnectionStateType];
 
+export const FirewallZonePolicyDestinationMatchingTarget = {
+    /**
+     * Match any destination.
+     */
+    Any: "ANY",
+    /**
+     * Match applications.
+     */
+    App: "APP",
+    /**
+     * Match application categories.
+     */
+    AppCategory: "APP_CATEGORY",
+    /**
+     * Match destination IP addresses.
+     */
+    Ip: "IP",
+    /**
+     * Match geographic regions.
+     */
+    Region: "REGION",
+    /**
+     * Match web domains.
+     */
+    Web: "WEB",
+} as const;
+
+export type FirewallZonePolicyDestinationMatchingTarget = (typeof FirewallZonePolicyDestinationMatchingTarget)[keyof typeof FirewallZonePolicyDestinationMatchingTarget];
+
+export const FirewallZonePolicyDestinationMatchingTargetType = {
+    /**
+     * Match any.
+     */
+    Any: "ANY",
+    /**
+     * Match a saved group.
+     */
+    Object: "OBJECT",
+    /**
+     * Match inline values.
+     */
+    Specific: "SPECIFIC",
+} as const;
+
+export type FirewallZonePolicyDestinationMatchingTargetType = (typeof FirewallZonePolicyDestinationMatchingTargetType)[keyof typeof FirewallZonePolicyDestinationMatchingTargetType];
+
 export const FirewallZonePolicyIpVersion = {
     /**
      * Match both IPv4 and IPv6 traffic.
@@ -111,6 +472,133 @@ export const FirewallZonePolicyIpVersion = {
 
 export type FirewallZonePolicyIpVersion = (typeof FirewallZonePolicyIpVersion)[keyof typeof FirewallZonePolicyIpVersion];
 
+export const FirewallZonePolicyMatchIpSecType = {
+    /**
+     * Match IPsec-encapsulated traffic.
+     */
+    MatchIpSec: "MATCH_IP_SEC",
+    /**
+     * Match non-IPsec traffic.
+     */
+    MatchNonIpSec: "MATCH_NON_IP_SEC",
+} as const;
+
+export type FirewallZonePolicyMatchIpSecType = (typeof FirewallZonePolicyMatchIpSecType)[keyof typeof FirewallZonePolicyMatchIpSecType];
+
+export const FirewallZonePolicyPortMatchingType = {
+    /**
+     * Match any port.
+     */
+    Any: "ANY",
+    /**
+     * Match inline ports.
+     */
+    Specific: "SPECIFIC",
+    /**
+     * Match a saved port group.
+     */
+    Object: "OBJECT",
+} as const;
+
+export type FirewallZonePolicyPortMatchingType = (typeof FirewallZonePolicyPortMatchingType)[keyof typeof FirewallZonePolicyPortMatchingType];
+
+export const FirewallZonePolicyScheduleMode = {
+    /**
+     * Always active.
+     */
+    Always: "ALWAYS",
+    /**
+     * Active every day.
+     */
+    EveryDay: "EVERY_DAY",
+    /**
+     * Active on selected weekdays.
+     */
+    EveryWeek: "EVERY_WEEK",
+    /**
+     * Active once on a single date.
+     */
+    OneTimeOnly: "ONE_TIME_ONLY",
+    /**
+     * Custom recurring schedule.
+     */
+    Custom: "CUSTOM",
+} as const;
+
+export type FirewallZonePolicyScheduleMode = (typeof FirewallZonePolicyScheduleMode)[keyof typeof FirewallZonePolicyScheduleMode];
+
+export const FirewallZonePolicySourceMatchingTarget = {
+    /**
+     * Match any source.
+     */
+    Any: "ANY",
+    /**
+     * Match source clients.
+     */
+    Client: "CLIENT",
+    /**
+     * Match source networks.
+     */
+    Network: "NETWORK",
+    /**
+     * Match source IP addresses.
+     */
+    Ip: "IP",
+    /**
+     * Match source MAC addresses.
+     */
+    Mac: "MAC",
+} as const;
+
+export type FirewallZonePolicySourceMatchingTarget = (typeof FirewallZonePolicySourceMatchingTarget)[keyof typeof FirewallZonePolicySourceMatchingTarget];
+
+export const FirewallZonePolicySourceMatchingTargetType = {
+    /**
+     * Match a saved group.
+     */
+    Object: "OBJECT",
+    /**
+     * Match inline values.
+     */
+    Specific: "SPECIFIC",
+} as const;
+
+export type FirewallZonePolicySourceMatchingTargetType = (typeof FirewallZonePolicySourceMatchingTargetType)[keyof typeof FirewallZonePolicySourceMatchingTargetType];
+
+export const PortForwardDestinationInterface = {
+    /**
+     * Primary WAN interface.
+     */
+    Wan: "wan",
+    /**
+     * Secondary WAN interface.
+     */
+    Wan2: "wan2",
+} as const;
+
+export type PortForwardDestinationInterface = (typeof PortForwardDestinationInterface)[keyof typeof PortForwardDestinationInterface];
+
+export const PortForwardPfwdInterface = {
+    /**
+     * Primary WAN interface.
+     */
+    Wan: "wan",
+    /**
+     * Secondary WAN interface.
+     */
+    Wan2: "wan2",
+    /**
+     * Both WAN interfaces.
+     */
+    Both: "both",
+    /**
+     * All WAN interfaces.
+     */
+    All: "all",
+} as const;
+
+export type PortForwardPfwdInterface = (typeof PortForwardPfwdInterface)[keyof typeof PortForwardPfwdInterface];
+
 export const PortForwardProtocol = {
     /**
      * Match both TCP and UDP traffic.
@@ -127,6 +615,314 @@ export const PortForwardProtocol = {
 } as const;
 
 export type PortForwardProtocol = (typeof PortForwardProtocol)[keyof typeof PortForwardProtocol];
+
+export const PortForwardSrcLimitingType = {
+    /**
+     * Limit by source IP address.
+     */
+    Ip: "ip",
+    /**
+     * Limit by firewall group.
+     */
+    FirewallGroup: "firewall_group",
+} as const;
+
+export type PortForwardSrcLimitingType = (typeof PortForwardSrcLimitingType)[keyof typeof PortForwardSrcLimitingType];
+
+export const PortProfileDot1xCtrl = {
+    /**
+     * 802.1X authentication required.
+     */
+    Auto: "auto",
+    /**
+     * Always authorized.
+     */
+    ForceAuthorized: "force_authorized",
+    /**
+     * Always unauthorized.
+     */
+    ForceUnauthorized: "force_unauthorized",
+    /**
+     * MAC-based authentication.
+     */
+    MacBased: "mac_based",
+    /**
+     * Multi-host authentication.
+     */
+    MultiHost: "multi_host",
+} as const;
+
+export type PortProfileDot1xCtrl = (typeof PortProfileDot1xCtrl)[keyof typeof PortProfileDot1xCtrl];
+
+export const PortProfileFecMode = {
+    /**
+     * Reed-Solomon FEC.
+     */
+    RsFec: "rs-fec",
+    /**
+     * Fire-code FEC.
+     */
+    FcFec: "fc-fec",
+    /**
+     * Controller default FEC.
+     */
+    Default: "default",
+    /**
+     * FEC disabled.
+     */
+    Disabled: "disabled",
+} as const;
+
+export type PortProfileFecMode = (typeof PortProfileFecMode)[keyof typeof PortProfileFecMode];
+
+export const PortProfileOpMode = {
+    /**
+     * Switch operation mode.
+     */
+    Switch: "switch",
+} as const;
+
+export type PortProfileOpMode = (typeof PortProfileOpMode)[keyof typeof PortProfileOpMode];
+
+export const PortProfilePoeMode = {
+    /**
+     * Auto-detect and supply PoE.
+     */
+    Auto: "auto",
+    /**
+     * Disable PoE on the port.
+     */
+    Off: "off",
+} as const;
+
+export type PortProfilePoeMode = (typeof PortProfilePoeMode)[keyof typeof PortProfilePoeMode];
+
+export const PortProfileSettingPreference = {
+    /**
+     * Controller-managed configuration.
+     */
+    Auto: "auto",
+    /**
+     * Manually configured.
+     */
+    Manual: "manual",
+} as const;
+
+export type PortProfileSettingPreference = (typeof PortProfileSettingPreference)[keyof typeof PortProfileSettingPreference];
+
+export const PortProfileStormControlType = {
+    /**
+     * Percentage-of-bandwidth metric.
+     */
+    Level: "level",
+    /**
+     * Packets-per-second metric.
+     */
+    Rate: "rate",
+} as const;
+
+export type PortProfileStormControlType = (typeof PortProfileStormControlType)[keyof typeof PortProfileStormControlType];
+
+export const PortProfileTaggedVlanMgmt = {
+    /**
+     * Automatically manage tagged VLANs.
+     */
+    Auto: "auto",
+    /**
+     * Block all tagged VLANs.
+     */
+    BlockAll: "block_all",
+    /**
+     * Use a custom tagged-VLAN set.
+     */
+    Custom: "custom",
+} as const;
+
+export type PortProfileTaggedVlanMgmt = (typeof PortProfileTaggedVlanMgmt)[keyof typeof PortProfileTaggedVlanMgmt];
+
+export const StaticRouteGatewayType = {
+    /**
+     * Handled by the default gateway.
+     */
+    Default: "default",
+    /**
+     * Handled by a switch.
+     */
+    Switch: "switch",
+} as const;
+
+export type StaticRouteGatewayType = (typeof StaticRouteGatewayType)[keyof typeof StaticRouteGatewayType];
+
+export const StaticRouteType = {
+    /**
+     * Route via a next-hop IP address.
+     */
+    NexthopRoute: "nexthop-route",
+    /**
+     * Route out an egress interface.
+     */
+    InterfaceRoute: "interface-route",
+    /**
+     * Silently drop matching traffic.
+     */
+    Blackhole: "blackhole",
+} as const;
+
+export type StaticRouteType = (typeof StaticRouteType)[keyof typeof StaticRouteType];
+
+export const VlanGatewayType = {
+    /**
+     * Routed by the UniFi gateway.
+     */
+    Default: "default",
+    /**
+     * Layer-3 routed by a switch.
+     */
+    Switch: "switch",
+} as const;
+
+export type VlanGatewayType = (typeof VlanGatewayType)[keyof typeof VlanGatewayType];
+
+export const VlanIgmpProxyFor = {
+    /**
+     * Proxy for all downstream networks.
+     */
+    All: "all",
+    /**
+     * Proxy for selected networks.
+     */
+    Some: "some",
+    /**
+     * No downstream proxying.
+     */
+    None: "none",
+} as const;
+
+export type VlanIgmpProxyFor = (typeof VlanIgmpProxyFor)[keyof typeof VlanIgmpProxyFor];
+
+export const VlanIpv6ClientAddressAssignment = {
+    /**
+     * Stateless address autoconfiguration.
+     */
+    Slaac: "slaac",
+    /**
+     * Stateful DHCPv6 assignment.
+     */
+    Dhcpv6: "dhcpv6",
+} as const;
+
+export type VlanIpv6ClientAddressAssignment = (typeof VlanIpv6ClientAddressAssignment)[keyof typeof VlanIpv6ClientAddressAssignment];
+
+export const VlanIpv6InterfaceType = {
+    /**
+     * No IPv6 addressing.
+     */
+    None: "none",
+    /**
+     * Static IPv6 subnet.
+     */
+    Static: "static",
+    /**
+     * Prefix delegation from WAN.
+     */
+    Pd: "pd",
+    /**
+     * Derived from another network.
+     */
+    SingleNetwork: "single_network",
+} as const;
+
+export type VlanIpv6InterfaceType = (typeof VlanIpv6InterfaceType)[keyof typeof VlanIpv6InterfaceType];
+
+export const VlanIpv6PdInterface = {
+    /**
+     * Delegate from primary WAN.
+     */
+    Wan: "wan",
+    /**
+     * Delegate from secondary WAN.
+     */
+    Wan2: "wan2",
+} as const;
+
+export type VlanIpv6PdInterface = (typeof VlanIpv6PdInterface)[keyof typeof VlanIpv6PdInterface];
+
+export const VlanIpv6RaPriority = {
+    /**
+     * High RA priority.
+     */
+    High: "high",
+    /**
+     * Medium RA priority.
+     */
+    Medium: "medium",
+    /**
+     * Low RA priority.
+     */
+    Low: "low",
+} as const;
+
+export type VlanIpv6RaPriority = (typeof VlanIpv6RaPriority)[keyof typeof VlanIpv6RaPriority];
+
+export const VlanIpv6WanDelegationType = {
+    /**
+     * Delegate the prefix downstream.
+     */
+    Pd: "pd",
+    /**
+     * Assign to a single network.
+     */
+    SingleNetwork: "single_network",
+    /**
+     * No delegation.
+     */
+    None: "none",
+} as const;
+
+export type VlanIpv6WanDelegationType = (typeof VlanIpv6WanDelegationType)[keyof typeof VlanIpv6WanDelegationType];
+
+export const VlanNatOutboundMode = {
+    /**
+     * NAT all outbound traffic.
+     */
+    All: "all",
+    /**
+     * NAT to a single IP.
+     */
+    IpAddress: "ip_address",
+    /**
+     * NAT to an IP pool.
+     */
+    IpAddressPool: "ip_address_pool",
+} as const;
+
+export type VlanNatOutboundMode = (typeof VlanNatOutboundMode)[keyof typeof VlanNatOutboundMode];
+
+export const VlanNatWanGroup = {
+    /**
+     * Primary WAN interface.
+     */
+    Wan: "WAN",
+    /**
+     * Secondary WAN interface.
+     */
+    Wan2: "WAN2",
+} as const;
+
+export type VlanNatWanGroup = (typeof VlanNatWanGroup)[keyof typeof VlanNatWanGroup];
+
+export const VlanPreference = {
+    /**
+     * Controller-managed automatic values.
+     */
+    Auto: "auto",
+    /**
+     * User-specified manual values.
+     */
+    Manual: "manual",
+} as const;
+
+export type VlanPreference = (typeof VlanPreference)[keyof typeof VlanPreference];
 
 export const VlanPurpose = {
     /**
@@ -161,6 +957,218 @@ export const VlanPurpose = {
 
 export type VlanPurpose = (typeof VlanPurpose)[keyof typeof VlanPurpose];
 
+export const VlanWanLoadBalanceType = {
+    /**
+     * Use only as failover.
+     */
+    FailoverOnly: "failover-only",
+    /**
+     * Weighted load balancing.
+     */
+    Weighted: "weighted",
+} as const;
+
+export type VlanWanLoadBalanceType = (typeof VlanWanLoadBalanceType)[keyof typeof VlanWanLoadBalanceType];
+
+export const VlanWanNetworkGroup = {
+    /**
+     * Primary WAN interface.
+     */
+    Wan: "WAN",
+    /**
+     * Secondary WAN interface.
+     */
+    Wan2: "WAN2",
+    /**
+     * LTE failover WAN interface.
+     */
+    WanLteFailover: "WAN_LTE_FAILOVER",
+} as const;
+
+export type VlanWanNetworkGroup = (typeof VlanWanNetworkGroup)[keyof typeof VlanWanNetworkGroup];
+
+export const VlanWanType = {
+    /**
+     * WAN disabled.
+     */
+    Disabled: "disabled",
+    /**
+     * DHCP-assigned address.
+     */
+    Dhcp: "dhcp",
+    /**
+     * Static address.
+     */
+    Static: "static",
+    /**
+     * PPPoE connection.
+     */
+    Pppoe: "pppoe",
+    /**
+     * DS-Lite connection.
+     */
+    Dslite: "dslite",
+} as const;
+
+export type VlanWanType = (typeof VlanWanType)[keyof typeof VlanWanType];
+
+export const VlanWanTypeV6 = {
+    /**
+     * WAN IPv6 disabled.
+     */
+    Disabled: "disabled",
+    /**
+     * SLAAC-assigned address.
+     */
+    Slaac: "slaac",
+    /**
+     * DHCPv6-assigned address.
+     */
+    Dhcpv6: "dhcpv6",
+    /**
+     * Static IPv6 address.
+     */
+    Static: "static",
+} as const;
+
+export type VlanWanTypeV6 = (typeof VlanWanTypeV6)[keyof typeof VlanWanTypeV6];
+
+export const WlanApGroupsMode = {
+    /**
+     * Broadcast on all APs.
+     */
+    All: "all",
+    /**
+     * Broadcast on the listed AP groups.
+     */
+    Groups: "groups",
+    /**
+     * Broadcast on the listed devices.
+     */
+    Devices: "devices",
+} as const;
+
+export type WlanApGroupsMode = (typeof WlanApGroupsMode)[keyof typeof WlanApGroupsMode];
+
+export const WlanBand = {
+    /**
+     * 2.4GHz band.
+     */
+    WlanBand_2g: "2g",
+    /**
+     * 5GHz band.
+     */
+    WlanBand_5g: "5g",
+    /**
+     * Both bands.
+     */
+    Both: "both",
+} as const;
+
+export type WlanBand = (typeof WlanBand)[keyof typeof WlanBand];
+
+export const WlanDtimMode = {
+    /**
+     * Use controller default DTIM intervals.
+     */
+    Default: "default",
+    /**
+     * Use per-band custom DTIM intervals.
+     */
+    Custom: "custom",
+} as const;
+
+export type WlanDtimMode = (typeof WlanDtimMode)[keyof typeof WlanDtimMode];
+
+export const WlanMacFilterPolicy = {
+    /**
+     * Allow only listed MACs.
+     */
+    Allow: "allow",
+    /**
+     * Deny listed MACs.
+     */
+    Deny: "deny",
+} as const;
+
+export type WlanMacFilterPolicy = (typeof WlanMacFilterPolicy)[keyof typeof WlanMacFilterPolicy];
+
+export const WlanNasIdentifierType = {
+    /**
+     * Use the AP name.
+     */
+    ApName: "ap_name",
+    /**
+     * Use the AP MAC address.
+     */
+    ApMac: "ap_mac",
+    /**
+     * Use the BSSID.
+     */
+    Bssid: "bssid",
+    /**
+     * Use the site name.
+     */
+    SiteName: "site_name",
+    /**
+     * Use a custom value.
+     */
+    Custom: "custom",
+} as const;
+
+export type WlanNasIdentifierType = (typeof WlanNasIdentifierType)[keyof typeof WlanNasIdentifierType];
+
+export const WlanPmfCipher = {
+    /**
+     * Let the controller choose the PMF cipher.
+     */
+    Auto: "auto",
+    /**
+     * AES-128-CMAC cipher.
+     */
+    Aes128Cmac: "aes-128-cmac",
+    /**
+     * BIP-GMAC-256 cipher.
+     */
+    BipGmac256: "bip-gmac-256",
+} as const;
+
+export type WlanPmfCipher = (typeof WlanPmfCipher)[keyof typeof WlanPmfCipher];
+
+export const WlanPriority = {
+    /**
+     * Medium priority.
+     */
+    Medium: "medium",
+    /**
+     * High priority.
+     */
+    High: "high",
+    /**
+     * Low priority.
+     */
+    Low: "low",
+} as const;
+
+export type WlanPriority = (typeof WlanPriority)[keyof typeof WlanPriority];
+
+export const WlanRequirementMode = {
+    /**
+     * Feature disabled.
+     */
+    Disabled: "disabled",
+    /**
+     * Feature optional.
+     */
+    Optional: "optional",
+    /**
+     * Feature required.
+     */
+    Required: "required",
+} as const;
+
+export type WlanRequirementMode = (typeof WlanRequirementMode)[keyof typeof WlanRequirementMode];
+
 export const WlanSecurity = {
     /**
      * Open network with no authentication.
@@ -185,3 +1193,58 @@ export const WlanSecurity = {
 } as const;
 
 export type WlanSecurity = (typeof WlanSecurity)[keyof typeof WlanSecurity];
+
+export const WlanSettingPreference = {
+    /**
+     * Automatic configuration.
+     */
+    Auto: "auto",
+    /**
+     * Manual configuration.
+     */
+    Manual: "manual",
+} as const;
+
+export type WlanSettingPreference = (typeof WlanSettingPreference)[keyof typeof WlanSettingPreference];
+
+export const WlanWpaEnc = {
+    /**
+     * Let the controller choose the cipher.
+     */
+    Auto: "auto",
+    /**
+     * AES-CCMP cipher.
+     */
+    Ccmp: "ccmp",
+    /**
+     * GCMP cipher.
+     */
+    Gcmp: "gcmp",
+    /**
+     * AES-CCMP-256 cipher.
+     */
+    Ccmp256: "ccmp-256",
+    /**
+     * GCMP-256 cipher.
+     */
+    Gcmp256: "gcmp-256",
+} as const;
+
+export type WlanWpaEnc = (typeof WlanWpaEnc)[keyof typeof WlanWpaEnc];
+
+export const WlanWpaMode = {
+    /**
+     * Let the controller choose the WPA mode.
+     */
+    Auto: "auto",
+    /**
+     * WPA1 only.
+     */
+    Wpa1: "wpa1",
+    /**
+     * WPA2 only.
+     */
+    Wpa2: "wpa2",
+} as const;
+
+export type WlanWpaMode = (typeof WlanWpaMode)[keyof typeof WlanWpaMode];

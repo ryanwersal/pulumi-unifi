@@ -40,7 +40,7 @@ export class FirewallRule extends pulumi.CustomResource {
     /**
      * Action taken on matching traffic: accept | drop | reject.
      */
-    declare public readonly action: pulumi.Output<string | undefined>;
+    declare public readonly action: pulumi.Output<enums.network.FirewallRuleAction | undefined>;
     /**
      * ConnectionState groups the conntrack-state match toggles.
      */
@@ -60,7 +60,7 @@ export class FirewallRule extends pulumi.CustomResource {
     /**
      * IpSec matches on IPsec encapsulation: match-ipsec | match-none.
      */
-    declare public readonly ipSec: pulumi.Output<string | undefined>;
+    declare public readonly ipSec: pulumi.Output<enums.network.FirewallRuleIpSec | undefined>;
     /**
      * Logging enables logging of packets that match this rule.
      */
@@ -84,7 +84,7 @@ export class FirewallRule extends pulumi.CustomResource {
     /**
      * SettingPreference controls whether the rule uses automatic or manual settings: auto | manual.
      */
-    declare public readonly settingPreference: pulumi.Output<string | undefined>;
+    declare public readonly settingPreference: pulumi.Output<enums.network.FirewallRuleSettingPreference | undefined>;
     /**
      * Source groups the source-side match selectors.
      */
@@ -147,7 +147,7 @@ export interface FirewallRuleArgs {
     /**
      * Action taken on matching traffic: accept | drop | reject.
      */
-    action?: pulumi.Input<string | undefined>;
+    action?: pulumi.Input<enums.network.FirewallRuleAction | undefined>;
     /**
      * ConnectionState groups the conntrack-state match toggles.
      */
@@ -163,7 +163,7 @@ export interface FirewallRuleArgs {
     /**
      * IpSec matches on IPsec encapsulation: match-ipsec | match-none.
      */
-    ipSec?: pulumi.Input<string | undefined>;
+    ipSec?: pulumi.Input<enums.network.FirewallRuleIpSec | undefined>;
     /**
      * Logging enables logging of packets that match this rule.
      */
@@ -187,7 +187,7 @@ export interface FirewallRuleArgs {
     /**
      * SettingPreference controls whether the rule uses automatic or manual settings: auto | manual.
      */
-    settingPreference?: pulumi.Input<string | undefined>;
+    settingPreference?: pulumi.Input<enums.network.FirewallRuleSettingPreference | undefined>;
     /**
      * Source groups the source-side match selectors.
      */

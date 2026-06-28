@@ -21,8 +21,8 @@ func TestVlanRoundTrip(t *testing.T) {
 		NetworkIsolationEnabled: ptr(true),
 		AutoScaleEnabled:        ptr(false),
 		DpiEnabled:              ptr(true),
-		GatewayType:             ptr("default"),
-		SettingPreference:       ptr("manual"),
+		GatewayType:             ptr(VlanGatewayType("default")),
+		SettingPreference:       ptr(VlanPreference("manual")),
 		InterfaceMtu:            ptr(1500),
 
 		Dhcp: &VlanDhcp{
@@ -63,7 +63,7 @@ func TestVlanRoundTrip(t *testing.T) {
 		Igmp: &VlanIgmp{
 			Snooping:                  ptr(true),
 			ProxyUpstream:             ptr(true),
-			ProxyFor:                  ptr("some"),
+			ProxyFor:                  ptr(VlanIgmpProxyFor("some")),
 			ProxyDownstreamNetworkIds: []string{"abc123"},
 			GroupMembership:           ptr(260),
 			QuerierSwitches: []NetworkIgmpQuerierSwitch{
@@ -72,24 +72,24 @@ func TestVlanRoundTrip(t *testing.T) {
 		},
 
 		Ipv6: &VlanIpv6{
-			InterfaceType:           ptr("pd"),
-			ClientAddressAssignment: ptr("slaac"),
+			InterfaceType:           ptr(VlanIpv6InterfaceType("pd")),
+			ClientAddressAssignment: ptr(VlanIpv6ClientAddressAssignment("slaac")),
 			RaEnabled:               ptr(true),
-			RaPriority:              ptr("high"),
+			RaPriority:              ptr(VlanIpv6RaPriority("high")),
 			RaPreferredLifetime:     ptr(14400),
-			PdInterface:             ptr("wan"),
+			PdInterface:             ptr(VlanIpv6PdInterface("wan")),
 			PdPrefixId:              ptr("1"),
 		},
 
 		Wan: &VlanWan{
-			Type:                 ptr("pppoe"),
-			TypeV6:               ptr("dhcpv6"),
+			Type:                 ptr(VlanWanType("pppoe")),
+			TypeV6:               ptr(VlanWanTypeV6("dhcpv6")),
 			Ip:                   ptr("203.0.113.10"),
 			Netmask:              ptr("255.255.255.0"),
 			Gateway:              ptr("203.0.113.1"),
 			Dns1:                 ptr("9.9.9.9"),
-			DnsPreference:        ptr("manual"),
-			NetworkGroup:         ptr("WAN"),
+			DnsPreference:        ptr(VlanPreference("manual")),
+			NetworkGroup:         ptr(VlanWanNetworkGroup("WAN")),
 			Vlan:                 ptr(35),
 			Username:             ptr("isp-user"),
 			Password:             ptr("s3cr3t"),
@@ -97,7 +97,7 @@ func TestVlanRoundTrip(t *testing.T) {
 			SmartqEnabled:        ptr(true),
 			SmartqUpRate:         ptr(40000),
 			SmartqDownRate:       ptr(900000),
-			LoadBalanceType:      ptr("weighted"),
+			LoadBalanceType:      ptr(VlanWanLoadBalanceType("weighted")),
 			LoadBalanceWeight:    ptr(50),
 			DhcpCos:              ptr(3),
 			EgressQos:            ptr(5),
@@ -114,7 +114,7 @@ func TestVlanRoundTrip(t *testing.T) {
 		Nat: &VlanNat{
 			Masquerade: ptr(true),
 			OutboundIpAddresses: []NetworkNatOutboundIp{
-				{IpAddress: ptr("203.0.113.30"), Mode: ptr("ip_address"), WanNetworkGroup: ptr("WAN")},
+				{IpAddress: ptr("203.0.113.30"), Mode: ptr(VlanNatOutboundMode("ip_address")), WanNetworkGroup: ptr(VlanNatWanGroup("WAN"))},
 			},
 		},
 	}
@@ -185,8 +185,8 @@ func TestVlanRoundTrip(t *testing.T) {
 	vlanEqBoolP(t, "internetAccessEnabled", out.InternetAccessEnabled, args.InternetAccessEnabled)
 	vlanEqBoolP(t, "networkIsolationEnabled", out.NetworkIsolationEnabled, args.NetworkIsolationEnabled)
 	vlanEqBoolP(t, "dpiEnabled", out.DpiEnabled, args.DpiEnabled)
-	vlanEqStrP(t, "gatewayType", out.GatewayType, args.GatewayType)
-	vlanEqStrP(t, "settingPreference", out.SettingPreference, args.SettingPreference)
+	vlanEqStrP(t, "gatewayType", (*string)(out.GatewayType), (*string)(args.GatewayType))
+	vlanEqStrP(t, "settingPreference", (*string)(out.SettingPreference), (*string)(args.SettingPreference))
 	vlanEqIntP(t, "interfaceMtu", out.InterfaceMtu, args.InterfaceMtu)
 
 	if out.Dhcp == nil {
@@ -211,7 +211,7 @@ func TestVlanRoundTrip(t *testing.T) {
 	if out.Igmp == nil {
 		t.Fatal("igmp group lost on round-trip")
 	}
-	vlanEqStrP(t, "igmp.proxyFor", out.Igmp.ProxyFor, args.Igmp.ProxyFor)
+	vlanEqStrP(t, "igmp.proxyFor", (*string)(out.Igmp.ProxyFor), (*string)(args.Igmp.ProxyFor))
 	vlanEqIntP(t, "igmp.groupMembership", out.Igmp.GroupMembership, args.Igmp.GroupMembership)
 	if len(out.Igmp.QuerierSwitches) != 1 || out.Igmp.QuerierSwitches[0].SwitchMac != "aa:bb:cc:dd:ee:ff" {
 		t.Fatalf("igmp.querierSwitches round-trip: %+v", out.Igmp.QuerierSwitches)
@@ -220,22 +220,22 @@ func TestVlanRoundTrip(t *testing.T) {
 	if out.Ipv6 == nil {
 		t.Fatal("ipv6 group lost on round-trip")
 	}
-	vlanEqStrP(t, "ipv6.interfaceType", out.Ipv6.InterfaceType, args.Ipv6.InterfaceType)
-	vlanEqStrP(t, "ipv6.raPriority", out.Ipv6.RaPriority, args.Ipv6.RaPriority)
+	vlanEqStrP(t, "ipv6.interfaceType", (*string)(out.Ipv6.InterfaceType), (*string)(args.Ipv6.InterfaceType))
+	vlanEqStrP(t, "ipv6.raPriority", (*string)(out.Ipv6.RaPriority), (*string)(args.Ipv6.RaPriority))
 	vlanEqIntP(t, "ipv6.raPreferredLifetime", out.Ipv6.RaPreferredLifetime, args.Ipv6.RaPreferredLifetime)
 
 	if out.Wan == nil {
 		t.Fatal("wan group lost on round-trip")
 	}
-	vlanEqStrP(t, "wan.type", out.Wan.Type, args.Wan.Type)
-	vlanEqStrP(t, "wan.typeV6", out.Wan.TypeV6, args.Wan.TypeV6)
+	vlanEqStrP(t, "wan.type", (*string)(out.Wan.Type), (*string)(args.Wan.Type))
+	vlanEqStrP(t, "wan.typeV6", (*string)(out.Wan.TypeV6), (*string)(args.Wan.TypeV6))
 	vlanEqStrP(t, "wan.gateway", out.Wan.Gateway, args.Wan.Gateway)
-	vlanEqStrP(t, "wan.networkGroup", out.Wan.NetworkGroup, args.Wan.NetworkGroup)
+	vlanEqStrP(t, "wan.networkGroup", (*string)(out.Wan.NetworkGroup), (*string)(args.Wan.NetworkGroup))
 	vlanEqIntP(t, "wan.vlan", out.Wan.Vlan, args.Wan.Vlan)
 	vlanEqStrP(t, "wan.username", out.Wan.Username, args.Wan.Username)
 	// Secret is preserved from prior because the controller does not echo it.
 	vlanEqStrP(t, "wan.password", out.Wan.Password, args.Wan.Password)
-	vlanEqStrP(t, "wan.loadBalanceType", out.Wan.LoadBalanceType, args.Wan.LoadBalanceType)
+	vlanEqStrP(t, "wan.loadBalanceType", (*string)(out.Wan.LoadBalanceType), (*string)(args.Wan.LoadBalanceType))
 	vlanEqIntP(t, "wan.smartqUpRate", out.Wan.SmartqUpRate, args.Wan.SmartqUpRate)
 	vlanEqIntP(t, "wan.egressQos", out.Wan.EgressQos, args.Wan.EgressQos)
 	if len(out.Wan.DhcpOptions) != 1 || out.Wan.DhcpOptions[0].OptionNumber != 43 || out.Wan.DhcpOptions[0].Value != "0104ABCDEF" {

@@ -17,14 +17,14 @@ func TestPortForwardRoundTrip(t *testing.T) {
 		Proto:              ptr(PortForwardProtocolTcp),
 		Src:                ptr("203.0.113.0/24"),
 		Log:                ptr(true),
-		PfwdInterface:      ptr("wan"),
+		PfwdInterface:      ptr(PortForwardPfwdInterfaceWan),
 		SrcFirewallGroupId: ptr("abc123"),
 		SrcLimitingEnabled: ptr(true),
-		SrcLimitingType:    ptr("firewall_group"),
+		SrcLimitingType:    ptr(PortForwardSrcLimitingTypeFirewallGroup),
 		DestinationIp:      ptr("198.51.100.5"),
 		DestinationIps: []PortForwardDestinationIp{
-			{DestinationIp: ptr("198.51.100.5"), Interface: ptr("wan")},
-			{DestinationIp: ptr("198.51.100.6"), Interface: ptr("wan2")},
+			{DestinationIp: ptr("198.51.100.5"), Interface: ptr(PortForwardDestinationInterfaceWan)},
+			{DestinationIp: ptr("198.51.100.6"), Interface: ptr(PortForwardDestinationInterfaceWan2)},
 		},
 	}
 

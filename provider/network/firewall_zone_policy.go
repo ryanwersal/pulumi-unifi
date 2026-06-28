@@ -63,6 +63,135 @@ func (FirewallZonePolicyConnectionStateType) Values() []infer.EnumValue[Firewall
 	}
 }
 
+// FirewallZonePolicySourceMatchingTarget selects what the source matches.
+type FirewallZonePolicySourceMatchingTarget string
+
+const (
+	FirewallZonePolicySourceMatchingTargetAny     FirewallZonePolicySourceMatchingTarget = "ANY"
+	FirewallZonePolicySourceMatchingTargetClient  FirewallZonePolicySourceMatchingTarget = "CLIENT"
+	FirewallZonePolicySourceMatchingTargetNetwork FirewallZonePolicySourceMatchingTarget = "NETWORK"
+	FirewallZonePolicySourceMatchingTargetIp      FirewallZonePolicySourceMatchingTarget = "IP"
+	FirewallZonePolicySourceMatchingTargetMac     FirewallZonePolicySourceMatchingTarget = "MAC"
+)
+
+func (FirewallZonePolicySourceMatchingTarget) Values() []infer.EnumValue[FirewallZonePolicySourceMatchingTarget] {
+	return []infer.EnumValue[FirewallZonePolicySourceMatchingTarget]{
+		{Name: "Any", Value: FirewallZonePolicySourceMatchingTargetAny, Description: "Match any source."},
+		{Name: "Client", Value: FirewallZonePolicySourceMatchingTargetClient, Description: "Match source clients."},
+		{Name: "Network", Value: FirewallZonePolicySourceMatchingTargetNetwork, Description: "Match source networks."},
+		{Name: "Ip", Value: FirewallZonePolicySourceMatchingTargetIp, Description: "Match source IP addresses."},
+		{Name: "Mac", Value: FirewallZonePolicySourceMatchingTargetMac, Description: "Match source MAC addresses."},
+	}
+}
+
+// FirewallZonePolicySourceMatchingTargetType refines the source match.
+type FirewallZonePolicySourceMatchingTargetType string
+
+const (
+	FirewallZonePolicySourceMatchingTargetTypeObject   FirewallZonePolicySourceMatchingTargetType = "OBJECT"
+	FirewallZonePolicySourceMatchingTargetTypeSpecific FirewallZonePolicySourceMatchingTargetType = "SPECIFIC"
+)
+
+func (FirewallZonePolicySourceMatchingTargetType) Values() []infer.EnumValue[FirewallZonePolicySourceMatchingTargetType] {
+	return []infer.EnumValue[FirewallZonePolicySourceMatchingTargetType]{
+		{Name: "Object", Value: FirewallZonePolicySourceMatchingTargetTypeObject, Description: "Match a saved group."},
+		{Name: "Specific", Value: FirewallZonePolicySourceMatchingTargetTypeSpecific, Description: "Match inline values."},
+	}
+}
+
+// FirewallZonePolicyDestinationMatchingTarget selects what the destination matches.
+type FirewallZonePolicyDestinationMatchingTarget string
+
+const (
+	FirewallZonePolicyDestinationMatchingTargetAny         FirewallZonePolicyDestinationMatchingTarget = "ANY"
+	FirewallZonePolicyDestinationMatchingTargetApp         FirewallZonePolicyDestinationMatchingTarget = "APP"
+	FirewallZonePolicyDestinationMatchingTargetAppCategory FirewallZonePolicyDestinationMatchingTarget = "APP_CATEGORY"
+	FirewallZonePolicyDestinationMatchingTargetIp          FirewallZonePolicyDestinationMatchingTarget = "IP"
+	FirewallZonePolicyDestinationMatchingTargetRegion      FirewallZonePolicyDestinationMatchingTarget = "REGION"
+	FirewallZonePolicyDestinationMatchingTargetWeb         FirewallZonePolicyDestinationMatchingTarget = "WEB"
+)
+
+func (FirewallZonePolicyDestinationMatchingTarget) Values() []infer.EnumValue[FirewallZonePolicyDestinationMatchingTarget] {
+	return []infer.EnumValue[FirewallZonePolicyDestinationMatchingTarget]{
+		{Name: "Any", Value: FirewallZonePolicyDestinationMatchingTargetAny, Description: "Match any destination."},
+		{Name: "App", Value: FirewallZonePolicyDestinationMatchingTargetApp, Description: "Match applications."},
+		{Name: "AppCategory", Value: FirewallZonePolicyDestinationMatchingTargetAppCategory, Description: "Match application categories."},
+		{Name: "Ip", Value: FirewallZonePolicyDestinationMatchingTargetIp, Description: "Match destination IP addresses."},
+		{Name: "Region", Value: FirewallZonePolicyDestinationMatchingTargetRegion, Description: "Match geographic regions."},
+		{Name: "Web", Value: FirewallZonePolicyDestinationMatchingTargetWeb, Description: "Match web domains."},
+	}
+}
+
+// FirewallZonePolicyDestinationMatchingTargetType refines the destination match.
+type FirewallZonePolicyDestinationMatchingTargetType string
+
+const (
+	FirewallZonePolicyDestinationMatchingTargetTypeAny      FirewallZonePolicyDestinationMatchingTargetType = "ANY"
+	FirewallZonePolicyDestinationMatchingTargetTypeObject   FirewallZonePolicyDestinationMatchingTargetType = "OBJECT"
+	FirewallZonePolicyDestinationMatchingTargetTypeSpecific FirewallZonePolicyDestinationMatchingTargetType = "SPECIFIC"
+)
+
+func (FirewallZonePolicyDestinationMatchingTargetType) Values() []infer.EnumValue[FirewallZonePolicyDestinationMatchingTargetType] {
+	return []infer.EnumValue[FirewallZonePolicyDestinationMatchingTargetType]{
+		{Name: "Any", Value: FirewallZonePolicyDestinationMatchingTargetTypeAny, Description: "Match any."},
+		{Name: "Object", Value: FirewallZonePolicyDestinationMatchingTargetTypeObject, Description: "Match a saved group."},
+		{Name: "Specific", Value: FirewallZonePolicyDestinationMatchingTargetTypeSpecific, Description: "Match inline values."},
+	}
+}
+
+// FirewallZonePolicyPortMatchingType selects how source/destination ports match.
+type FirewallZonePolicyPortMatchingType string
+
+const (
+	FirewallZonePolicyPortMatchingTypeAny      FirewallZonePolicyPortMatchingType = "ANY"
+	FirewallZonePolicyPortMatchingTypeSpecific FirewallZonePolicyPortMatchingType = "SPECIFIC"
+	FirewallZonePolicyPortMatchingTypeObject   FirewallZonePolicyPortMatchingType = "OBJECT"
+)
+
+func (FirewallZonePolicyPortMatchingType) Values() []infer.EnumValue[FirewallZonePolicyPortMatchingType] {
+	return []infer.EnumValue[FirewallZonePolicyPortMatchingType]{
+		{Name: "Any", Value: FirewallZonePolicyPortMatchingTypeAny, Description: "Match any port."},
+		{Name: "Specific", Value: FirewallZonePolicyPortMatchingTypeSpecific, Description: "Match inline ports."},
+		{Name: "Object", Value: FirewallZonePolicyPortMatchingTypeObject, Description: "Match a saved port group."},
+	}
+}
+
+// FirewallZonePolicyScheduleMode selects the schedule pattern.
+type FirewallZonePolicyScheduleMode string
+
+const (
+	FirewallZonePolicyScheduleModeAlways      FirewallZonePolicyScheduleMode = "ALWAYS"
+	FirewallZonePolicyScheduleModeEveryDay    FirewallZonePolicyScheduleMode = "EVERY_DAY"
+	FirewallZonePolicyScheduleModeEveryWeek   FirewallZonePolicyScheduleMode = "EVERY_WEEK"
+	FirewallZonePolicyScheduleModeOneTimeOnly FirewallZonePolicyScheduleMode = "ONE_TIME_ONLY"
+	FirewallZonePolicyScheduleModeCustom      FirewallZonePolicyScheduleMode = "CUSTOM"
+)
+
+func (FirewallZonePolicyScheduleMode) Values() []infer.EnumValue[FirewallZonePolicyScheduleMode] {
+	return []infer.EnumValue[FirewallZonePolicyScheduleMode]{
+		{Name: "Always", Value: FirewallZonePolicyScheduleModeAlways, Description: "Always active."},
+		{Name: "EveryDay", Value: FirewallZonePolicyScheduleModeEveryDay, Description: "Active every day."},
+		{Name: "EveryWeek", Value: FirewallZonePolicyScheduleModeEveryWeek, Description: "Active on selected weekdays."},
+		{Name: "OneTimeOnly", Value: FirewallZonePolicyScheduleModeOneTimeOnly, Description: "Active once on a single date."},
+		{Name: "Custom", Value: FirewallZonePolicyScheduleModeCustom, Description: "Custom recurring schedule."},
+	}
+}
+
+// FirewallZonePolicyMatchIpSecType selects the IPsec matching mode.
+type FirewallZonePolicyMatchIpSecType string
+
+const (
+	FirewallZonePolicyMatchIpSecTypeMatchIpSec    FirewallZonePolicyMatchIpSecType = "MATCH_IP_SEC"
+	FirewallZonePolicyMatchIpSecTypeMatchNonIpSec FirewallZonePolicyMatchIpSecType = "MATCH_NON_IP_SEC"
+)
+
+func (FirewallZonePolicyMatchIpSecType) Values() []infer.EnumValue[FirewallZonePolicyMatchIpSecType] {
+	return []infer.EnumValue[FirewallZonePolicyMatchIpSecType]{
+		{Name: "MatchIpSec", Value: FirewallZonePolicyMatchIpSecTypeMatchIpSec, Description: "Match IPsec-encapsulated traffic."},
+		{Name: "MatchNonIpSec", Value: FirewallZonePolicyMatchIpSecTypeMatchNonIpSec, Description: "Match non-IPsec traffic."},
+	}
+}
+
 // FirewallZonePolicy is the controlling (marker) struct for a UniFi zone-based
 // firewall policy. Zone-based firewall policies are used by current UDM/UDM-SE
 // firmware (the "Zone-Based Firewall" feature) and replace the legacy rule list.
@@ -74,9 +203,9 @@ type FirewallZonePolicySourceArgs struct {
 	// ZoneId is the controller ID of the source firewall zone.
 	ZoneId string `pulumi:"zoneId"`
 	// MatchingTarget selects what the source matches: ANY | CLIENT | NETWORK | IP | MAC.
-	MatchingTarget *string `pulumi:"matchingTarget,optional"`
+	MatchingTarget *FirewallZonePolicySourceMatchingTarget `pulumi:"matchingTarget,optional"`
 	// MatchingTargetType refines the match: OBJECT (a saved group) | SPECIFIC (inline values).
-	MatchingTargetType *string `pulumi:"matchingTargetType,optional"`
+	MatchingTargetType *FirewallZonePolicySourceMatchingTargetType `pulumi:"matchingTargetType,optional"`
 	// NetworkIds lists the source network IDs (when matchingTarget=NETWORK).
 	NetworkIds []string `pulumi:"networkIds,optional"`
 	// IpGroupId references a saved IP group as the source (when matchingTarget=IP, matchingTargetType=OBJECT).
@@ -96,7 +225,7 @@ type FirewallZonePolicySourceArgs struct {
 	// PortGroupId references a saved port group as the source ports.
 	PortGroupId *string `pulumi:"portGroupId,optional"`
 	// PortMatchingType selects how source ports match: ANY | SPECIFIC | OBJECT.
-	PortMatchingType *string `pulumi:"portMatchingType,optional"`
+	PortMatchingType *FirewallZonePolicyPortMatchingType `pulumi:"portMatchingType,optional"`
 	// MatchOppositeIps inverts (negates) the source IP match.
 	MatchOppositeIps *bool `pulumi:"matchOppositeIps,optional"`
 	// MatchOppositePorts inverts (negates) the source port match.
@@ -111,9 +240,9 @@ type FirewallZonePolicyDestinationArgs struct {
 	// ZoneId is the controller ID of the destination firewall zone.
 	ZoneId string `pulumi:"zoneId"`
 	// MatchingTarget selects what the destination matches: ANY | APP | APP_CATEGORY | IP | REGION | WEB.
-	MatchingTarget *string `pulumi:"matchingTarget,optional"`
+	MatchingTarget *FirewallZonePolicyDestinationMatchingTarget `pulumi:"matchingTarget,optional"`
 	// MatchingTargetType refines the match: ANY | OBJECT (a saved group) | SPECIFIC (inline values).
-	MatchingTargetType *string `pulumi:"matchingTargetType,optional"`
+	MatchingTargetType *FirewallZonePolicyDestinationMatchingTargetType `pulumi:"matchingTargetType,optional"`
 	// IpGroupId references a saved IP group as the destination (when matchingTarget=IP, matchingTargetType=OBJECT).
 	IpGroupId *string `pulumi:"ipGroupId,optional"`
 	// Ips lists inline destination IPv4 addresses (when matchingTarget=IP, matchingTargetType=SPECIFIC).
@@ -131,7 +260,7 @@ type FirewallZonePolicyDestinationArgs struct {
 	// PortGroupId references a saved port group as the destination ports.
 	PortGroupId *string `pulumi:"portGroupId,optional"`
 	// PortMatchingType selects how destination ports match: ANY | SPECIFIC | OBJECT.
-	PortMatchingType *string `pulumi:"portMatchingType,optional"`
+	PortMatchingType *FirewallZonePolicyPortMatchingType `pulumi:"portMatchingType,optional"`
 	// MatchOppositeIps inverts (negates) the destination IP match.
 	MatchOppositeIps *bool `pulumi:"matchOppositeIps,optional"`
 	// MatchOppositePorts inverts (negates) the destination port match.
@@ -142,7 +271,7 @@ type FirewallZonePolicyDestinationArgs struct {
 // window for a zone-based firewall policy.
 type FirewallZonePolicyScheduleArgs struct {
 	// Mode selects the schedule pattern: ALWAYS | EVERY_DAY | EVERY_WEEK | ONE_TIME_ONLY | CUSTOM.
-	Mode *string `pulumi:"mode,optional"`
+	Mode *FirewallZonePolicyScheduleMode `pulumi:"mode,optional"`
 	// TimeAllDay applies the policy for the entire day (ignores the time range).
 	TimeAllDay *bool `pulumi:"timeAllDay,optional"`
 	// TimeRangeStart is the daily start time in HH:MM (24-hour) format.
@@ -176,7 +305,7 @@ type FirewallZonePolicyMatchingArgs struct {
 	// MatchIpSec enables matching on IPsec-encapsulated traffic.
 	MatchIpSec *bool `pulumi:"matchIpSec,optional"`
 	// MatchIpSecType selects IPsec matching mode: MATCH_IP_SEC | MATCH_NON_IP_SEC.
-	MatchIpSecType *string `pulumi:"matchIpSecType,optional"`
+	MatchIpSecType *FirewallZonePolicyMatchIpSecType `pulumi:"matchIpSecType,optional"`
 }
 
 // FirewallZonePolicyArgs are the user-supplied inputs for a zone-based firewall policy.
@@ -348,7 +477,7 @@ func (a FirewallZonePolicyArgs) toUnifi(id string) *unifi.FirewallZonePolicy {
 		p.ConnectionStates = m.ConnectionStates
 	}
 	if m.MatchIpSecType != nil {
-		p.MatchIPSecType = *m.MatchIpSecType
+		p.MatchIPSecType = string(*m.MatchIpSecType)
 	}
 
 	if a.Schedule != nil {
@@ -367,10 +496,10 @@ func (s FirewallZonePolicySourceArgs) toUnifi() unifi.FirewallZonePolicySource {
 		MatchOppositeNetworks: derefOr(s.MatchOppositeNetworks, false),
 	}
 	if s.MatchingTarget != nil {
-		out.MatchingTarget = *s.MatchingTarget
+		out.MatchingTarget = string(*s.MatchingTarget)
 	}
 	if s.MatchingTargetType != nil {
-		out.MatchingTargetType = *s.MatchingTargetType
+		out.MatchingTargetType = string(*s.MatchingTargetType)
 	}
 	if s.NetworkIds != nil {
 		out.NetworkIDs = s.NetworkIds
@@ -397,7 +526,7 @@ func (s FirewallZonePolicySourceArgs) toUnifi() unifi.FirewallZonePolicySource {
 		out.PortGroupID = *s.PortGroupId
 	}
 	if s.PortMatchingType != nil {
-		out.PortMatchingType = *s.PortMatchingType
+		out.PortMatchingType = string(*s.PortMatchingType)
 	}
 	return out
 }
@@ -410,10 +539,10 @@ func (d FirewallZonePolicyDestinationArgs) toUnifi() unifi.FirewallZonePolicyDes
 		MatchOppositePorts: derefOr(d.MatchOppositePorts, false),
 	}
 	if d.MatchingTarget != nil {
-		out.MatchingTarget = *d.MatchingTarget
+		out.MatchingTarget = string(*d.MatchingTarget)
 	}
 	if d.MatchingTargetType != nil {
-		out.MatchingTargetType = *d.MatchingTargetType
+		out.MatchingTargetType = string(*d.MatchingTargetType)
 	}
 	if d.IpGroupId != nil {
 		out.IPGroupID = *d.IpGroupId
@@ -440,7 +569,7 @@ func (d FirewallZonePolicyDestinationArgs) toUnifi() unifi.FirewallZonePolicyDes
 		out.PortGroupID = *d.PortGroupId
 	}
 	if d.PortMatchingType != nil {
-		out.PortMatchingType = *d.PortMatchingType
+		out.PortMatchingType = string(*d.PortMatchingType)
 	}
 	return out
 }
@@ -451,7 +580,7 @@ func (s FirewallZonePolicyScheduleArgs) toUnifi() unifi.FirewallZonePolicySchedu
 		TimeAllDay: derefOr(s.TimeAllDay, false),
 	}
 	if s.Mode != nil {
-		out.Mode = *s.Mode
+		out.Mode = string(*s.Mode)
 	}
 	if s.TimeRangeStart != nil {
 		out.TimeRangeStart = *s.TimeRangeStart
@@ -509,10 +638,8 @@ func fzpStrSlice(v []string, prior []string) []string {
 
 // firewallZonePolicySourceFrom maps a controller source back into resource inputs.
 func firewallZonePolicySourceFrom(u unifi.FirewallZonePolicySource, prior FirewallZonePolicySourceArgs) FirewallZonePolicySourceArgs {
-	return FirewallZonePolicySourceArgs{
+	out := FirewallZonePolicySourceArgs{
 		ZoneId:                u.ZoneID,
-		MatchingTarget:        fzpStrPtr(u.MatchingTarget, prior.MatchingTarget),
-		MatchingTargetType:    fzpStrPtr(u.MatchingTargetType, prior.MatchingTargetType),
 		NetworkIds:            fzpStrSlice(u.NetworkIDs, prior.NetworkIds),
 		IpGroupId:             fzpStrPtr(u.IPGroupID, prior.IpGroupId),
 		Ips:                   fzpStrSlice(u.IPs, prior.Ips),
@@ -522,19 +649,33 @@ func firewallZonePolicySourceFrom(u unifi.FirewallZonePolicySource, prior Firewa
 		MatchMac:              fzpBoolPtr(u.MatchMAC, prior.MatchMac),
 		Port:                  fzpStrPtr(u.Port, prior.Port),
 		PortGroupId:           fzpStrPtr(u.PortGroupID, prior.PortGroupId),
-		PortMatchingType:      fzpStrPtr(u.PortMatchingType, prior.PortMatchingType),
 		MatchOppositeIps:      fzpBoolPtr(u.MatchOppositeIPs, prior.MatchOppositeIps),
 		MatchOppositePorts:    fzpBoolPtr(u.MatchOppositePorts, prior.MatchOppositePorts),
 		MatchOppositeNetworks: fzpBoolPtr(u.MatchOppositeNetworks, prior.MatchOppositeNetworks),
 	}
+	// Enum fields: reflect the controller value when set, else keep prior.
+	if u.MatchingTarget != "" {
+		out.MatchingTarget = ptr(FirewallZonePolicySourceMatchingTarget(u.MatchingTarget))
+	} else {
+		out.MatchingTarget = prior.MatchingTarget
+	}
+	if u.MatchingTargetType != "" {
+		out.MatchingTargetType = ptr(FirewallZonePolicySourceMatchingTargetType(u.MatchingTargetType))
+	} else {
+		out.MatchingTargetType = prior.MatchingTargetType
+	}
+	if u.PortMatchingType != "" {
+		out.PortMatchingType = ptr(FirewallZonePolicyPortMatchingType(u.PortMatchingType))
+	} else {
+		out.PortMatchingType = prior.PortMatchingType
+	}
+	return out
 }
 
 // firewallZonePolicyDestinationFrom maps a controller destination back into resource inputs.
 func firewallZonePolicyDestinationFrom(u unifi.FirewallZonePolicyDestination, prior FirewallZonePolicyDestinationArgs) FirewallZonePolicyDestinationArgs {
-	return FirewallZonePolicyDestinationArgs{
+	out := FirewallZonePolicyDestinationArgs{
 		ZoneId:             u.ZoneID,
-		MatchingTarget:     fzpStrPtr(u.MatchingTarget, prior.MatchingTarget),
-		MatchingTargetType: fzpStrPtr(u.MatchingTargetType, prior.MatchingTargetType),
 		IpGroupId:          fzpStrPtr(u.IPGroupID, prior.IpGroupId),
 		Ips:                fzpStrSlice(u.IPs, prior.Ips),
 		AppIds:             fzpStrSlice(u.AppIDs, prior.AppIds),
@@ -543,10 +684,26 @@ func firewallZonePolicyDestinationFrom(u unifi.FirewallZonePolicyDestination, pr
 		WebDomains:         fzpStrSlice(u.WebDomains, prior.WebDomains),
 		Port:               fzpStrPtr(u.Port, prior.Port),
 		PortGroupId:        fzpStrPtr(u.PortGroupID, prior.PortGroupId),
-		PortMatchingType:   fzpStrPtr(u.PortMatchingType, prior.PortMatchingType),
 		MatchOppositeIps:   fzpBoolPtr(u.MatchOppositeIPs, prior.MatchOppositeIps),
 		MatchOppositePorts: fzpBoolPtr(u.MatchOppositePorts, prior.MatchOppositePorts),
 	}
+	// Enum fields: reflect the controller value when set, else keep prior.
+	if u.MatchingTarget != "" {
+		out.MatchingTarget = ptr(FirewallZonePolicyDestinationMatchingTarget(u.MatchingTarget))
+	} else {
+		out.MatchingTarget = prior.MatchingTarget
+	}
+	if u.MatchingTargetType != "" {
+		out.MatchingTargetType = ptr(FirewallZonePolicyDestinationMatchingTargetType(u.MatchingTargetType))
+	} else {
+		out.MatchingTargetType = prior.MatchingTargetType
+	}
+	if u.PortMatchingType != "" {
+		out.PortMatchingType = ptr(FirewallZonePolicyPortMatchingType(u.PortMatchingType))
+	} else {
+		out.PortMatchingType = prior.PortMatchingType
+	}
+	return out
 }
 
 // firewallZonePolicyScheduleFrom maps a controller schedule back into resource inputs.
@@ -559,8 +716,7 @@ func firewallZonePolicyScheduleFrom(u unifi.FirewallZonePolicySchedule, prior *F
 	if prior != nil {
 		priorVal = *prior
 	}
-	return &FirewallZonePolicyScheduleArgs{
-		Mode:           fzpStrPtr(u.Mode, priorVal.Mode),
+	out := &FirewallZonePolicyScheduleArgs{
 		TimeAllDay:     fzpBoolPtr(u.TimeAllDay, priorVal.TimeAllDay),
 		TimeRangeStart: fzpStrPtr(u.TimeRangeStart, priorVal.TimeRangeStart),
 		TimeRangeEnd:   fzpStrPtr(u.TimeRangeEnd, priorVal.TimeRangeEnd),
@@ -569,6 +725,13 @@ func firewallZonePolicyScheduleFrom(u unifi.FirewallZonePolicySchedule, prior *F
 		DateEnd:        fzpStrPtr(u.DateEnd, priorVal.DateEnd),
 		RepeatOnDays:   fzpStrSlice(u.RepeatOnDays, priorVal.RepeatOnDays),
 	}
+	// Enum field: reflect the controller value when set, else keep prior.
+	if u.Mode != "" {
+		out.Mode = ptr(FirewallZonePolicyScheduleMode(u.Mode))
+	} else {
+		out.Mode = priorVal.Mode
+	}
+	return out
 }
 
 // isZero reports whether no matching member is set (so the group round-trips as nil).
@@ -590,7 +753,6 @@ func firewallZonePolicyMatchingFrom(u *unifi.FirewallZonePolicy, prior *Firewall
 		MatchOppositeProtocol: fzpBoolPtr(u.MatchOppositeProtocol, p.MatchOppositeProtocol),
 		ConnectionStates:      fzpStrSlice(u.ConnectionStates, p.ConnectionStates),
 		MatchIpSec:            fzpBoolPtr(u.MatchIPSec, p.MatchIpSec),
-		MatchIpSecType:        fzpStrPtr(u.MatchIPSecType, p.MatchIpSecType),
 	}
 	// Enum fields: reflect the controller value when set, else keep prior.
 	if u.IPVersion != "" {
@@ -602,6 +764,11 @@ func firewallZonePolicyMatchingFrom(u *unifi.FirewallZonePolicy, prior *Firewall
 		m.ConnectionStateType = ptr(FirewallZonePolicyConnectionStateType(u.ConnectionStateType))
 	} else {
 		m.ConnectionStateType = p.ConnectionStateType
+	}
+	if u.MatchIPSecType != "" {
+		m.MatchIpSecType = ptr(FirewallZonePolicyMatchIpSecType(u.MatchIPSecType))
+	} else {
+		m.MatchIpSecType = p.MatchIpSecType
 	}
 	if m.isZero() {
 		return nil

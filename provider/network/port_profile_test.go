@@ -69,17 +69,17 @@ func TestPortProfileToUnifiDefaults(t *testing.T) {
 func TestPortProfileRoundTrip(t *testing.T) {
 	args := PortProfileArgs{
 		Name:                 "trunk",
-		OpMode:               ptr("switch"),
+		OpMode:               ptr(PortProfileOpMode("switch")),
 		Isolation:            ptr(true),
-		PoeMode:              ptr("off"),
+		PoeMode:              ptr(PortProfilePoeMode("off")),
 		StpPortMode:          ptr(false),
 		PortKeepaliveEnabled: ptr(true),
-		SettingPreference:    ptr("manual"),
+		SettingPreference:    ptr(PortProfileSettingPreference("manual")),
 
 		Vlan: &PortProfileVlan{
 			Forward:                   ptr("customize"),
 			NativeNetworkId:           ptr("net-native"),
-			TaggedVlanMgmt:            ptr("custom"),
+			TaggedVlanMgmt:            ptr(PortProfileTaggedVlanMgmt("custom")),
 			ExcludedNetworkIds:        []string{"net-a", "net-b"},
 			MulticastRouterNetworkIds: []string{"net-mcast"},
 			VoiceNetworkId:            ptr("net-voice"),
@@ -88,10 +88,10 @@ func TestPortProfileRoundTrip(t *testing.T) {
 			Autoneg:    ptr(false),
 			Speed:      ptr(1000),
 			FullDuplex: ptr(true),
-			FecMode:    ptr("rs-fec"),
+			FecMode:    ptr(PortProfileFecMode("rs-fec")),
 		},
 		StormControl: &PortProfileStormControl{
-			Type:                  ptr("rate"),
+			Type:                  ptr(PortProfileStormControlType("rate")),
 			BroadcastEnabled:      ptr(true),
 			BroadcastLevel:        ptr(50),
 			BroadcastRate:         ptr(1000),
@@ -107,7 +107,7 @@ func TestPortProfileRoundTrip(t *testing.T) {
 			MacAddresses: []string{"aa:bb:cc:dd:ee:ff"},
 		},
 		Dot1x: &PortProfileDot1x{
-			Ctrl:        ptr("mac_based"),
+			Ctrl:        ptr(PortProfileDot1xCtrl("mac_based")),
 			IdleTimeout: ptr(120),
 		},
 		LldpMed: &PortProfileLldpMed{

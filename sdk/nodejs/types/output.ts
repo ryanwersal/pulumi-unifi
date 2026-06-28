@@ -24,7 +24,7 @@ export namespace network {
         /**
          * Behavior of the lighting: breath | steady.
          */
-        behavior?: string;
+        behavior?: enums.network.DeviceEtherLightingBehavior;
         /**
          * Brightness of the LED strip (1-100).
          */
@@ -32,11 +32,11 @@ export namespace network {
         /**
          * LedMode: standard | etherlighting.
          */
-        ledMode?: string;
+        ledMode?: enums.network.DeviceLedMode;
         /**
          * Mode of the lighting animation: speed | network.
          */
-        mode?: string;
+        mode?: enums.network.DeviceEtherLightingMode;
     }
 
     export interface DeviceEthernetOverride {
@@ -81,7 +81,7 @@ export namespace network {
         /**
          * Override controls the status LED: default | on | off.
          */
-        override?: string;
+        override?: enums.network.DeviceLedOverride;
         /**
          * OverrideColor is the LED color as a hex string, e.g. "#0000ff".
          */
@@ -138,7 +138,7 @@ export namespace network {
         /**
          * Dot1xCtrl: auto | force_authorized | force_unauthorized | mac_based | multi_host.
          */
-        dot1xCtrl?: string;
+        dot1xCtrl?: enums.network.DeviceDot1xCtrl;
         /**
          * Dot1xIdleTimeout is the 802.1X idle timeout in seconds.
          */
@@ -158,11 +158,11 @@ export namespace network {
         /**
          * FecMode: rs-fec | fc-fec | default | disabled (for SFP+/SFP28 ports).
          */
-        fecMode?: string;
+        fecMode?: enums.network.DeviceFecMode;
         /**
          * Forward: all | native | customize | disabled.
          */
-        forward?: string;
+        forward?: enums.network.DevicePortForward;
         /**
          * FullDuplex forces full-duplex when autoneg is off.
          */
@@ -194,11 +194,11 @@ export namespace network {
         /**
          * OpMode: switch | mirror | aggregate.
          */
-        opMode?: string;
+        opMode?: enums.network.DevicePortOpMode;
         /**
          * PoeMode: auto | pasv24 | passthrough | off.
          */
-        poeMode?: string;
+        poeMode?: enums.network.DevicePoeMode;
         /**
          * PortIdx is the 1-based physical port number (required key).
          */
@@ -238,7 +238,7 @@ export namespace network {
         /**
          * SettingPreference: auto (inherit profile) | manual (use these overrides).
          */
-        settingPreference?: string;
+        settingPreference?: enums.network.DeviceSettingPreference;
         /**
          * Speed forces a link speed in Mbps: 10 | 100 | 1000 | 2500 | 5000 | 10000 | 20000 | 25000 | 40000 | 50000 | 100000.
          */
@@ -270,7 +270,7 @@ export namespace network {
         /**
          * StormctrlType: level | rate.
          */
-        stormctrlType?: string;
+        stormctrlType?: enums.network.DeviceStormctrlType;
         /**
          * StormctrlUcastEnabled enables unknown-unicast storm control.
          */
@@ -290,7 +290,7 @@ export namespace network {
         /**
          * TaggedVlanMgmt: auto | block_all | custom. With "custom", use excludedNetworkIds.
          */
-        taggedVlanMgmt?: string;
+        taggedVlanMgmt?: enums.network.DeviceTaggedVlanMgmt;
         /**
          * VoiceNetworkId is the voice VLAN network for VoIP phones (voice_networkconf_id).
          */
@@ -333,7 +333,7 @@ export namespace network {
         /**
          * TxPowerMode: auto | medium | high | low | custom.
          */
-        txPowerMode?: string;
+        txPowerMode?: enums.network.DeviceTxPowerMode;
     }
 
     export interface DeviceSnmp {
@@ -355,7 +355,7 @@ export namespace network {
         /**
          * Version: stp | rstp | disabled.
          */
-        version?: string;
+        version?: enums.network.DeviceStpVersion;
     }
 
     export interface DeviceSwitching {
@@ -370,7 +370,7 @@ export namespace network {
         /**
          * PoeMode is the device-wide default PoE mode: auto | pasv24 | passthrough | off.
          */
-        poeMode?: string;
+        poeMode?: enums.network.DevicePoeMode;
         /**
          * VlanEnabled enables 802.1Q VLAN switching on the device.
          */
@@ -381,7 +381,7 @@ export namespace network {
         /**
          * Mode is the gateway VRRP role: primary | secondary.
          */
-        mode?: string;
+        mode?: enums.network.DeviceVrrpMode;
         /**
          * Priority is the VRRP priority (10-200).
          */
@@ -427,7 +427,7 @@ export namespace network {
         /**
          * NetworkType selects how NetworkId is interpreted: ADDRv4 | NETv4.
          */
-        networkType?: string;
+        networkType?: enums.network.FirewallRuleNetworkType;
         /**
          * Port is the destination port or port range to match.
          */
@@ -481,7 +481,7 @@ export namespace network {
         /**
          * NetworkType selects how NetworkId is interpreted: ADDRv4 | NETv4.
          */
-        networkType?: string;
+        networkType?: enums.network.FirewallRuleNetworkType;
         /**
          * Port is the source port or port range to match.
          */
@@ -516,11 +516,11 @@ export namespace network {
         /**
          * What the destination matches: ANY | APP | APP_CATEGORY | IP | REGION | WEB.
          */
-        matchingTarget?: string;
+        matchingTarget?: enums.network.FirewallZonePolicyDestinationMatchingTarget;
         /**
          * Refines the destination match: ANY | OBJECT (saved group) | SPECIFIC (inline values).
          */
-        matchingTargetType?: string;
+        matchingTargetType?: enums.network.FirewallZonePolicyDestinationMatchingTargetType;
         /**
          * Port is the destination port or port range/list (e.g. "80", "1000-2000", "80,443").
          */
@@ -532,7 +532,7 @@ export namespace network {
         /**
          * PortMatchingType selects how destination ports match: ANY | SPECIFIC | OBJECT.
          */
-        portMatchingType?: string;
+        portMatchingType?: enums.network.FirewallZonePolicyPortMatchingType;
         /**
          * Regions lists geographic regions to match (when matchingTarget=REGION).
          */
@@ -567,7 +567,7 @@ export namespace network {
         /**
          * IPsec matching mode: MATCH_IP_SEC | MATCH_NON_IP_SEC.
          */
-        matchIpSecType?: string;
+        matchIpSecType?: enums.network.FirewallZonePolicyMatchIpSecType;
         /**
          * MatchOppositeProtocol inverts (negates) the protocol match.
          */
@@ -594,7 +594,7 @@ export namespace network {
         /**
          * Schedule pattern: ALWAYS | EVERY_DAY | EVERY_WEEK | ONE_TIME_ONLY | CUSTOM.
          */
-        mode?: string;
+        mode?: enums.network.FirewallZonePolicyScheduleMode;
         /**
          * RepeatOnDays lists recurring days: mon | tue | wed | thu | fri | sat | sun (mode=EVERY_WEEK/CUSTOM).
          */
@@ -653,11 +653,11 @@ export namespace network {
         /**
          * What the source matches: ANY | CLIENT | NETWORK | IP | MAC.
          */
-        matchingTarget?: string;
+        matchingTarget?: enums.network.FirewallZonePolicySourceMatchingTarget;
         /**
          * Refines the source match: OBJECT (saved group) | SPECIFIC (inline values).
          */
-        matchingTargetType?: string;
+        matchingTargetType?: enums.network.FirewallZonePolicySourceMatchingTargetType;
         /**
          * NetworkIds lists the source network IDs (when matchingTarget=NETWORK).
          */
@@ -673,7 +673,7 @@ export namespace network {
         /**
          * PortMatchingType selects how source ports match: ANY | SPECIFIC | OBJECT.
          */
-        portMatchingType?: string;
+        portMatchingType?: enums.network.FirewallZonePolicyPortMatchingType;
         /**
          * ZoneId is the controller ID of the source firewall zone.
          */
@@ -703,11 +703,11 @@ export namespace network {
         /**
          * Outbound NAT strategy: all | ip_address | ip_address_pool.
          */
-        mode?: string;
+        mode?: enums.network.VlanNatOutboundMode;
         /**
          * WAN interface group the mapping applies to: WAN | WAN2.
          */
-        wanNetworkGroup?: string;
+        wanNetworkGroup?: enums.network.VlanNatWanGroup;
     }
 
     export interface NetworkWanDhcpOption {
@@ -740,14 +740,14 @@ export namespace network {
         /**
          * WAN interface this destination IP binds to: wan | wan2.
          */
-        interface?: string;
+        interface?: enums.network.PortForwardDestinationInterface;
     }
 
     export interface PortProfileDot1x {
         /**
          * Ctrl is the 802.1X PNAC mode: auto | force_authorized | force_unauthorized | mac_based | multi_host. Defaults to "force_authorized".
          */
-        ctrl?: string;
+        ctrl?: enums.network.PortProfileDot1xCtrl;
         /**
          * IdleTimeout is the MAC-based 802.1X idle timeout in seconds (0-65535). Defaults to 300.
          */
@@ -773,7 +773,7 @@ export namespace network {
         /**
          * FecMode is the forward error correction mode: rs-fec | fc-fec | default | disabled.
          */
-        fecMode?: string;
+        fecMode?: enums.network.PortProfileFecMode;
         /**
          * FullDuplex enables full-duplex when autoneg is false. Defaults to false.
          */
@@ -853,7 +853,7 @@ export namespace network {
         /**
          * Type selects the storm-control metric: level | rate.
          */
-        type?: string;
+        type?: enums.network.PortProfileStormControlType;
         /**
          * UnknownUnicastEnabled enables unknown-unicast storm control. Defaults to false.
          */
@@ -888,7 +888,7 @@ export namespace network {
         /**
          * TaggedVlanMgmt controls tagged VLAN behavior: auto | block_all | custom.
          */
-        taggedVlanMgmt?: string;
+        taggedVlanMgmt?: enums.network.PortProfileTaggedVlanMgmt;
         /**
          * VoiceNetworkId is the network `_id` used for VoIP (voice VLAN) traffic.
          */
@@ -1081,7 +1081,7 @@ export namespace network {
         /**
          * ProxyFor selects downstream proxy scope: all | some | none.
          */
-        proxyFor?: string;
+        proxyFor?: enums.network.VlanIgmpProxyFor;
         /**
          * ProxyUpstream marks this network as the IGMP proxy upstream.
          */
@@ -1104,11 +1104,11 @@ export namespace network {
         /**
          * ClientAddressAssignment: slaac | dhcpv6.
          */
-        clientAddressAssignment?: string;
+        clientAddressAssignment?: enums.network.VlanIpv6ClientAddressAssignment;
         /**
          * InterfaceType: none | static | pd | single_network.
          */
-        interfaceType?: string;
+        interfaceType?: enums.network.VlanIpv6InterfaceType;
         /**
          * PdAutoPrefixIdEnabled lets the controller auto-assign the PD prefix ID.
          */
@@ -1116,7 +1116,7 @@ export namespace network {
         /**
          * PdInterface is the WAN used for prefix delegation: wan | wan2.
          */
-        pdInterface?: string;
+        pdInterface?: enums.network.VlanIpv6PdInterface;
         /**
          * PdPrefixId is the hex prefix ID carved from the delegated prefix.
          */
@@ -1140,7 +1140,7 @@ export namespace network {
         /**
          * RaPriority: high | medium | low.
          */
-        raPriority?: string;
+        raPriority?: enums.network.VlanIpv6RaPriority;
         /**
          * RaValidLifetime is the RA valid lifetime in seconds (default 86400).
          */
@@ -1148,7 +1148,7 @@ export namespace network {
         /**
          * SettingPreference: auto | manual.
          */
-        settingPreference?: string;
+        settingPreference?: enums.network.VlanPreference;
         /**
          * SingleNetworkInterface is the source network for single_network IPv6 mode.
          */
@@ -1160,7 +1160,7 @@ export namespace network {
         /**
          * WanDelegationType (WAN networks): pd | single_network | none.
          */
-        wanDelegationType?: string;
+        wanDelegationType?: enums.network.VlanIpv6WanDelegationType;
     }
 
     export interface VlanNat {
@@ -1206,7 +1206,7 @@ export namespace network {
         /**
          * DnsPreference: auto | manual.
          */
-        dnsPreference?: string;
+        dnsPreference?: enums.network.VlanPreference;
         /**
          * DsliteRemoteHost is the DS-Lite AFTR remote host (type=dslite).
          */
@@ -1246,11 +1246,11 @@ export namespace network {
         /**
          * Ipv6DnsPreference: auto | manual.
          */
-        ipv6DnsPreference?: string;
+        ipv6DnsPreference?: enums.network.VlanPreference;
         /**
          * LoadBalanceType: failover-only | weighted.
          */
-        loadBalanceType?: string;
+        loadBalanceType?: enums.network.VlanWanLoadBalanceType;
         /**
          * LoadBalanceWeight is the weighted load-balance weight (1-99).
          */
@@ -1262,7 +1262,7 @@ export namespace network {
         /**
          * NetworkGroup is the WAN interface group: WAN | WAN2 | WAN_LTE_FAILOVER.
          */
-        networkGroup?: string;
+        networkGroup?: enums.network.VlanWanNetworkGroup;
         /**
          * Password is the PPPoE password (type=pppoe). Secret.
          */
@@ -1298,11 +1298,11 @@ export namespace network {
         /**
          * Type (purpose=wan): disabled | dhcp | static | pppoe | dslite.
          */
-        type?: string;
+        type?: enums.network.VlanWanType;
         /**
          * TypeV6 (purpose=wan): disabled | slaac | dhcpv6 | static.
          */
-        typeV6?: string;
+        typeV6?: enums.network.VlanWanTypeV6;
         /**
          * Username is the PPPoE username (type=pppoe).
          */
@@ -1325,14 +1325,14 @@ export namespace network {
         /**
          * Mode controls AP selection: all | groups | devices.
          */
-        mode?: string;
+        mode?: enums.network.WlanApGroupsMode;
     }
 
     export interface WlanBandSteering {
         /**
          * Band is the radio band: 2g | 5g | both.
          */
-        band?: string;
+        band?: enums.network.WlanBand;
         /**
          * Bands are the radio bands to broadcast on: 2g | 5g | 6g.
          */
@@ -1358,7 +1358,7 @@ export namespace network {
         /**
          * Mode controls DTIM interval handling: default | custom.
          */
-        mode?: string;
+        mode?: enums.network.WlanDtimMode;
         /**
          * Na is the DTIM interval for the 5GHz band (1-255).
          */
@@ -1396,7 +1396,7 @@ export namespace network {
         /**
          * Policy: allow | deny.
          */
-        policy?: string;
+        policy?: enums.network.WlanMacFilterPolicy;
     }
 
     export interface WlanMinrate {
@@ -1427,7 +1427,7 @@ export namespace network {
         /**
          * SettingPreference: auto | manual.
          */
-        settingPreference?: string;
+        settingPreference?: enums.network.WlanSettingPreference;
     }
 
     export interface WlanMulticast {
@@ -1506,7 +1506,7 @@ export namespace network {
         /**
          * NasIdentifierType: ap_name | ap_mac | bssid | site_name | custom.
          */
-        nasIdentifierType?: string;
+        nasIdentifierType?: enums.network.WlanNasIdentifierType;
         /**
          * ProfileId is the RADIUS profile (`_id`) for wpaeap security.
          */
@@ -1630,7 +1630,7 @@ export namespace network {
         /**
          * Enc is the WPA encryption cipher: auto | ccmp | gcmp | ccmp-256 | gcmp-256.
          */
-        enc?: string;
+        enc?: enums.network.WlanWpaEnc;
         /**
          * GroupRekey is the group key rekey interval in seconds (0 disables).
          */
@@ -1638,19 +1638,19 @@ export namespace network {
         /**
          * Mode is the WPA mode: auto | wpa1 | wpa2.
          */
-        mode?: string;
+        mode?: enums.network.WlanWpaMode;
         /**
          * PmfCipher is the PMF cipher: auto | aes-128-cmac | bip-gmac-256.
          */
-        pmfCipher?: string;
+        pmfCipher?: enums.network.WlanPmfCipher;
         /**
          * PmfMode is Protected Management Frames mode: disabled | optional | required.
          */
-        pmfMode?: string;
+        pmfMode?: enums.network.WlanRequirementMode;
         /**
          * PskRadius controls RADIUS PSK auth: disabled | optional | required. This is a mode enum, not a credential, so it is not marked secret.
          */
-        pskRadius?: string;
+        pskRadius?: enums.network.WlanRequirementMode;
     }
 
     export interface WlanWpa3 {

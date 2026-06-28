@@ -72,7 +72,7 @@ export class PortForward extends pulumi.CustomResource {
     /**
      * PfwdInterface selects the inbound WAN interface: wan | wan2 | both | all.
      */
-    declare public readonly pfwdInterface: pulumi.Output<string | undefined>;
+    declare public readonly pfwdInterface: pulumi.Output<enums.network.PortForwardPfwdInterface | undefined>;
     /**
      * PortForwardId is the controller-assigned identifier (the UniFi `_id`).
      */
@@ -96,7 +96,7 @@ export class PortForward extends pulumi.CustomResource {
     /**
      * SrcLimitingType selects how the source is limited: ip | firewall_group.
      */
-    declare public readonly srcLimitingType: pulumi.Output<string | undefined>;
+    declare public readonly srcLimitingType: pulumi.Output<enums.network.PortForwardSrcLimitingType | undefined>;
 
     /**
      * Create a PortForward resource with the given unique name, arguments, and options.
@@ -185,7 +185,7 @@ export interface PortForwardArgs {
     /**
      * PfwdInterface selects the inbound WAN interface: wan | wan2 | both | all.
      */
-    pfwdInterface?: pulumi.Input<string | undefined>;
+    pfwdInterface?: pulumi.Input<enums.network.PortForwardPfwdInterface | undefined>;
     /**
      * Proto selects the matched protocol: tcp_udp | tcp | udp. Defaults to "tcp_udp".
      */
@@ -205,5 +205,5 @@ export interface PortForwardArgs {
     /**
      * SrcLimitingType selects how the source is limited: ip | firewall_group.
      */
-    srcLimitingType?: pulumi.Input<string | undefined>;
+    srcLimitingType?: pulumi.Input<enums.network.PortForwardSrcLimitingType | undefined>;
 }

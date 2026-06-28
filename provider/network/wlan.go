@@ -33,6 +33,195 @@ func (WlanSecurity) Values() []infer.EnumValue[WlanSecurity] {
 	}
 }
 
+// WlanWpaMode is the WPA mode applied on top of security.
+type WlanWpaMode string
+
+const (
+	WlanWpaModeAuto WlanWpaMode = "auto"
+	WlanWpaModeWpa1 WlanWpaMode = "wpa1"
+	WlanWpaModeWpa2 WlanWpaMode = "wpa2"
+)
+
+func (WlanWpaMode) Values() []infer.EnumValue[WlanWpaMode] {
+	return []infer.EnumValue[WlanWpaMode]{
+		{Name: "Auto", Value: WlanWpaModeAuto, Description: "Let the controller choose the WPA mode."},
+		{Name: "Wpa1", Value: WlanWpaModeWpa1, Description: "WPA1 only."},
+		{Name: "Wpa2", Value: WlanWpaModeWpa2, Description: "WPA2 only."},
+	}
+}
+
+// WlanWpaEnc is the WPA encryption cipher.
+type WlanWpaEnc string
+
+const (
+	WlanWpaEncAuto    WlanWpaEnc = "auto"
+	WlanWpaEncCcmp    WlanWpaEnc = "ccmp"
+	WlanWpaEncGcmp    WlanWpaEnc = "gcmp"
+	WlanWpaEncCcmp256 WlanWpaEnc = "ccmp-256"
+	WlanWpaEncGcmp256 WlanWpaEnc = "gcmp-256"
+)
+
+func (WlanWpaEnc) Values() []infer.EnumValue[WlanWpaEnc] {
+	return []infer.EnumValue[WlanWpaEnc]{
+		{Name: "Auto", Value: WlanWpaEncAuto, Description: "Let the controller choose the cipher."},
+		{Name: "Ccmp", Value: WlanWpaEncCcmp, Description: "AES-CCMP cipher."},
+		{Name: "Gcmp", Value: WlanWpaEncGcmp, Description: "GCMP cipher."},
+		{Name: "Ccmp256", Value: WlanWpaEncCcmp256, Description: "AES-CCMP-256 cipher."},
+		{Name: "Gcmp256", Value: WlanWpaEncGcmp256, Description: "GCMP-256 cipher."},
+	}
+}
+
+// WlanRequirementMode is a disabled/optional/required tri-state (pskRadius, pmfMode).
+type WlanRequirementMode string
+
+const (
+	WlanRequirementModeDisabled WlanRequirementMode = "disabled"
+	WlanRequirementModeOptional WlanRequirementMode = "optional"
+	WlanRequirementModeRequired WlanRequirementMode = "required"
+)
+
+func (WlanRequirementMode) Values() []infer.EnumValue[WlanRequirementMode] {
+	return []infer.EnumValue[WlanRequirementMode]{
+		{Name: "Disabled", Value: WlanRequirementModeDisabled, Description: "Feature disabled."},
+		{Name: "Optional", Value: WlanRequirementModeOptional, Description: "Feature optional."},
+		{Name: "Required", Value: WlanRequirementModeRequired, Description: "Feature required."},
+	}
+}
+
+// WlanPmfCipher is the Protected Management Frames cipher.
+type WlanPmfCipher string
+
+const (
+	WlanPmfCipherAuto       WlanPmfCipher = "auto"
+	WlanPmfCipherAes128Cmac WlanPmfCipher = "aes-128-cmac"
+	WlanPmfCipherBipGmac256 WlanPmfCipher = "bip-gmac-256"
+)
+
+func (WlanPmfCipher) Values() []infer.EnumValue[WlanPmfCipher] {
+	return []infer.EnumValue[WlanPmfCipher]{
+		{Name: "Auto", Value: WlanPmfCipherAuto, Description: "Let the controller choose the PMF cipher."},
+		{Name: "Aes128Cmac", Value: WlanPmfCipherAes128Cmac, Description: "AES-128-CMAC cipher."},
+		{Name: "BipGmac256", Value: WlanPmfCipherBipGmac256, Description: "BIP-GMAC-256 cipher."},
+	}
+}
+
+// WlanNasIdentifierType is the source of the RADIUS NAS identifier value.
+type WlanNasIdentifierType string
+
+const (
+	WlanNasIdentifierTypeApName   WlanNasIdentifierType = "ap_name"
+	WlanNasIdentifierTypeApMac    WlanNasIdentifierType = "ap_mac"
+	WlanNasIdentifierTypeBssid    WlanNasIdentifierType = "bssid"
+	WlanNasIdentifierTypeSiteName WlanNasIdentifierType = "site_name"
+	WlanNasIdentifierTypeCustom   WlanNasIdentifierType = "custom"
+)
+
+func (WlanNasIdentifierType) Values() []infer.EnumValue[WlanNasIdentifierType] {
+	return []infer.EnumValue[WlanNasIdentifierType]{
+		{Name: "ApName", Value: WlanNasIdentifierTypeApName, Description: "Use the AP name."},
+		{Name: "ApMac", Value: WlanNasIdentifierTypeApMac, Description: "Use the AP MAC address."},
+		{Name: "Bssid", Value: WlanNasIdentifierTypeBssid, Description: "Use the BSSID."},
+		{Name: "SiteName", Value: WlanNasIdentifierTypeSiteName, Description: "Use the site name."},
+		{Name: "Custom", Value: WlanNasIdentifierTypeCustom, Description: "Use a custom value."},
+	}
+}
+
+// WlanBand is the radio band selection.
+type WlanBand string
+
+const (
+	WlanBand2g   WlanBand = "2g"
+	WlanBand5g   WlanBand = "5g"
+	WlanBandBoth WlanBand = "both"
+)
+
+func (WlanBand) Values() []infer.EnumValue[WlanBand] {
+	return []infer.EnumValue[WlanBand]{
+		{Name: "2g", Value: WlanBand2g, Description: "2.4GHz band."},
+		{Name: "5g", Value: WlanBand5g, Description: "5GHz band."},
+		{Name: "Both", Value: WlanBandBoth, Description: "Both bands."},
+	}
+}
+
+// WlanDtimMode controls DTIM interval handling.
+type WlanDtimMode string
+
+const (
+	WlanDtimModeDefault WlanDtimMode = "default"
+	WlanDtimModeCustom  WlanDtimMode = "custom"
+)
+
+func (WlanDtimMode) Values() []infer.EnumValue[WlanDtimMode] {
+	return []infer.EnumValue[WlanDtimMode]{
+		{Name: "Default", Value: WlanDtimModeDefault, Description: "Use controller default DTIM intervals."},
+		{Name: "Custom", Value: WlanDtimModeCustom, Description: "Use per-band custom DTIM intervals."},
+	}
+}
+
+// WlanMacFilterPolicy is the MAC access-control policy.
+type WlanMacFilterPolicy string
+
+const (
+	WlanMacFilterPolicyAllow WlanMacFilterPolicy = "allow"
+	WlanMacFilterPolicyDeny  WlanMacFilterPolicy = "deny"
+)
+
+func (WlanMacFilterPolicy) Values() []infer.EnumValue[WlanMacFilterPolicy] {
+	return []infer.EnumValue[WlanMacFilterPolicy]{
+		{Name: "Allow", Value: WlanMacFilterPolicyAllow, Description: "Allow only listed MACs."},
+		{Name: "Deny", Value: WlanMacFilterPolicyDeny, Description: "Deny listed MACs."},
+	}
+}
+
+// WlanApGroupsMode controls which APs broadcast the SSID.
+type WlanApGroupsMode string
+
+const (
+	WlanApGroupsModeAll     WlanApGroupsMode = "all"
+	WlanApGroupsModeGroups  WlanApGroupsMode = "groups"
+	WlanApGroupsModeDevices WlanApGroupsMode = "devices"
+)
+
+func (WlanApGroupsMode) Values() []infer.EnumValue[WlanApGroupsMode] {
+	return []infer.EnumValue[WlanApGroupsMode]{
+		{Name: "All", Value: WlanApGroupsModeAll, Description: "Broadcast on all APs."},
+		{Name: "Groups", Value: WlanApGroupsModeGroups, Description: "Broadcast on the listed AP groups."},
+		{Name: "Devices", Value: WlanApGroupsModeDevices, Description: "Broadcast on the listed devices."},
+	}
+}
+
+// WlanPriority is the SSID scheduling priority.
+type WlanPriority string
+
+const (
+	WlanPriorityMedium WlanPriority = "medium"
+	WlanPriorityHigh   WlanPriority = "high"
+	WlanPriorityLow    WlanPriority = "low"
+)
+
+func (WlanPriority) Values() []infer.EnumValue[WlanPriority] {
+	return []infer.EnumValue[WlanPriority]{
+		{Name: "Medium", Value: WlanPriorityMedium, Description: "Medium priority."},
+		{Name: "High", Value: WlanPriorityHigh, Description: "High priority."},
+		{Name: "Low", Value: WlanPriorityLow, Description: "Low priority."},
+	}
+}
+
+// WlanSettingPreference selects automatic or manual configuration.
+type WlanSettingPreference string
+
+const (
+	WlanSettingPreferenceAuto   WlanSettingPreference = "auto"
+	WlanSettingPreferenceManual WlanSettingPreference = "manual"
+)
+
+func (WlanSettingPreference) Values() []infer.EnumValue[WlanSettingPreference] {
+	return []infer.EnumValue[WlanSettingPreference]{
+		{Name: "Auto", Value: WlanSettingPreferenceAuto, Description: "Automatic configuration."},
+		{Name: "Manual", Value: WlanSettingPreferenceManual, Description: "Manual configuration."},
+	}
+}
+
 // Wlan is the controlling (marker) struct for a UniFi wireless network (SSID).
 type Wlan struct{}
 
@@ -95,16 +284,16 @@ func (d *WlanScheduleEntry) Annotate(a infer.Annotator) {
 // WlanWpa groups the core WPA/encryption tuning applied on top of `security`.
 type WlanWpa struct {
 	// Mode is the WPA mode: auto | wpa1 | wpa2.
-	Mode *string `pulumi:"mode,optional"`
+	Mode *WlanWpaMode `pulumi:"mode,optional"`
 	// Enc is the WPA encryption cipher: auto | ccmp | gcmp | ccmp-256 | gcmp-256.
-	Enc *string `pulumi:"enc,optional"`
+	Enc *WlanWpaEnc `pulumi:"enc,optional"`
 	// PskRadius controls RADIUS PSK auth: disabled | optional | required.
 	// This is a mode enum, not a credential, so it is not marked secret.
-	PskRadius *string `pulumi:"pskRadius,optional"`
+	PskRadius *WlanRequirementMode `pulumi:"pskRadius,optional"`
 	// PmfMode is Protected Management Frames mode: disabled | optional | required.
-	PmfMode *string `pulumi:"pmfMode,optional"`
+	PmfMode *WlanRequirementMode `pulumi:"pmfMode,optional"`
 	// PmfCipher is the PMF cipher: auto | aes-128-cmac | bip-gmac-256.
-	PmfCipher *string `pulumi:"pmfCipher,optional"`
+	PmfCipher *WlanPmfCipher `pulumi:"pmfCipher,optional"`
 	// GroupRekey is the group key rekey interval in seconds (0 disables).
 	GroupRekey *int `pulumi:"groupRekey,optional"`
 }
@@ -198,7 +387,7 @@ type WlanRadius struct {
 	// NasIdentifier is the RADIUS NAS identifier value (0-48 chars).
 	NasIdentifier *string `pulumi:"nasIdentifier,optional"`
 	// NasIdentifierType: ap_name | ap_mac | bssid | site_name | custom.
-	NasIdentifierType *string `pulumi:"nasIdentifierType,optional"`
+	NasIdentifierType *WlanNasIdentifierType `pulumi:"nasIdentifierType,optional"`
 }
 
 func (d *WlanRadius) Annotate(a infer.Annotator) {
@@ -227,7 +416,7 @@ func (d *WlanVlanTagging) Annotate(a infer.Annotator) {
 // WlanBandSteering groups radio band selection and band steering.
 type WlanBandSteering struct {
 	// Band is the radio band: 2g | 5g | both.
-	Band *string `pulumi:"band,optional"`
+	Band *WlanBand `pulumi:"band,optional"`
 	// Bands are the radio bands to broadcast on: 2g | 5g | 6g.
 	Bands []string `pulumi:"bands,optional"`
 	// No2GhzOui steers high-performance clients to 5GHz only.
@@ -243,7 +432,7 @@ func (d *WlanBandSteering) Annotate(a infer.Annotator) {
 // WlanDtim groups the DTIM interval control across bands.
 type WlanDtim struct {
 	// Mode controls DTIM interval handling: default | custom.
-	Mode *string `pulumi:"mode,optional"`
+	Mode *WlanDtimMode `pulumi:"mode,optional"`
 	// Na is the DTIM interval for the 5GHz band (1-255).
 	Na *int `pulumi:"na,optional"`
 	// Ng is the DTIM interval for the 2.4GHz band (1-255).
@@ -274,7 +463,7 @@ type WlanMinrate struct {
 	// NgAdvertisingRates advertises only allowed 2.4GHz rates.
 	NgAdvertisingRates *bool `pulumi:"ngAdvertisingRates,optional"`
 	// SettingPreference: auto | manual.
-	SettingPreference *string `pulumi:"settingPreference,optional"`
+	SettingPreference *WlanSettingPreference `pulumi:"settingPreference,optional"`
 }
 
 func (d *WlanMinrate) Annotate(a infer.Annotator) {
@@ -292,7 +481,7 @@ type WlanMacFilter struct {
 	// Enabled enables MAC-based access control.
 	Enabled *bool `pulumi:"enabled,optional"`
 	// Policy: allow | deny.
-	Policy *string `pulumi:"policy,optional"`
+	Policy *WlanMacFilterPolicy `pulumi:"policy,optional"`
 	// List is the list of MACs (XX:XX:XX:XX:XX:XX) the policy applies to.
 	List []string `pulumi:"list,optional"`
 }
@@ -343,7 +532,7 @@ type WlanApGroups struct {
 	// Ids are the AP groups that should broadcast this SSID.
 	Ids []string `pulumi:"ids,optional"`
 	// Mode controls AP selection: all | groups | devices.
-	Mode *string `pulumi:"mode,optional"`
+	Mode *WlanApGroupsMode `pulumi:"mode,optional"`
 }
 
 func (d *WlanApGroups) Annotate(a infer.Annotator) {
@@ -433,7 +622,7 @@ type WlanArgs struct {
 	// IsGuest marks this WLAN as a guest network (enables guest behaviors).
 	IsGuest *bool `pulumi:"isGuest,optional"`
 	// Priority: medium | high | low.
-	Priority *string `pulumi:"priority,optional"`
+	Priority *WlanPriority `pulumi:"priority,optional"`
 
 	// Wpa groups the core WPA/encryption tuning.
 	Wpa *WlanWpa `pulumi:"wpa,optional"`
@@ -558,25 +747,25 @@ func (a WlanArgs) toUnifi(id string) *unifi.WLAN {
 		w.IsGuest = *a.IsGuest
 	}
 	if a.Priority != nil {
-		w.Priority = *a.Priority
+		w.Priority = string(*a.Priority)
 	}
 
 	// WPA / encryption.
 	if g := a.Wpa; g != nil {
 		if g.Mode != nil {
-			w.WPAMode = *g.Mode
+			w.WPAMode = string(*g.Mode)
 		}
 		if g.Enc != nil {
-			w.WPAEnc = *g.Enc
+			w.WPAEnc = string(*g.Enc)
 		}
 		if g.PskRadius != nil {
-			w.WPAPskRADIUS = *g.PskRadius
+			w.WPAPskRADIUS = string(*g.PskRadius)
 		}
 		if g.PmfMode != nil {
-			w.PMFMode = *g.PmfMode
+			w.PMFMode = string(*g.PmfMode)
 		}
 		if g.PmfCipher != nil {
-			w.PMFCipher = *g.PmfCipher
+			w.PMFCipher = string(*g.PmfCipher)
 		}
 		if g.GroupRekey != nil {
 			w.GroupRekey = *g.GroupRekey
@@ -677,7 +866,7 @@ func (a WlanArgs) toUnifi(id string) *unifi.WLAN {
 			w.NasIDentifier = *g.NasIdentifier
 		}
 		if g.NasIdentifierType != nil {
-			w.NasIDentifierType = *g.NasIdentifierType
+			w.NasIDentifierType = string(*g.NasIdentifierType)
 		}
 	}
 
@@ -694,7 +883,7 @@ func (a WlanArgs) toUnifi(id string) *unifi.WLAN {
 	// Band steering.
 	if g := a.BandSteering; g != nil {
 		if g.Band != nil {
-			w.WLANBand = *g.Band
+			w.WLANBand = string(*g.Band)
 		}
 		if g.Bands != nil {
 			w.WLANBands = g.Bands
@@ -707,7 +896,7 @@ func (a WlanArgs) toUnifi(id string) *unifi.WLAN {
 	// DTIM.
 	if g := a.Dtim; g != nil {
 		if g.Mode != nil {
-			w.DTIMMode = *g.Mode
+			w.DTIMMode = string(*g.Mode)
 		}
 		if g.Na != nil {
 			w.DTIMNa = *g.Na
@@ -741,7 +930,7 @@ func (a WlanArgs) toUnifi(id string) *unifi.WLAN {
 			w.MinrateNgAdvertisingRates = *g.NgAdvertisingRates
 		}
 		if g.SettingPreference != nil {
-			w.MinrateSettingPreference = *g.SettingPreference
+			w.MinrateSettingPreference = string(*g.SettingPreference)
 		}
 	}
 
@@ -751,7 +940,7 @@ func (a WlanArgs) toUnifi(id string) *unifi.WLAN {
 			w.MACFilterEnabled = *g.Enabled
 		}
 		if g.Policy != nil {
-			w.MACFilterPolicy = *g.Policy
+			w.MACFilterPolicy = string(*g.Policy)
 		}
 		if g.List != nil {
 			w.MACFilterList = g.List
@@ -810,7 +999,7 @@ func (a WlanArgs) toUnifi(id string) *unifi.WLAN {
 			w.ApGroupIDs = g.Ids
 		}
 		if g.Mode != nil {
-			w.ApGroupMode = *g.Mode
+			w.ApGroupMode = string(*g.Mode)
 		}
 	}
 
@@ -874,6 +1063,14 @@ func wlanBoolState(v bool, prior *bool) *bool {
 func wlanStringState(v string, prior *string) *string {
 	if v != "" {
 		return ptr(v)
+	}
+	return prior
+}
+
+// wlanEnumState mirrors wlanStringState for enum-typed (string) fields.
+func wlanEnumState[T ~string](v string, prior *T) *T {
+	if v != "" {
+		return ptr(T(v))
 	}
 	return prior
 }
@@ -1020,11 +1217,11 @@ func wlanWpaFrom(w *unifi.WLAN, prior *WlanWpa) *WlanWpa {
 		p = *prior
 	}
 	g := WlanWpa{
-		Mode:       wlanStringState(w.WPAMode, p.Mode),
-		Enc:        wlanStringState(w.WPAEnc, p.Enc),
-		PskRadius:  wlanStringState(w.WPAPskRADIUS, p.PskRadius),
-		PmfMode:    wlanStringState(w.PMFMode, p.PmfMode),
-		PmfCipher:  wlanStringState(w.PMFCipher, p.PmfCipher),
+		Mode:       wlanEnumState(w.WPAMode, p.Mode),
+		Enc:        wlanEnumState(w.WPAEnc, p.Enc),
+		PskRadius:  wlanEnumState(w.WPAPskRADIUS, p.PskRadius),
+		PmfMode:    wlanEnumState(w.PMFMode, p.PmfMode),
+		PmfCipher:  wlanEnumState(w.PMFCipher, p.PmfCipher),
 		GroupRekey: wlanIntState(w.GroupRekey, p.GroupRekey),
 	}
 	if g == (WlanWpa{}) {
@@ -1115,7 +1312,7 @@ func wlanRadiusFrom(w *unifi.WLAN, prior *WlanRadius) *WlanRadius {
 		MacaclEmptyPassword: wlanBoolState(w.RADIUSMACaclEmptyPassword, p.MacaclEmptyPassword),
 		DasEnabled:          wlanBoolState(w.RADIUSDasEnabled, p.DasEnabled),
 		NasIdentifier:       wlanStringState(w.NasIDentifier, p.NasIdentifier),
-		NasIdentifierType:   wlanStringState(w.NasIDentifierType, p.NasIdentifierType),
+		NasIdentifierType:   wlanEnumState(w.NasIDentifierType, p.NasIdentifierType),
 	}
 	if g == (WlanRadius{}) {
 		return nil
@@ -1148,7 +1345,7 @@ func wlanBandSteeringFrom(w *unifi.WLAN, prior *WlanBandSteering) *WlanBandSteer
 		p = *prior
 	}
 	g := WlanBandSteering{
-		Band:      wlanStringState(w.WLANBand, p.Band),
+		Band:      wlanEnumState(w.WLANBand, p.Band),
 		Bands:     wlanStringsState(w.WLANBands, p.Bands),
 		No2GhzOui: wlanBoolState(w.No2GhzOui, p.No2GhzOui),
 	}
@@ -1165,7 +1362,7 @@ func wlanDtimFrom(w *unifi.WLAN, prior *WlanDtim) *WlanDtim {
 		p = *prior
 	}
 	g := WlanDtim{
-		Mode: wlanStringState(w.DTIMMode, p.Mode),
+		Mode: wlanEnumState(w.DTIMMode, p.Mode),
 		Na:   wlanIntState(w.DTIMNa, p.Na),
 		Ng:   wlanIntState(w.DTIMNg, p.Ng),
 		SixE: wlanIntState(w.DTIM6E, p.SixE),
@@ -1189,7 +1386,7 @@ func wlanMinRateFrom(w *unifi.WLAN, prior *WlanMinrate) *WlanMinrate {
 		NgEnabled:          wlanBoolState(w.MinrateNgEnabled, p.NgEnabled),
 		NgDataRateKbps:     wlanIntState(w.MinrateNgDataRateKbps, p.NgDataRateKbps),
 		NgAdvertisingRates: wlanBoolState(w.MinrateNgAdvertisingRates, p.NgAdvertisingRates),
-		SettingPreference:  wlanStringState(w.MinrateSettingPreference, p.SettingPreference),
+		SettingPreference:  wlanEnumState(w.MinrateSettingPreference, p.SettingPreference),
 	}
 	if g == (WlanMinrate{}) {
 		return nil
@@ -1206,7 +1403,7 @@ func wlanMacFilterFrom(w *unifi.WLAN, prior *WlanMacFilter) *WlanMacFilter {
 	}
 	g := WlanMacFilter{
 		Enabled: wlanBoolState(w.MACFilterEnabled, p.Enabled),
-		Policy:  wlanStringState(w.MACFilterPolicy, p.Policy),
+		Policy:  wlanEnumState(w.MACFilterPolicy, p.Policy),
 		List:    wlanStringsState(w.MACFilterList, p.List),
 	}
 	if g.isZero() {
@@ -1261,7 +1458,7 @@ func wlanApGroupsFrom(w *unifi.WLAN, prior *WlanApGroups) *WlanApGroups {
 	}
 	g := WlanApGroups{
 		Ids:  wlanStringsState(w.ApGroupIDs, p.Ids),
-		Mode: wlanStringState(w.ApGroupMode, p.Mode),
+		Mode: wlanEnumState(w.ApGroupMode, p.Mode),
 	}
 	if g.isZero() {
 		return nil
@@ -1352,7 +1549,7 @@ func wlanStateFrom(w *unifi.WLAN, prior WlanArgs) WlanState {
 	args.MloEnabled = wlanBoolState(w.MloEnabled, prior.MloEnabled)
 	args.L2Isolation = wlanBoolState(w.L2Isolation, prior.L2Isolation)
 	args.IsGuest = wlanBoolState(w.IsGuest, prior.IsGuest)
-	args.Priority = wlanStringState(w.Priority, prior.Priority)
+	args.Priority = wlanEnumState(w.Priority, prior.Priority)
 
 	// Nested facets.
 	args.Wpa = wlanWpaFrom(w, prior.Wpa)

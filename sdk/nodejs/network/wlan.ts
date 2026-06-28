@@ -108,7 +108,7 @@ export class Wlan extends pulumi.CustomResource {
     /**
      * Priority: medium | high | low.
      */
-    declare public readonly priority: pulumi.Output<string | undefined>;
+    declare public readonly priority: pulumi.Output<enums.network.WlanPriority | undefined>;
     /**
      * PrivatePresharedKeys groups per-key network placement (PPSK).
      */
@@ -331,7 +331,7 @@ export interface WlanArgs {
     /**
      * Priority: medium | high | low.
      */
-    priority?: pulumi.Input<string | undefined>;
+    priority?: pulumi.Input<enums.network.WlanPriority | undefined>;
     /**
      * PrivatePresharedKeys groups per-key network placement (PPSK).
      */

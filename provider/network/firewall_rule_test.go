@@ -12,12 +12,12 @@ func TestFirewallRuleRoundTrip(t *testing.T) {
 	args := FirewallRuleArgs{
 		Name:              "block-lan-to-iot",
 		RuleIndex:         2010,
-		Action:            ptr("drop"),
+		Action:            ptr(FirewallRuleAction("drop")),
 		Ruleset:           ptr("LAN_IN"),
 		Enabled:           ptr(true),
 		Logging:           ptr(true),
-		IpSec:             ptr("match-none"),
-		SettingPreference: ptr("manual"),
+		IpSec:             ptr(FirewallRuleIpSec("match-none")),
+		SettingPreference: ptr(FirewallRuleSettingPreference("manual")),
 
 		ProtocolMatch: &FirewallRuleProtocolMatch{
 			Protocol:      ptr("tcp_udp"),
@@ -30,7 +30,7 @@ func TestFirewallRuleRoundTrip(t *testing.T) {
 			Address:          ptr("192.168.1.0/24"),
 			Port:             ptr("1024:65535"),
 			Mac:              ptr("00:11:22:33:44:55"),
-			NetworkType:      ptr("NETv4"),
+			NetworkType:      ptr(FirewallRuleNetworkType("NETv4")),
 			FirewallGroupIds: []string{"fg-src1"},
 		},
 
@@ -38,7 +38,7 @@ func TestFirewallRuleRoundTrip(t *testing.T) {
 			Address:          ptr("192.168.50.0/24"),
 			Port:             ptr("443"),
 			NetworkId:        ptr("net-dst"),
-			NetworkType:      ptr("NETv4"),
+			NetworkType:      ptr(FirewallRuleNetworkType("NETv4")),
 			FirewallGroupIds: []string{"fg-dst1", "fg-dst2"},
 		},
 
@@ -178,7 +178,7 @@ func TestFirewallRuleDefaultsAndPriorPreserved(t *testing.T) {
 	prior := FirewallRuleArgs{
 		Name:      "r",
 		RuleIndex: 4001,
-		Action:    ptr("accept"),
+		Action:    ptr(FirewallRuleAction("accept")),
 		Ruleset:   ptr("WAN_IN"),
 		Logging:   ptr(true),
 		Source: &FirewallRuleSource{

@@ -12,6 +12,128 @@ import (
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
 )
 
+// PortProfileOpMode is the closed set of port-profile operation modes.
+type PortProfileOpMode string
+
+const (
+	PortProfileOpModeSwitch PortProfileOpMode = "switch"
+)
+
+// Values enumerates the allowed PortProfileOpMode values for the schema/SDK.
+func (PortProfileOpMode) Values() []infer.EnumValue[PortProfileOpMode] {
+	return []infer.EnumValue[PortProfileOpMode]{
+		{Name: "Switch", Value: PortProfileOpModeSwitch, Description: "Switch operation mode."},
+	}
+}
+
+// PortProfilePoeMode is the closed set of PoE modes for a port profile.
+type PortProfilePoeMode string
+
+const (
+	PortProfilePoeModeAuto PortProfilePoeMode = "auto"
+	PortProfilePoeModeOff  PortProfilePoeMode = "off"
+)
+
+// Values enumerates the allowed PortProfilePoeMode values for the schema/SDK.
+func (PortProfilePoeMode) Values() []infer.EnumValue[PortProfilePoeMode] {
+	return []infer.EnumValue[PortProfilePoeMode]{
+		{Name: "Auto", Value: PortProfilePoeModeAuto, Description: "Auto-detect and supply PoE."},
+		{Name: "Off", Value: PortProfilePoeModeOff, Description: "Disable PoE on the port."},
+	}
+}
+
+// PortProfileSettingPreference is the closed set of config sources.
+type PortProfileSettingPreference string
+
+const (
+	PortProfileSettingPreferenceAuto   PortProfileSettingPreference = "auto"
+	PortProfileSettingPreferenceManual PortProfileSettingPreference = "manual"
+)
+
+// Values enumerates the allowed PortProfileSettingPreference values for the schema/SDK.
+func (PortProfileSettingPreference) Values() []infer.EnumValue[PortProfileSettingPreference] {
+	return []infer.EnumValue[PortProfileSettingPreference]{
+		{Name: "Auto", Value: PortProfileSettingPreferenceAuto, Description: "Controller-managed configuration."},
+		{Name: "Manual", Value: PortProfileSettingPreferenceManual, Description: "Manually configured."},
+	}
+}
+
+// PortProfileTaggedVlanMgmt is the closed set of tagged-VLAN behaviors.
+type PortProfileTaggedVlanMgmt string
+
+const (
+	PortProfileTaggedVlanMgmtAuto     PortProfileTaggedVlanMgmt = "auto"
+	PortProfileTaggedVlanMgmtBlockAll PortProfileTaggedVlanMgmt = "block_all"
+	PortProfileTaggedVlanMgmtCustom   PortProfileTaggedVlanMgmt = "custom"
+)
+
+// Values enumerates the allowed PortProfileTaggedVlanMgmt values for the schema/SDK.
+func (PortProfileTaggedVlanMgmt) Values() []infer.EnumValue[PortProfileTaggedVlanMgmt] {
+	return []infer.EnumValue[PortProfileTaggedVlanMgmt]{
+		{Name: "Auto", Value: PortProfileTaggedVlanMgmtAuto, Description: "Automatically manage tagged VLANs."},
+		{Name: "BlockAll", Value: PortProfileTaggedVlanMgmtBlockAll, Description: "Block all tagged VLANs."},
+		{Name: "Custom", Value: PortProfileTaggedVlanMgmtCustom, Description: "Use a custom tagged-VLAN set."},
+	}
+}
+
+// PortProfileFecMode is the closed set of forward error correction modes.
+type PortProfileFecMode string
+
+const (
+	PortProfileFecModeRsFec    PortProfileFecMode = "rs-fec"
+	PortProfileFecModeFcFec    PortProfileFecMode = "fc-fec"
+	PortProfileFecModeDefault  PortProfileFecMode = "default"
+	PortProfileFecModeDisabled PortProfileFecMode = "disabled"
+)
+
+// Values enumerates the allowed PortProfileFecMode values for the schema/SDK.
+func (PortProfileFecMode) Values() []infer.EnumValue[PortProfileFecMode] {
+	return []infer.EnumValue[PortProfileFecMode]{
+		{Name: "RsFec", Value: PortProfileFecModeRsFec, Description: "Reed-Solomon FEC."},
+		{Name: "FcFec", Value: PortProfileFecModeFcFec, Description: "Fire-code FEC."},
+		{Name: "Default", Value: PortProfileFecModeDefault, Description: "Controller default FEC."},
+		{Name: "Disabled", Value: PortProfileFecModeDisabled, Description: "FEC disabled."},
+	}
+}
+
+// PortProfileStormControlType is the closed set of storm-control metrics.
+type PortProfileStormControlType string
+
+const (
+	PortProfileStormControlTypeLevel PortProfileStormControlType = "level"
+	PortProfileStormControlTypeRate  PortProfileStormControlType = "rate"
+)
+
+// Values enumerates the allowed PortProfileStormControlType values for the schema/SDK.
+func (PortProfileStormControlType) Values() []infer.EnumValue[PortProfileStormControlType] {
+	return []infer.EnumValue[PortProfileStormControlType]{
+		{Name: "Level", Value: PortProfileStormControlTypeLevel, Description: "Percentage-of-bandwidth metric."},
+		{Name: "Rate", Value: PortProfileStormControlTypeRate, Description: "Packets-per-second metric."},
+	}
+}
+
+// PortProfileDot1xCtrl is the closed set of 802.1X PNAC modes.
+type PortProfileDot1xCtrl string
+
+const (
+	PortProfileDot1xCtrlAuto              PortProfileDot1xCtrl = "auto"
+	PortProfileDot1xCtrlForceAuthorized   PortProfileDot1xCtrl = "force_authorized"
+	PortProfileDot1xCtrlForceUnauthorized PortProfileDot1xCtrl = "force_unauthorized"
+	PortProfileDot1xCtrlMacBased          PortProfileDot1xCtrl = "mac_based"
+	PortProfileDot1xCtrlMultiHost         PortProfileDot1xCtrl = "multi_host"
+)
+
+// Values enumerates the allowed PortProfileDot1xCtrl values for the schema/SDK.
+func (PortProfileDot1xCtrl) Values() []infer.EnumValue[PortProfileDot1xCtrl] {
+	return []infer.EnumValue[PortProfileDot1xCtrl]{
+		{Name: "Auto", Value: PortProfileDot1xCtrlAuto, Description: "802.1X authentication required."},
+		{Name: "ForceAuthorized", Value: PortProfileDot1xCtrlForceAuthorized, Description: "Always authorized."},
+		{Name: "ForceUnauthorized", Value: PortProfileDot1xCtrlForceUnauthorized, Description: "Always unauthorized."},
+		{Name: "MacBased", Value: PortProfileDot1xCtrlMacBased, Description: "MAC-based authentication."},
+		{Name: "MultiHost", Value: PortProfileDot1xCtrlMultiHost, Description: "Multi-host authentication."},
+	}
+}
+
 // PortProfile is the controlling (marker) struct for a UniFi switch port
 // profile. Port profiles are reusable port configurations that a switch
 // Device's per-port override references via portProfileId (portconf_id).
@@ -26,7 +148,7 @@ type PortProfileVlan struct {
 	// NativeNetworkId is the network `_id` used as the native (untagged) VLAN.
 	NativeNetworkId *string `pulumi:"nativeNetworkId,optional"`
 	// TaggedVlanMgmt controls tagged VLAN behavior: auto | block_all | custom.
-	TaggedVlanMgmt *string `pulumi:"taggedVlanMgmt,optional"`
+	TaggedVlanMgmt *PortProfileTaggedVlanMgmt `pulumi:"taggedVlanMgmt,optional"`
 	// ExcludedNetworkIds lists network `_id`s to exclude when forward is "customize".
 	ExcludedNetworkIds []string `pulumi:"excludedNetworkIds,optional"`
 	// MulticastRouterNetworkIds lists network `_id`s acting as multicast routers.
@@ -56,7 +178,7 @@ type PortProfileLink struct {
 	// FullDuplex enables full-duplex when autoneg is false. Defaults to false.
 	FullDuplex *bool `pulumi:"fullDuplex,optional"`
 	// FecMode is the forward error correction mode: rs-fec | fc-fec | default | disabled.
-	FecMode *string `pulumi:"fecMode,optional"`
+	FecMode *PortProfileFecMode `pulumi:"fecMode,optional"`
 }
 
 func (l *PortProfileLink) Annotate(a infer.Annotator) {
@@ -72,7 +194,7 @@ func (l *PortProfileLink) Annotate(a infer.Annotator) {
 // storm-control settings.
 type PortProfileStormControl struct {
 	// Type selects the storm-control metric: level | rate.
-	Type *string `pulumi:"type,optional"`
+	Type *PortProfileStormControlType `pulumi:"type,optional"`
 	// BroadcastEnabled enables broadcast storm control. Defaults to false.
 	BroadcastEnabled *bool `pulumi:"broadcastEnabled,optional"`
 	// BroadcastLevel is the broadcast storm-control level (0-100).
@@ -123,7 +245,7 @@ func (ps *PortProfilePortSecurity) Annotate(a infer.Annotator) {
 type PortProfileDot1x struct {
 	// Ctrl is the 802.1X PNAC mode: auto | force_authorized |
 	// force_unauthorized | mac_based | multi_host. Defaults to "force_authorized".
-	Ctrl *string `pulumi:"ctrl,optional"`
+	Ctrl *PortProfileDot1xCtrl `pulumi:"ctrl,optional"`
 	// IdleTimeout is the MAC-based 802.1X idle timeout in seconds (0-65535).
 	// Defaults to 300.
 	IdleTimeout *int `pulumi:"idleTimeout,optional"`
@@ -189,20 +311,20 @@ type PortProfileArgs struct {
 	Name string `pulumi:"name"`
 
 	// OpMode is the operation mode. Only "switch" is supported. Defaults to "switch".
-	OpMode *string `pulumi:"opMode,optional"`
+	OpMode *PortProfileOpMode `pulumi:"opMode,optional"`
 	// Isolation enables port isolation so devices on this profile cannot
 	// communicate with each other. Defaults to false.
 	Isolation *bool `pulumi:"isolation,optional"`
 	// PoeMode controls Power-over-Ethernet: auto | off (the values go-unifi
 	// accepts for a port profile). Per-port passthrough/pasv24 modes are set via
 	// a Device port override's poeMode, not here.
-	PoeMode *string `pulumi:"poeMode,optional"`
+	PoeMode *PortProfilePoeMode `pulumi:"poeMode,optional"`
 	// StpPortMode enables Spanning Tree Protocol on the port. Defaults to true.
 	StpPortMode *bool `pulumi:"stpPortMode,optional"`
 	// PortKeepaliveEnabled enables port keepalive. Defaults to false.
 	PortKeepaliveEnabled *bool `pulumi:"portKeepaliveEnabled,optional"`
 	// SettingPreference controls config source: auto | manual.
-	SettingPreference *string `pulumi:"settingPreference,optional"`
+	SettingPreference *PortProfileSettingPreference `pulumi:"settingPreference,optional"`
 
 	// Vlan groups the VLAN / forwarding settings.
 	Vlan *PortProfileVlan `pulumi:"vlan,optional"`
@@ -281,13 +403,13 @@ func (a PortProfileArgs) toUnifi(id string) *unifi.PortProfile {
 		Isolation:            derefOr(a.Isolation, false),
 		PortKeepaliveEnabled: derefOr(a.PortKeepaliveEnabled, false),
 		StpPortMode:          derefOr(a.StpPortMode, true),
-		OpMode:               derefOr(a.OpMode, "switch"),
+		OpMode:               string(derefOr(a.OpMode, PortProfileOpModeSwitch)),
 	}
 	if a.PoeMode != nil {
-		p.PoeMode = *a.PoeMode
+		p.PoeMode = string(*a.PoeMode)
 	}
 	if a.SettingPreference != nil {
-		p.SettingPreference = *a.SettingPreference
+		p.SettingPreference = string(*a.SettingPreference)
 	}
 
 	// VLAN / forwarding. forward defaults to "native" and is always sent.
@@ -300,7 +422,7 @@ func (a PortProfileArgs) toUnifi(id string) *unifi.PortProfile {
 			p.NATiveNetworkID = *v.NativeNetworkId
 		}
 		if v.TaggedVlanMgmt != nil {
-			p.TaggedVLANMgmt = *v.TaggedVlanMgmt
+			p.TaggedVLANMgmt = string(*v.TaggedVlanMgmt)
 		}
 		if v.ExcludedNetworkIds != nil {
 			p.ExcludedNetworkIDs = v.ExcludedNetworkIds
@@ -327,7 +449,7 @@ func (a PortProfileArgs) toUnifi(id string) *unifi.PortProfile {
 			p.Speed = *l.Speed
 		}
 		if l.FecMode != nil {
-			p.FecMode = *l.FecMode
+			p.FecMode = string(*l.FecMode)
 		}
 	}
 
@@ -346,7 +468,7 @@ func (a PortProfileArgs) toUnifi(id string) *unifi.PortProfile {
 			p.StormctrlUcastEnabled = *s.UnknownUnicastEnabled
 		}
 		if s.Type != nil {
-			p.StormctrlType = *s.Type
+			p.StormctrlType = string(*s.Type)
 		}
 		if s.BroadcastLevel != nil {
 			p.StormctrlBroadcastastLevel = *s.BroadcastLevel
@@ -384,7 +506,7 @@ func (a PortProfileArgs) toUnifi(id string) *unifi.PortProfile {
 	p.Dot1XIDleTimeout = 300
 	if d := a.Dot1x; d != nil {
 		if d.Ctrl != nil {
-			p.Dot1XCtrl = *d.Ctrl
+			p.Dot1XCtrl = string(*d.Ctrl)
 		}
 		if d.IdleTimeout != nil {
 			p.Dot1XIDleTimeout = *d.IdleTimeout
@@ -453,8 +575,13 @@ func portProfileVlanFrom(u *unifi.PortProfile, prior *PortProfileVlan) *PortProf
 	}
 	g := PortProfileVlan{
 		NativeNetworkId: vlanStrPtr(u.NATiveNetworkID, p.NativeNetworkId),
-		TaggedVlanMgmt:  vlanStrPtr(u.TaggedVLANMgmt, p.TaggedVlanMgmt),
 		VoiceNetworkId:  vlanStrPtr(u.VoiceNetworkID, p.VoiceNetworkId),
+	}
+	// taggedVlanMgmt reflects the controller value, falling back to the prior input.
+	if u.TaggedVLANMgmt != "" {
+		g.TaggedVlanMgmt = ptr(PortProfileTaggedVlanMgmt(u.TaggedVLANMgmt))
+	} else {
+		g.TaggedVlanMgmt = p.TaggedVlanMgmt
 	}
 	// forward defaults to "native" on the controller; only reflect it when the
 	// user previously set it so the group can round-trip as nil.
@@ -486,7 +613,12 @@ func portProfileLinkFrom(u *unifi.PortProfile, prior *PortProfileLink) *PortProf
 	g := PortProfileLink{
 		Speed:      vlanIntPtr(u.Speed, p.Speed),
 		FullDuplex: vlanBoolPtr(u.FullDuplex, p.FullDuplex),
-		FecMode:    vlanStrPtr(u.FecMode, p.FecMode),
+	}
+	// fecMode reflects the controller value, falling back to the prior input.
+	if u.FecMode != "" {
+		g.FecMode = ptr(PortProfileFecMode(u.FecMode))
+	} else {
+		g.FecMode = p.FecMode
 	}
 	// autoneg defaults to true on the controller; only reflect it when the user
 	// previously set it so the group can round-trip as nil.
@@ -507,7 +639,6 @@ func portProfileStormControlFrom(u *unifi.PortProfile, prior *PortProfileStormCo
 		p = *prior
 	}
 	g := PortProfileStormControl{
-		Type:                  vlanStrPtr(u.StormctrlType, p.Type),
 		BroadcastEnabled:      vlanBoolPtr(u.StormctrlBroadcastastEnabled, p.BroadcastEnabled),
 		BroadcastLevel:        vlanIntPtr(u.StormctrlBroadcastastLevel, p.BroadcastLevel),
 		BroadcastRate:         vlanIntPtr(u.StormctrlBroadcastastRate, p.BroadcastRate),
@@ -517,6 +648,12 @@ func portProfileStormControlFrom(u *unifi.PortProfile, prior *PortProfileStormCo
 		UnknownUnicastEnabled: vlanBoolPtr(u.StormctrlUcastEnabled, p.UnknownUnicastEnabled),
 		UnknownUnicastLevel:   vlanIntPtr(u.StormctrlUcastLevel, p.UnknownUnicastLevel),
 		UnknownUnicastRate:    vlanIntPtr(u.StormctrlUcastRate, p.UnknownUnicastRate),
+	}
+	// type reflects the controller value, falling back to the prior input.
+	if u.StormctrlType != "" {
+		g.Type = ptr(PortProfileStormControlType(u.StormctrlType))
+	} else {
+		g.Type = p.Type
 	}
 	if g == (PortProfileStormControl{}) {
 		return nil
@@ -556,7 +693,10 @@ func portProfileDot1xFrom(u *unifi.PortProfile, prior *PortProfileDot1x) *PortPr
 	// controller; only reflect them when the user previously set them so the
 	// group can round-trip as nil.
 	if p.Ctrl != nil {
-		g.Ctrl = vlanStrPtr(u.Dot1XCtrl, p.Ctrl)
+		g.Ctrl = p.Ctrl
+		if u.Dot1XCtrl != "" {
+			g.Ctrl = ptr(PortProfileDot1xCtrl(u.Dot1XCtrl))
+		}
 	}
 	if p.IdleTimeout != nil {
 		g.IdleTimeout = vlanIntPtr(u.Dot1XIDleTimeout, p.IdleTimeout)
@@ -634,13 +774,13 @@ func portProfileStateFrom(u *unifi.PortProfile, prior PortProfileArgs) PortProfi
 		StpPortMode:          ptr(u.StpPortMode),
 	}
 	if u.OpMode != "" {
-		args.OpMode = ptr(u.OpMode)
+		args.OpMode = ptr(PortProfileOpMode(u.OpMode))
 	}
 	if u.PoeMode != "" {
-		args.PoeMode = ptr(u.PoeMode)
+		args.PoeMode = ptr(PortProfilePoeMode(u.PoeMode))
 	}
 	if u.SettingPreference != "" {
-		args.SettingPreference = ptr(u.SettingPreference)
+		args.SettingPreference = ptr(PortProfileSettingPreference(u.SettingPreference))
 	}
 
 	// Nested facets.

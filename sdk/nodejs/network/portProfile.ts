@@ -64,11 +64,11 @@ export class PortProfile extends pulumi.CustomResource {
     /**
      * OpMode is the operation mode. Only "switch" is supported. Defaults to "switch".
      */
-    declare public readonly opMode: pulumi.Output<string | undefined>;
+    declare public readonly opMode: pulumi.Output<enums.network.PortProfileOpMode | undefined>;
     /**
      * PoeMode controls Power-over-Ethernet: auto | off (the values go-unifi accepts for a port profile). Per-port passthrough/pasv24 modes are set via a Device port override's poeMode, not here.
      */
-    declare public readonly poeMode: pulumi.Output<string | undefined>;
+    declare public readonly poeMode: pulumi.Output<enums.network.PortProfilePoeMode | undefined>;
     /**
      * PortKeepaliveEnabled enables port keepalive. Defaults to false.
      */
@@ -88,7 +88,7 @@ export class PortProfile extends pulumi.CustomResource {
     /**
      * SettingPreference controls config source: auto | manual.
      */
-    declare public readonly settingPreference: pulumi.Output<string | undefined>;
+    declare public readonly settingPreference: pulumi.Output<enums.network.PortProfileSettingPreference | undefined>;
     /**
      * StormControl groups the storm-control settings.
      */
@@ -186,11 +186,11 @@ export interface PortProfileArgs {
     /**
      * OpMode is the operation mode. Only "switch" is supported. Defaults to "switch".
      */
-    opMode?: pulumi.Input<string | undefined>;
+    opMode?: pulumi.Input<enums.network.PortProfileOpMode | undefined>;
     /**
      * PoeMode controls Power-over-Ethernet: auto | off (the values go-unifi accepts for a port profile). Per-port passthrough/pasv24 modes are set via a Device port override's poeMode, not here.
      */
-    poeMode?: pulumi.Input<string | undefined>;
+    poeMode?: pulumi.Input<enums.network.PortProfilePoeMode | undefined>;
     /**
      * PortKeepaliveEnabled enables port keepalive. Defaults to false.
      */
@@ -206,7 +206,7 @@ export interface PortProfileArgs {
     /**
      * SettingPreference controls config source: auto | manual.
      */
-    settingPreference?: pulumi.Input<string | undefined>;
+    settingPreference?: pulumi.Input<enums.network.PortProfileSettingPreference | undefined>;
     /**
      * StormControl groups the storm-control settings.
      */

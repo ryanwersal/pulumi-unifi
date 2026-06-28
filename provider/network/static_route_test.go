@@ -8,13 +8,13 @@ func TestStaticRouteRoundTrip(t *testing.T) {
 	args := StaticRouteArgs{
 		Name:            "to-lab",
 		Network:         "10.20.0.0/24",
-		StaticRouteType: "nexthop-route",
+		StaticRouteType: StaticRouteType("nexthop-route"),
 		Enabled:         ptr(true),
 		Nexthop:         ptr("192.168.1.1"),
 		Distance:        ptr(5),
 		Interface:       ptr("WAN1"),
 		GatewayDevice:   ptr("aa:bb:cc:dd:ee:ff"),
-		GatewayType:     ptr("default"),
+		GatewayType:     ptr(StaticRouteGatewayType("default")),
 	}
 
 	u := args.toUnifi("route-123")
@@ -91,7 +91,7 @@ func TestStaticRouteBlackholeDefaults(t *testing.T) {
 	args := StaticRouteArgs{
 		Name:            "drop-bogons",
 		Network:         "192.0.2.0/24",
-		StaticRouteType: "blackhole",
+		StaticRouteType: StaticRouteType("blackhole"),
 	}
 
 	u := args.toUnifi("")

@@ -12,6 +12,68 @@ import (
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
 )
 
+// FirewallRuleAction is the action taken on matching traffic.
+type FirewallRuleAction string
+
+const (
+	FirewallRuleActionAccept FirewallRuleAction = "accept"
+	FirewallRuleActionDrop   FirewallRuleAction = "drop"
+	FirewallRuleActionReject FirewallRuleAction = "reject"
+)
+
+func (FirewallRuleAction) Values() []infer.EnumValue[FirewallRuleAction] {
+	return []infer.EnumValue[FirewallRuleAction]{
+		{Name: "Accept", Value: FirewallRuleActionAccept, Description: "Permit matching traffic."},
+		{Name: "Drop", Value: FirewallRuleActionDrop, Description: "Silently discard matching traffic."},
+		{Name: "Reject", Value: FirewallRuleActionReject, Description: "Discard matching traffic and send a rejection."},
+	}
+}
+
+// FirewallRuleNetworkType selects how a network ID is interpreted.
+type FirewallRuleNetworkType string
+
+const (
+	FirewallRuleNetworkTypeAddrv4 FirewallRuleNetworkType = "ADDRv4"
+	FirewallRuleNetworkTypeNetv4  FirewallRuleNetworkType = "NETv4"
+)
+
+func (FirewallRuleNetworkType) Values() []infer.EnumValue[FirewallRuleNetworkType] {
+	return []infer.EnumValue[FirewallRuleNetworkType]{
+		{Name: "Addrv4", Value: FirewallRuleNetworkTypeAddrv4, Description: "Interpret the network ID as an IPv4 host address."},
+		{Name: "Netv4", Value: FirewallRuleNetworkTypeNetv4, Description: "Interpret the network ID as an IPv4 network."},
+	}
+}
+
+// FirewallRuleIpSec matches on IPsec encapsulation.
+type FirewallRuleIpSec string
+
+const (
+	FirewallRuleIpSecMatchIpsec FirewallRuleIpSec = "match-ipsec"
+	FirewallRuleIpSecMatchNone  FirewallRuleIpSec = "match-none"
+)
+
+func (FirewallRuleIpSec) Values() []infer.EnumValue[FirewallRuleIpSec] {
+	return []infer.EnumValue[FirewallRuleIpSec]{
+		{Name: "MatchIpsec", Value: FirewallRuleIpSecMatchIpsec, Description: "Match IPsec-encapsulated traffic."},
+		{Name: "MatchNone", Value: FirewallRuleIpSecMatchNone, Description: "Match non-IPsec traffic."},
+	}
+}
+
+// FirewallRuleSettingPreference controls automatic or manual rule settings.
+type FirewallRuleSettingPreference string
+
+const (
+	FirewallRuleSettingPreferenceAuto   FirewallRuleSettingPreference = "auto"
+	FirewallRuleSettingPreferenceManual FirewallRuleSettingPreference = "manual"
+)
+
+func (FirewallRuleSettingPreference) Values() []infer.EnumValue[FirewallRuleSettingPreference] {
+	return []infer.EnumValue[FirewallRuleSettingPreference]{
+		{Name: "Auto", Value: FirewallRuleSettingPreferenceAuto, Description: "Use automatic settings."},
+		{Name: "Manual", Value: FirewallRuleSettingPreferenceManual, Description: "Use manual settings."},
+	}
+}
+
 // FirewallRule is the controlling (marker) struct for a classic per-ruleset
 // UniFi firewall rule resource.
 type FirewallRule struct{}
@@ -56,7 +118,7 @@ type FirewallRuleSource struct {
 	// NetworkId is the source network (firewall network conf) ID to match.
 	NetworkId *string `pulumi:"networkId,optional"`
 	// NetworkType selects how NetworkId is interpreted: ADDRv4 | NETv4.
-	NetworkType *string `pulumi:"networkType,optional"`
+	NetworkType *FirewallRuleNetworkType `pulumi:"networkType,optional"`
 	// FirewallGroupIds are the source firewall group IDs to match.
 	FirewallGroupIds []string `pulumi:"firewallGroupIds,optional"`
 }
@@ -83,7 +145,7 @@ type FirewallRuleDestination struct {
 	// NetworkId is the destination network (firewall network conf) ID to match.
 	NetworkId *string `pulumi:"networkId,optional"`
 	// NetworkType selects how NetworkId is interpreted: ADDRv4 | NETv4.
-	NetworkType *string `pulumi:"networkType,optional"`
+	NetworkType *FirewallRuleNetworkType `pulumi:"networkType,optional"`
 	// FirewallGroupIds are the destination firewall group IDs to match.
 	FirewallGroupIds []string `pulumi:"firewallGroupIds,optional"`
 }
@@ -124,7 +186,7 @@ type FirewallRuleArgs struct {
 	// >= 2000 and < 3000, or >= 4000 and < 5000.
 	RuleIndex int `pulumi:"ruleIndex"`
 	// Action taken on matching traffic: accept | drop | reject.
-	Action *string `pulumi:"action,optional"`
+	Action *FirewallRuleAction `pulumi:"action,optional"`
 	// Ruleset the rule belongs to, from the perspective of the security gateway:
 	// WAN_IN | WAN_OUT | WAN_LOCAL | LAN_IN | LAN_OUT | LAN_LOCAL | GUEST_IN |
 	// GUEST_OUT | GUEST_LOCAL | WANv6_IN | WANv6_OUT | WANv6_LOCAL | LANv6_IN |
@@ -136,10 +198,10 @@ type FirewallRuleArgs struct {
 	// Logging enables logging of packets that match this rule.
 	Logging *bool `pulumi:"logging,optional"`
 	// IpSec matches on IPsec encapsulation: match-ipsec | match-none.
-	IpSec *string `pulumi:"ipSec,optional"`
+	IpSec *FirewallRuleIpSec `pulumi:"ipSec,optional"`
 	// SettingPreference controls whether the rule uses automatic or manual
 	// settings: auto | manual.
-	SettingPreference *string `pulumi:"settingPreference,optional"`
+	SettingPreference *FirewallRuleSettingPreference `pulumi:"settingPreference,optional"`
 
 	// ProtocolMatch groups the protocol / ICMP-type match selectors.
 	ProtocolMatch *FirewallRuleProtocolMatch `pulumi:"protocolMatch,optional"`
@@ -196,7 +258,7 @@ func (a FirewallRuleArgs) toUnifi(id string) *unifi.FirewallRule {
 		Enabled:   derefOr(a.Enabled, true),
 	}
 	if a.Action != nil {
-		r.Action = *a.Action
+		r.Action = string(*a.Action)
 	}
 	if a.Ruleset != nil {
 		r.Ruleset = *a.Ruleset
@@ -239,7 +301,7 @@ func (a FirewallRuleArgs) toUnifi(id string) *unifi.FirewallRule {
 			r.SrcNetworkID = *s.NetworkId
 		}
 		if s.NetworkType != nil {
-			r.SrcNetworkType = *s.NetworkType
+			r.SrcNetworkType = string(*s.NetworkType)
 		}
 		if s.FirewallGroupIds != nil {
 			r.SrcFirewallGroupIDs = s.FirewallGroupIds
@@ -261,7 +323,7 @@ func (a FirewallRuleArgs) toUnifi(id string) *unifi.FirewallRule {
 			r.DstNetworkID = *d.NetworkId
 		}
 		if d.NetworkType != nil {
-			r.DstNetworkType = *d.NetworkType
+			r.DstNetworkType = string(*d.NetworkType)
 		}
 		if d.FirewallGroupIds != nil {
 			r.DstFirewallGroupIDs = d.FirewallGroupIds
@@ -288,10 +350,10 @@ func (a FirewallRuleArgs) toUnifi(id string) *unifi.FirewallRule {
 		r.Logging = *a.Logging
 	}
 	if a.IpSec != nil {
-		r.IPSec = *a.IpSec
+		r.IPSec = string(*a.IpSec)
 	}
 	if a.SettingPreference != nil {
-		r.SettingPreference = *a.SettingPreference
+		r.SettingPreference = string(*a.SettingPreference)
 	}
 
 	return r
@@ -362,7 +424,12 @@ func firewallRuleSourceFrom(u *unifi.FirewallRule, prior *FirewallRuleSource) *F
 		Port:        firewallRuleStrPtr(u.SrcPort, p.Port),
 		Mac:         firewallRuleStrPtr(u.SrcMACAddress, p.Mac),
 		NetworkId:   firewallRuleStrPtr(u.SrcNetworkID, p.NetworkId),
-		NetworkType: firewallRuleStrPtr(u.SrcNetworkType, p.NetworkType),
+	}
+	// NetworkType reflects the controller value, falling back to prior when empty.
+	if u.SrcNetworkType != "" {
+		s.NetworkType = ptr(FirewallRuleNetworkType(u.SrcNetworkType))
+	} else {
+		s.NetworkType = p.NetworkType
 	}
 	if len(u.SrcFirewallGroupIDs) > 0 {
 		s.FirewallGroupIds = u.SrcFirewallGroupIDs
@@ -388,7 +455,12 @@ func firewallRuleDestinationFrom(u *unifi.FirewallRule, prior *FirewallRuleDesti
 		AddressIpv6: firewallRuleStrPtr(u.DstAddressIPV6, p.AddressIpv6),
 		Port:        firewallRuleStrPtr(u.DstPort, p.Port),
 		NetworkId:   firewallRuleStrPtr(u.DstNetworkID, p.NetworkId),
-		NetworkType: firewallRuleStrPtr(u.DstNetworkType, p.NetworkType),
+	}
+	// NetworkType reflects the controller value, falling back to prior when empty.
+	if u.DstNetworkType != "" {
+		d.NetworkType = ptr(FirewallRuleNetworkType(u.DstNetworkType))
+	} else {
+		d.NetworkType = p.NetworkType
 	}
 	if len(u.DstFirewallGroupIDs) > 0 {
 		d.FirewallGroupIds = u.DstFirewallGroupIDs
@@ -431,12 +503,27 @@ func firewallRuleStateFrom(u *unifi.FirewallRule, prior FirewallRuleArgs) Firewa
 		RuleIndex: u.RuleIndex,
 		Enabled:   ptr(u.Enabled),
 	}
-	args.Action = firewallRuleStrPtr(u.Action, prior.Action)
+	// Action reflects the controller value, falling back to prior when empty.
+	if u.Action != "" {
+		args.Action = ptr(FirewallRuleAction(u.Action))
+	} else {
+		args.Action = prior.Action
+	}
 	args.Ruleset = firewallRuleStrPtr(u.Ruleset, prior.Ruleset)
 
 	args.Logging = firewallRuleBoolPtr(u.Logging, prior.Logging)
-	args.IpSec = firewallRuleStrPtr(u.IPSec, prior.IpSec)
-	args.SettingPreference = firewallRuleStrPtr(u.SettingPreference, prior.SettingPreference)
+	// IpSec reflects the controller value, falling back to prior when empty.
+	if u.IPSec != "" {
+		args.IpSec = ptr(FirewallRuleIpSec(u.IPSec))
+	} else {
+		args.IpSec = prior.IpSec
+	}
+	// SettingPreference reflects the controller value, falling back to prior when empty.
+	if u.SettingPreference != "" {
+		args.SettingPreference = ptr(FirewallRuleSettingPreference(u.SettingPreference))
+	} else {
+		args.SettingPreference = prior.SettingPreference
+	}
 
 	// Nested facets.
 	args.ProtocolMatch = firewallRuleProtocolMatchFrom(u, prior.ProtocolMatch)

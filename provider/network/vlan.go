@@ -38,6 +38,254 @@ func (VlanPurpose) Values() []infer.EnumValue[VlanPurpose] {
 	}
 }
 
+// VlanPreference is the auto/manual preference shared by setting/DNS fields.
+type VlanPreference string
+
+const (
+	VlanPreferenceAuto   VlanPreference = "auto"
+	VlanPreferenceManual VlanPreference = "manual"
+)
+
+// Values enumerates the allowed VlanPreference values for the schema/SDK.
+func (VlanPreference) Values() []infer.EnumValue[VlanPreference] {
+	return []infer.EnumValue[VlanPreference]{
+		{Name: "Auto", Value: VlanPreferenceAuto, Description: "Controller-managed automatic values."},
+		{Name: "Manual", Value: VlanPreferenceManual, Description: "User-specified manual values."},
+	}
+}
+
+// VlanGatewayType is the closed set of gateway types.
+type VlanGatewayType string
+
+const (
+	VlanGatewayTypeDefault VlanGatewayType = "default"
+	VlanGatewayTypeSwitch  VlanGatewayType = "switch"
+)
+
+// Values enumerates the allowed VlanGatewayType values for the schema/SDK.
+func (VlanGatewayType) Values() []infer.EnumValue[VlanGatewayType] {
+	return []infer.EnumValue[VlanGatewayType]{
+		{Name: "Default", Value: VlanGatewayTypeDefault, Description: "Routed by the UniFi gateway."},
+		{Name: "Switch", Value: VlanGatewayTypeSwitch, Description: "Layer-3 routed by a switch."},
+	}
+}
+
+// VlanNatOutboundMode is the closed set of outbound NAT strategies.
+type VlanNatOutboundMode string
+
+const (
+	VlanNatOutboundModeAll           VlanNatOutboundMode = "all"
+	VlanNatOutboundModeIpAddress     VlanNatOutboundMode = "ip_address"
+	VlanNatOutboundModeIpAddressPool VlanNatOutboundMode = "ip_address_pool"
+)
+
+// Values enumerates the allowed VlanNatOutboundMode values for the schema/SDK.
+func (VlanNatOutboundMode) Values() []infer.EnumValue[VlanNatOutboundMode] {
+	return []infer.EnumValue[VlanNatOutboundMode]{
+		{Name: "All", Value: VlanNatOutboundModeAll, Description: "NAT all outbound traffic."},
+		{Name: "IpAddress", Value: VlanNatOutboundModeIpAddress, Description: "NAT to a single IP."},
+		{Name: "IpAddressPool", Value: VlanNatOutboundModeIpAddressPool, Description: "NAT to an IP pool."},
+	}
+}
+
+// VlanNatWanGroup is the closed set of WAN groups for outbound NAT.
+type VlanNatWanGroup string
+
+const (
+	VlanNatWanGroupWan  VlanNatWanGroup = "WAN"
+	VlanNatWanGroupWan2 VlanNatWanGroup = "WAN2"
+)
+
+// Values enumerates the allowed VlanNatWanGroup values for the schema/SDK.
+func (VlanNatWanGroup) Values() []infer.EnumValue[VlanNatWanGroup] {
+	return []infer.EnumValue[VlanNatWanGroup]{
+		{Name: "Wan", Value: VlanNatWanGroupWan, Description: "Primary WAN interface."},
+		{Name: "Wan2", Value: VlanNatWanGroupWan2, Description: "Secondary WAN interface."},
+	}
+}
+
+// VlanIpv6InterfaceType is the closed set of IPv6 interface types.
+type VlanIpv6InterfaceType string
+
+const (
+	VlanIpv6InterfaceTypeNone          VlanIpv6InterfaceType = "none"
+	VlanIpv6InterfaceTypeStatic        VlanIpv6InterfaceType = "static"
+	VlanIpv6InterfaceTypePd            VlanIpv6InterfaceType = "pd"
+	VlanIpv6InterfaceTypeSingleNetwork VlanIpv6InterfaceType = "single_network"
+)
+
+// Values enumerates the allowed VlanIpv6InterfaceType values for the schema/SDK.
+func (VlanIpv6InterfaceType) Values() []infer.EnumValue[VlanIpv6InterfaceType] {
+	return []infer.EnumValue[VlanIpv6InterfaceType]{
+		{Name: "None", Value: VlanIpv6InterfaceTypeNone, Description: "No IPv6 addressing."},
+		{Name: "Static", Value: VlanIpv6InterfaceTypeStatic, Description: "Static IPv6 subnet."},
+		{Name: "Pd", Value: VlanIpv6InterfaceTypePd, Description: "Prefix delegation from WAN."},
+		{Name: "SingleNetwork", Value: VlanIpv6InterfaceTypeSingleNetwork, Description: "Derived from another network."},
+	}
+}
+
+// VlanIpv6ClientAddressAssignment is the closed set of IPv6 client assignment modes.
+type VlanIpv6ClientAddressAssignment string
+
+const (
+	VlanIpv6ClientAddressAssignmentSlaac  VlanIpv6ClientAddressAssignment = "slaac"
+	VlanIpv6ClientAddressAssignmentDhcpv6 VlanIpv6ClientAddressAssignment = "dhcpv6"
+)
+
+// Values enumerates the allowed VlanIpv6ClientAddressAssignment values for the schema/SDK.
+func (VlanIpv6ClientAddressAssignment) Values() []infer.EnumValue[VlanIpv6ClientAddressAssignment] {
+	return []infer.EnumValue[VlanIpv6ClientAddressAssignment]{
+		{Name: "Slaac", Value: VlanIpv6ClientAddressAssignmentSlaac, Description: "Stateless address autoconfiguration."},
+		{Name: "Dhcpv6", Value: VlanIpv6ClientAddressAssignmentDhcpv6, Description: "Stateful DHCPv6 assignment."},
+	}
+}
+
+// VlanIpv6RaPriority is the closed set of Router Advertisement priorities.
+type VlanIpv6RaPriority string
+
+const (
+	VlanIpv6RaPriorityHigh   VlanIpv6RaPriority = "high"
+	VlanIpv6RaPriorityMedium VlanIpv6RaPriority = "medium"
+	VlanIpv6RaPriorityLow    VlanIpv6RaPriority = "low"
+)
+
+// Values enumerates the allowed VlanIpv6RaPriority values for the schema/SDK.
+func (VlanIpv6RaPriority) Values() []infer.EnumValue[VlanIpv6RaPriority] {
+	return []infer.EnumValue[VlanIpv6RaPriority]{
+		{Name: "High", Value: VlanIpv6RaPriorityHigh, Description: "High RA priority."},
+		{Name: "Medium", Value: VlanIpv6RaPriorityMedium, Description: "Medium RA priority."},
+		{Name: "Low", Value: VlanIpv6RaPriorityLow, Description: "Low RA priority."},
+	}
+}
+
+// VlanIpv6PdInterface is the closed set of WANs used for prefix delegation.
+type VlanIpv6PdInterface string
+
+const (
+	VlanIpv6PdInterfaceWan  VlanIpv6PdInterface = "wan"
+	VlanIpv6PdInterfaceWan2 VlanIpv6PdInterface = "wan2"
+)
+
+// Values enumerates the allowed VlanIpv6PdInterface values for the schema/SDK.
+func (VlanIpv6PdInterface) Values() []infer.EnumValue[VlanIpv6PdInterface] {
+	return []infer.EnumValue[VlanIpv6PdInterface]{
+		{Name: "Wan", Value: VlanIpv6PdInterfaceWan, Description: "Delegate from primary WAN."},
+		{Name: "Wan2", Value: VlanIpv6PdInterfaceWan2, Description: "Delegate from secondary WAN."},
+	}
+}
+
+// VlanIpv6WanDelegationType is the closed set of WAN PD delegation types.
+type VlanIpv6WanDelegationType string
+
+const (
+	VlanIpv6WanDelegationTypePd            VlanIpv6WanDelegationType = "pd"
+	VlanIpv6WanDelegationTypeSingleNetwork VlanIpv6WanDelegationType = "single_network"
+	VlanIpv6WanDelegationTypeNone          VlanIpv6WanDelegationType = "none"
+)
+
+// Values enumerates the allowed VlanIpv6WanDelegationType values for the schema/SDK.
+func (VlanIpv6WanDelegationType) Values() []infer.EnumValue[VlanIpv6WanDelegationType] {
+	return []infer.EnumValue[VlanIpv6WanDelegationType]{
+		{Name: "Pd", Value: VlanIpv6WanDelegationTypePd, Description: "Delegate the prefix downstream."},
+		{Name: "SingleNetwork", Value: VlanIpv6WanDelegationTypeSingleNetwork, Description: "Assign to a single network."},
+		{Name: "None", Value: VlanIpv6WanDelegationTypeNone, Description: "No delegation."},
+	}
+}
+
+// VlanIgmpProxyFor is the closed set of IGMP proxy downstream scopes.
+type VlanIgmpProxyFor string
+
+const (
+	VlanIgmpProxyForAll  VlanIgmpProxyFor = "all"
+	VlanIgmpProxyForSome VlanIgmpProxyFor = "some"
+	VlanIgmpProxyForNone VlanIgmpProxyFor = "none"
+)
+
+// Values enumerates the allowed VlanIgmpProxyFor values for the schema/SDK.
+func (VlanIgmpProxyFor) Values() []infer.EnumValue[VlanIgmpProxyFor] {
+	return []infer.EnumValue[VlanIgmpProxyFor]{
+		{Name: "All", Value: VlanIgmpProxyForAll, Description: "Proxy for all downstream networks."},
+		{Name: "Some", Value: VlanIgmpProxyForSome, Description: "Proxy for selected networks."},
+		{Name: "None", Value: VlanIgmpProxyForNone, Description: "No downstream proxying."},
+	}
+}
+
+// VlanWanType is the closed set of WAN IPv4 connection types.
+type VlanWanType string
+
+const (
+	VlanWanTypeDisabled VlanWanType = "disabled"
+	VlanWanTypeDhcp     VlanWanType = "dhcp"
+	VlanWanTypeStatic   VlanWanType = "static"
+	VlanWanTypePppoe    VlanWanType = "pppoe"
+	VlanWanTypeDslite   VlanWanType = "dslite"
+)
+
+// Values enumerates the allowed VlanWanType values for the schema/SDK.
+func (VlanWanType) Values() []infer.EnumValue[VlanWanType] {
+	return []infer.EnumValue[VlanWanType]{
+		{Name: "Disabled", Value: VlanWanTypeDisabled, Description: "WAN disabled."},
+		{Name: "Dhcp", Value: VlanWanTypeDhcp, Description: "DHCP-assigned address."},
+		{Name: "Static", Value: VlanWanTypeStatic, Description: "Static address."},
+		{Name: "Pppoe", Value: VlanWanTypePppoe, Description: "PPPoE connection."},
+		{Name: "Dslite", Value: VlanWanTypeDslite, Description: "DS-Lite connection."},
+	}
+}
+
+// VlanWanTypeV6 is the closed set of WAN IPv6 connection types.
+type VlanWanTypeV6 string
+
+const (
+	VlanWanTypeV6Disabled VlanWanTypeV6 = "disabled"
+	VlanWanTypeV6Slaac    VlanWanTypeV6 = "slaac"
+	VlanWanTypeV6Dhcpv6   VlanWanTypeV6 = "dhcpv6"
+	VlanWanTypeV6Static   VlanWanTypeV6 = "static"
+)
+
+// Values enumerates the allowed VlanWanTypeV6 values for the schema/SDK.
+func (VlanWanTypeV6) Values() []infer.EnumValue[VlanWanTypeV6] {
+	return []infer.EnumValue[VlanWanTypeV6]{
+		{Name: "Disabled", Value: VlanWanTypeV6Disabled, Description: "WAN IPv6 disabled."},
+		{Name: "Slaac", Value: VlanWanTypeV6Slaac, Description: "SLAAC-assigned address."},
+		{Name: "Dhcpv6", Value: VlanWanTypeV6Dhcpv6, Description: "DHCPv6-assigned address."},
+		{Name: "Static", Value: VlanWanTypeV6Static, Description: "Static IPv6 address."},
+	}
+}
+
+// VlanWanNetworkGroup is the closed set of WAN interface groups.
+type VlanWanNetworkGroup string
+
+const (
+	VlanWanNetworkGroupWan            VlanWanNetworkGroup = "WAN"
+	VlanWanNetworkGroupWan2           VlanWanNetworkGroup = "WAN2"
+	VlanWanNetworkGroupWanLteFailover VlanWanNetworkGroup = "WAN_LTE_FAILOVER" //nolint:gosec // WAN interface group name, not a credential
+)
+
+// Values enumerates the allowed VlanWanNetworkGroup values for the schema/SDK.
+func (VlanWanNetworkGroup) Values() []infer.EnumValue[VlanWanNetworkGroup] {
+	return []infer.EnumValue[VlanWanNetworkGroup]{
+		{Name: "Wan", Value: VlanWanNetworkGroupWan, Description: "Primary WAN interface."},
+		{Name: "Wan2", Value: VlanWanNetworkGroupWan2, Description: "Secondary WAN interface."},
+		{Name: "WanLteFailover", Value: VlanWanNetworkGroupWanLteFailover, Description: "LTE failover WAN interface."},
+	}
+}
+
+// VlanWanLoadBalanceType is the closed set of WAN load-balance modes.
+type VlanWanLoadBalanceType string
+
+const (
+	VlanWanLoadBalanceTypeFailoverOnly VlanWanLoadBalanceType = "failover-only"
+	VlanWanLoadBalanceTypeWeighted     VlanWanLoadBalanceType = "weighted"
+)
+
+// Values enumerates the allowed VlanWanLoadBalanceType values for the schema/SDK.
+func (VlanWanLoadBalanceType) Values() []infer.EnumValue[VlanWanLoadBalanceType] {
+	return []infer.EnumValue[VlanWanLoadBalanceType]{
+		{Name: "FailoverOnly", Value: VlanWanLoadBalanceTypeFailoverOnly, Description: "Use only as failover."},
+		{Name: "Weighted", Value: VlanWanLoadBalanceTypeWeighted, Description: "Weighted load balancing."},
+	}
+}
+
 // Vlan is the controlling (marker) struct for a UniFi network/VLAN resource.
 type Vlan struct{}
 
@@ -72,9 +320,9 @@ type NetworkNatOutboundIp struct {
 	// IpAddressPool is a list of outbound NAT source IPs/ranges.
 	IpAddressPool []string `pulumi:"ipAddressPool,optional"`
 	// Mode selects the outbound NAT strategy: all | ip_address | ip_address_pool.
-	Mode *string `pulumi:"mode,optional"`
+	Mode *VlanNatOutboundMode `pulumi:"mode,optional"`
 	// WanNetworkGroup binds the mapping to a WAN interface group: WAN | WAN2.
-	WanNetworkGroup *string `pulumi:"wanNetworkGroup,optional"`
+	WanNetworkGroup *VlanNatWanGroup `pulumi:"wanNetworkGroup,optional"`
 }
 
 // VlanDhcp groups the IPv4 DHCP-server settings for the network.
@@ -164,23 +412,23 @@ type VlanDhcpV6 struct {
 // VlanIpv6 groups the IPv6 addressing / Router Advertisement / prefix-delegation settings.
 type VlanIpv6 struct {
 	// InterfaceType: none | static | pd | single_network.
-	InterfaceType *string `pulumi:"interfaceType,optional"`
+	InterfaceType *VlanIpv6InterfaceType `pulumi:"interfaceType,optional"`
 	// ClientAddressAssignment: slaac | dhcpv6.
-	ClientAddressAssignment *string `pulumi:"clientAddressAssignment,optional"`
+	ClientAddressAssignment *VlanIpv6ClientAddressAssignment `pulumi:"clientAddressAssignment,optional"`
 	// Subnet is the static IPv6 subnet (CIDR) when interfaceType=static.
 	Subnet *string `pulumi:"subnet,optional"`
 	// SettingPreference: auto | manual.
-	SettingPreference *string `pulumi:"settingPreference,optional"`
+	SettingPreference *VlanPreference `pulumi:"settingPreference,optional"`
 	// RaEnabled enables IPv6 Router Advertisements.
 	RaEnabled *bool `pulumi:"raEnabled,optional"`
 	// RaPriority: high | medium | low.
-	RaPriority *string `pulumi:"raPriority,optional"`
+	RaPriority *VlanIpv6RaPriority `pulumi:"raPriority,optional"`
 	// RaPreferredLifetime is the RA preferred lifetime in seconds (default 14400).
 	RaPreferredLifetime *int `pulumi:"raPreferredLifetime,optional"`
 	// RaValidLifetime is the RA valid lifetime in seconds (default 86400).
 	RaValidLifetime *int `pulumi:"raValidLifetime,optional"`
 	// PdInterface is the WAN used for prefix delegation: wan | wan2.
-	PdInterface *string `pulumi:"pdInterface,optional"`
+	PdInterface *VlanIpv6PdInterface `pulumi:"pdInterface,optional"`
 	// PdPrefixId is the hex prefix ID carved from the delegated prefix.
 	PdPrefixId *string `pulumi:"pdPrefixId,optional"`
 	// PdStart is the first address of the PD-derived range.
@@ -192,7 +440,7 @@ type VlanIpv6 struct {
 	// SingleNetworkInterface is the source network for single_network IPv6 mode.
 	SingleNetworkInterface *string `pulumi:"singleNetworkInterface,optional"`
 	// WanDelegationType (WAN networks): pd | single_network | none.
-	WanDelegationType *string `pulumi:"wanDelegationType,optional"`
+	WanDelegationType *VlanIpv6WanDelegationType `pulumi:"wanDelegationType,optional"`
 }
 
 // VlanIgmp groups the multicast / IGMP settings.
@@ -202,7 +450,7 @@ type VlanIgmp struct {
 	// ProxyUpstream marks this network as the IGMP proxy upstream.
 	ProxyUpstream *bool `pulumi:"proxyUpstream,optional"`
 	// ProxyFor selects downstream proxy scope: all | some | none.
-	ProxyFor *string `pulumi:"proxyFor,optional"`
+	ProxyFor *VlanIgmpProxyFor `pulumi:"proxyFor,optional"`
 	// ProxyDownstreamNetworkIds lists downstream networks when proxyFor=some.
 	ProxyDownstreamNetworkIds []string `pulumi:"proxyDownstreamNetworkIds,optional"`
 	// FastLeave enables IGMP fast-leave processing.
@@ -224,9 +472,9 @@ type VlanIgmp struct {
 // VlanWan groups the WAN-uplink settings (used when purpose=wan).
 type VlanWan struct {
 	// Type (purpose=wan): disabled | dhcp | static | pppoe | dslite.
-	Type *string `pulumi:"type,optional"`
+	Type *VlanWanType `pulumi:"type,optional"`
 	// TypeV6 (purpose=wan): disabled | slaac | dhcpv6 | static.
-	TypeV6 *string `pulumi:"typeV6,optional"`
+	TypeV6 *VlanWanTypeV6 `pulumi:"typeV6,optional"`
 	// Ip is the static WAN IPv4 address.
 	Ip *string `pulumi:"ip,optional"`
 	// Ipv6 is the static WAN IPv6 address.
@@ -246,15 +494,15 @@ type VlanWan struct {
 	// Dns4 is the fourth WAN DNS server.
 	Dns4 *string `pulumi:"dns4,optional"`
 	// DnsPreference: auto | manual.
-	DnsPreference *string `pulumi:"dnsPreference,optional"`
+	DnsPreference *VlanPreference `pulumi:"dnsPreference,optional"`
 	// Ipv6Dns1 is the first WAN IPv6 DNS server.
 	Ipv6Dns1 *string `pulumi:"ipv6Dns1,optional"`
 	// Ipv6Dns2 is the second WAN IPv6 DNS server.
 	Ipv6Dns2 *string `pulumi:"ipv6Dns2,optional"`
 	// Ipv6DnsPreference: auto | manual.
-	Ipv6DnsPreference *string `pulumi:"ipv6DnsPreference,optional"`
+	Ipv6DnsPreference *VlanPreference `pulumi:"ipv6DnsPreference,optional"`
 	// NetworkGroup is the WAN interface group: WAN | WAN2 | WAN_LTE_FAILOVER.
-	NetworkGroup *string `pulumi:"networkGroup,optional"`
+	NetworkGroup *VlanWanNetworkGroup `pulumi:"networkGroup,optional"`
 	// Vlan tags the WAN interface with a VLAN ID. Setting it enables WAN VLAN tagging.
 	Vlan *int `pulumi:"vlan,optional"`
 	// VlanEnabled toggles WAN VLAN tagging explicitly.
@@ -274,7 +522,7 @@ type VlanWan struct {
 	// SmartqDownRate is the SmartQueue download limit in kbps.
 	SmartqDownRate *int `pulumi:"smartqDownRate,optional"`
 	// LoadBalanceType: failover-only | weighted.
-	LoadBalanceType *string `pulumi:"loadBalanceType,optional"`
+	LoadBalanceType *VlanWanLoadBalanceType `pulumi:"loadBalanceType,optional"`
 	// LoadBalanceWeight is the weighted load-balance weight (1-99).
 	LoadBalanceWeight *int `pulumi:"loadBalanceWeight,optional"`
 	// DhcpCos is the 802.1p CoS applied to WAN DHCP traffic (0-7).
@@ -331,9 +579,9 @@ type VlanArgs struct {
 	// DpiEnabled enables Deep Packet Inspection on this network.
 	DpiEnabled *bool `pulumi:"dpiEnabled,optional"`
 	// GatewayType: default | switch.
-	GatewayType *string `pulumi:"gatewayType,optional"`
+	GatewayType *VlanGatewayType `pulumi:"gatewayType,optional"`
 	// SettingPreference: auto | manual. Controls whether device-specific overrides apply.
-	SettingPreference *string `pulumi:"settingPreference,optional"`
+	SettingPreference *VlanPreference `pulumi:"settingPreference,optional"`
 	// InterfaceMtu sets the interface MTU. Setting it enables the MTU override.
 	InterfaceMtu *int `pulumi:"interfaceMtu,optional"`
 	// InterfaceMtuEnabled toggles the interface MTU override explicitly.
@@ -588,10 +836,10 @@ func (a VlanArgs) toUnifi(id string) *unifi.Network {
 		n.DPIEnabled = *a.DpiEnabled
 	}
 	if a.GatewayType != nil {
-		n.GatewayType = *a.GatewayType
+		n.GatewayType = string(*a.GatewayType)
 	}
 	if a.SettingPreference != nil {
-		n.SettingPreference = *a.SettingPreference
+		n.SettingPreference = string(*a.SettingPreference)
 	}
 	if a.InterfaceMtu != nil {
 		n.InterfaceMtu = *a.InterfaceMtu
@@ -746,7 +994,7 @@ func (a VlanArgs) toUnifi(id string) *unifi.Network {
 			n.IGMPProxyUpstream = *g.ProxyUpstream
 		}
 		if g.ProxyFor != nil {
-			n.IGMPProxyFor = *g.ProxyFor
+			n.IGMPProxyFor = string(*g.ProxyFor)
 		}
 		if g.ProxyDownstreamNetworkIds != nil {
 			n.IGMPProxyDownstreamNetworkIDs = g.ProxyDownstreamNetworkIds
@@ -780,22 +1028,22 @@ func (a VlanArgs) toUnifi(id string) *unifi.Network {
 	// IPv6.
 	if v6 := a.Ipv6; v6 != nil {
 		if v6.InterfaceType != nil {
-			n.IPV6InterfaceType = *v6.InterfaceType
+			n.IPV6InterfaceType = string(*v6.InterfaceType)
 		}
 		if v6.ClientAddressAssignment != nil {
-			n.IPV6ClientAddressAssignment = *v6.ClientAddressAssignment
+			n.IPV6ClientAddressAssignment = string(*v6.ClientAddressAssignment)
 		}
 		if v6.Subnet != nil {
 			n.IPV6Subnet = *v6.Subnet
 		}
 		if v6.SettingPreference != nil {
-			n.IPV6SettingPreference = *v6.SettingPreference
+			n.IPV6SettingPreference = string(*v6.SettingPreference)
 		}
 		if v6.RaEnabled != nil {
 			n.IPV6RaEnabled = *v6.RaEnabled
 		}
 		if v6.RaPriority != nil {
-			n.IPV6RaPriority = *v6.RaPriority
+			n.IPV6RaPriority = string(*v6.RaPriority)
 		}
 		if v6.RaPreferredLifetime != nil {
 			n.IPV6RaPreferredLifetime = *v6.RaPreferredLifetime
@@ -804,7 +1052,7 @@ func (a VlanArgs) toUnifi(id string) *unifi.Network {
 			n.IPV6RaValidLifetime = *v6.RaValidLifetime
 		}
 		if v6.PdInterface != nil {
-			n.IPV6PDInterface = *v6.PdInterface
+			n.IPV6PDInterface = string(*v6.PdInterface)
 		}
 		if v6.PdPrefixId != nil {
 			n.IPV6PDPrefixid = *v6.PdPrefixId
@@ -822,17 +1070,17 @@ func (a VlanArgs) toUnifi(id string) *unifi.Network {
 			n.IPV6SingleNetworkInterface = *v6.SingleNetworkInterface
 		}
 		if v6.WanDelegationType != nil {
-			n.IPV6WANDelegationType = *v6.WanDelegationType
+			n.IPV6WANDelegationType = string(*v6.WanDelegationType)
 		}
 	}
 
 	// WAN.
 	if w := a.Wan; w != nil {
 		if w.Type != nil {
-			n.WANType = *w.Type
+			n.WANType = string(*w.Type)
 		}
 		if w.TypeV6 != nil {
-			n.WANTypeV6 = *w.TypeV6
+			n.WANTypeV6 = string(*w.TypeV6)
 		}
 		if w.Ip != nil {
 			n.WANIP = *w.Ip
@@ -862,7 +1110,7 @@ func (a VlanArgs) toUnifi(id string) *unifi.Network {
 			n.WANDNS4 = *w.Dns4
 		}
 		if w.DnsPreference != nil {
-			n.WANDNSPreference = *w.DnsPreference
+			n.WANDNSPreference = string(*w.DnsPreference)
 		}
 		if w.Ipv6Dns1 != nil {
 			n.WANIPV6DNS1 = *w.Ipv6Dns1
@@ -871,10 +1119,10 @@ func (a VlanArgs) toUnifi(id string) *unifi.Network {
 			n.WANIPV6DNS2 = *w.Ipv6Dns2
 		}
 		if w.Ipv6DnsPreference != nil {
-			n.WANIPV6DNSPreference = *w.Ipv6DnsPreference
+			n.WANIPV6DNSPreference = string(*w.Ipv6DnsPreference)
 		}
 		if w.NetworkGroup != nil {
-			n.WANNetworkGroup = *w.NetworkGroup
+			n.WANNetworkGroup = string(*w.NetworkGroup)
 		}
 		if w.Vlan != nil {
 			n.WANVLAN = *w.Vlan
@@ -905,7 +1153,7 @@ func (a VlanArgs) toUnifi(id string) *unifi.Network {
 			n.WANSmartqDownRate = *w.SmartqDownRate
 		}
 		if w.LoadBalanceType != nil {
-			n.WANLoadBalanceType = *w.LoadBalanceType
+			n.WANLoadBalanceType = string(*w.LoadBalanceType)
 		}
 		if w.LoadBalanceWeight != nil {
 			n.WANLoadBalanceWeight = *w.LoadBalanceWeight
@@ -959,10 +1207,10 @@ func (a VlanArgs) toUnifi(id string) *unifi.Network {
 				item.IPAddress = *na.IpAddress
 			}
 			if na.Mode != nil {
-				item.Mode = *na.Mode
+				item.Mode = string(*na.Mode)
 			}
 			if na.WanNetworkGroup != nil {
-				item.WANNetworkGroup = *na.WanNetworkGroup
+				item.WANNetworkGroup = string(*na.WanNetworkGroup)
 			}
 			n.NATOutboundIPAddresses = append(n.NATOutboundIPAddresses, item)
 		}
@@ -1101,21 +1349,21 @@ func vlanIpv6From(n *unifi.Network, prior *VlanIpv6) *VlanIpv6 {
 		p = *prior
 	}
 	v6 := VlanIpv6{
-		InterfaceType:           vlanStrPtr(n.IPV6InterfaceType, p.InterfaceType),
-		ClientAddressAssignment: vlanStrPtr(n.IPV6ClientAddressAssignment, p.ClientAddressAssignment),
+		InterfaceType:           (*VlanIpv6InterfaceType)(vlanStrPtr(n.IPV6InterfaceType, (*string)(p.InterfaceType))),
+		ClientAddressAssignment: (*VlanIpv6ClientAddressAssignment)(vlanStrPtr(n.IPV6ClientAddressAssignment, (*string)(p.ClientAddressAssignment))),
 		Subnet:                  vlanStrPtr(n.IPV6Subnet, p.Subnet),
-		SettingPreference:       vlanStrPtr(n.IPV6SettingPreference, p.SettingPreference),
+		SettingPreference:       (*VlanPreference)(vlanStrPtr(n.IPV6SettingPreference, (*string)(p.SettingPreference))),
 		RaEnabled:               vlanBoolPtr(n.IPV6RaEnabled, p.RaEnabled),
-		RaPriority:              vlanStrPtr(n.IPV6RaPriority, p.RaPriority),
+		RaPriority:              (*VlanIpv6RaPriority)(vlanStrPtr(n.IPV6RaPriority, (*string)(p.RaPriority))),
 		RaPreferredLifetime:     vlanIntPtr(n.IPV6RaPreferredLifetime, p.RaPreferredLifetime),
 		RaValidLifetime:         vlanIntPtr(n.IPV6RaValidLifetime, p.RaValidLifetime),
-		PdInterface:             vlanStrPtr(n.IPV6PDInterface, p.PdInterface),
+		PdInterface:             (*VlanIpv6PdInterface)(vlanStrPtr(n.IPV6PDInterface, (*string)(p.PdInterface))),
 		PdPrefixId:              vlanStrPtr(n.IPV6PDPrefixid, p.PdPrefixId),
 		PdStart:                 vlanStrPtr(n.IPV6PDStart, p.PdStart),
 		PdStop:                  vlanStrPtr(n.IPV6PDStop, p.PdStop),
 		PdAutoPrefixIdEnabled:   vlanBoolPtr(n.IPV6PDAutoPrefixidEnabled, p.PdAutoPrefixIdEnabled),
 		SingleNetworkInterface:  vlanStrPtr(n.IPV6SingleNetworkInterface, p.SingleNetworkInterface),
-		WanDelegationType:       vlanStrPtr(n.IPV6WANDelegationType, p.WanDelegationType),
+		WanDelegationType:       (*VlanIpv6WanDelegationType)(vlanStrPtr(n.IPV6WANDelegationType, (*string)(p.WanDelegationType))),
 	}
 	if v6 == (VlanIpv6{}) {
 		return nil
@@ -1132,7 +1380,7 @@ func vlanIgmpFrom(n *unifi.Network, prior *VlanIgmp) *VlanIgmp {
 	g := VlanIgmp{
 		Snooping:                vlanBoolPtr(n.IGMPSnooping, p.Snooping),
 		ProxyUpstream:           vlanBoolPtr(n.IGMPProxyUpstream, p.ProxyUpstream),
-		ProxyFor:                vlanStrPtr(n.IGMPProxyFor, p.ProxyFor),
+		ProxyFor:                (*VlanIgmpProxyFor)(vlanStrPtr(n.IGMPProxyFor, (*string)(p.ProxyFor))),
 		FastLeave:               vlanBoolPtr(n.IGMPFastleave, p.FastLeave),
 		ForwardUnknownMulticast: vlanBoolPtr(n.IGMPForwardUnknownMulticast, p.ForwardUnknownMulticast),
 		GroupMembership:         vlanIntPtr(n.IGMPGroupmembership, p.GroupMembership),
@@ -1168,8 +1416,8 @@ func vlanWanFrom(n *unifi.Network, prior *VlanWan) *VlanWan {
 		p = *prior
 	}
 	w := VlanWan{
-		Type:              vlanStrPtr(n.WANType, p.Type),
-		TypeV6:            vlanStrPtr(n.WANTypeV6, p.TypeV6),
+		Type:              (*VlanWanType)(vlanStrPtr(n.WANType, (*string)(p.Type))),
+		TypeV6:            (*VlanWanTypeV6)(vlanStrPtr(n.WANTypeV6, (*string)(p.TypeV6))),
 		Ip:                vlanStrPtr(n.WANIP, p.Ip),
 		Ipv6:              vlanStrPtr(n.WANIPV6, p.Ipv6),
 		Netmask:           vlanStrPtr(n.WANNetmask, p.Netmask),
@@ -1179,11 +1427,11 @@ func vlanWanFrom(n *unifi.Network, prior *VlanWan) *VlanWan {
 		Dns2:              vlanStrPtr(n.WANDNS2, p.Dns2),
 		Dns3:              vlanStrPtr(n.WANDNS3, p.Dns3),
 		Dns4:              vlanStrPtr(n.WANDNS4, p.Dns4),
-		DnsPreference:     vlanStrPtr(n.WANDNSPreference, p.DnsPreference),
+		DnsPreference:     (*VlanPreference)(vlanStrPtr(n.WANDNSPreference, (*string)(p.DnsPreference))),
 		Ipv6Dns1:          vlanStrPtr(n.WANIPV6DNS1, p.Ipv6Dns1),
 		Ipv6Dns2:          vlanStrPtr(n.WANIPV6DNS2, p.Ipv6Dns2),
-		Ipv6DnsPreference: vlanStrPtr(n.WANIPV6DNSPreference, p.Ipv6DnsPreference),
-		NetworkGroup:      vlanStrPtr(n.WANNetworkGroup, p.NetworkGroup),
+		Ipv6DnsPreference: (*VlanPreference)(vlanStrPtr(n.WANIPV6DNSPreference, (*string)(p.Ipv6DnsPreference))),
+		NetworkGroup:      (*VlanWanNetworkGroup)(vlanStrPtr(n.WANNetworkGroup, (*string)(p.NetworkGroup))),
 		VlanEnabled:       vlanBoolPtr(n.WANVLANEnabled, p.VlanEnabled),
 		Username:          vlanStrPtr(n.WANUsername, p.Username),
 		// The controller never echoes the PPPoE password; preserve the user input.
@@ -1193,7 +1441,7 @@ func vlanWanFrom(n *unifi.Network, prior *VlanWan) *VlanWan {
 		SmartqEnabled:        vlanBoolPtr(n.WANSmartqEnabled, p.SmartqEnabled),
 		SmartqUpRate:         vlanIntPtr(n.WANSmartqUpRate, p.SmartqUpRate),
 		SmartqDownRate:       vlanIntPtr(n.WANSmartqDownRate, p.SmartqDownRate),
-		LoadBalanceType:      vlanStrPtr(n.WANLoadBalanceType, p.LoadBalanceType),
+		LoadBalanceType:      (*VlanWanLoadBalanceType)(vlanStrPtr(n.WANLoadBalanceType, (*string)(p.LoadBalanceType))),
 		LoadBalanceWeight:    vlanIntPtr(n.WANLoadBalanceWeight, p.LoadBalanceWeight),
 		DhcpCos:              vlanIntPtr(n.WANDHCPCos, p.DhcpCos),
 		Dhcpv6PdSize:         vlanIntPtr(n.WANDHCPv6PDSize, p.Dhcpv6PdSize),
@@ -1256,10 +1504,10 @@ func vlanNatFrom(n *unifi.Network, prior *VlanNat) *VlanNat {
 				item.IpAddressPool = na.IPAddressPool
 			}
 			if na.Mode != "" {
-				item.Mode = ptr(na.Mode)
+				item.Mode = ptr(VlanNatOutboundMode(na.Mode))
 			}
 			if na.WANNetworkGroup != "" {
-				item.WanNetworkGroup = ptr(na.WANNetworkGroup)
+				item.WanNetworkGroup = ptr(VlanNatWanGroup(na.WANNetworkGroup))
 			}
 			nat.OutboundIpAddresses = append(nat.OutboundIpAddresses, item)
 		}
@@ -1296,8 +1544,8 @@ func vlanStateFrom(n *unifi.Network, prior VlanArgs) VlanState {
 	args.NetworkIsolationEnabled = vlanBoolPtr(n.NetworkIsolationEnabled, prior.NetworkIsolationEnabled)
 	args.AutoScaleEnabled = vlanBoolPtr(n.AutoScaleEnabled, prior.AutoScaleEnabled)
 	args.DpiEnabled = vlanBoolPtr(n.DPIEnabled, prior.DpiEnabled)
-	args.GatewayType = vlanStrPtr(n.GatewayType, prior.GatewayType)
-	args.SettingPreference = vlanStrPtr(n.SettingPreference, prior.SettingPreference)
+	args.GatewayType = (*VlanGatewayType)(vlanStrPtr(n.GatewayType, (*string)(prior.GatewayType)))
+	args.SettingPreference = (*VlanPreference)(vlanStrPtr(n.SettingPreference, (*string)(prior.SettingPreference)))
 	args.InterfaceMtu = vlanIntPtr(n.InterfaceMtu, prior.InterfaceMtu)
 	args.InterfaceMtuEnabled = vlanBoolPtr(n.InterfaceMtuEnabled, prior.InterfaceMtuEnabled)
 	args.MacOverride = vlanStrPtr(n.MACOverride, prior.MacOverride)

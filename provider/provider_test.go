@@ -204,6 +204,16 @@ func TestProviderSchemaBuilds(t *testing.T) {
 			t.Errorf("type %s should be an enum with values", tok)
 		}
 	}
+	// Closed sets are modeled broadly; guard against a wholesale regression.
+	enumCount := 0
+	for _, ty := range schema.Types {
+		if len(ty.Enum) > 0 {
+			enumCount++
+		}
+	}
+	if enumCount < 60 {
+		t.Errorf("only %d enum types; expected >=60 (closed sets should be enums)", enumCount)
+	}
 
 	// Identity/bind-key fields must force replacement, not an in-place update
 	// that would patch the wrong object.

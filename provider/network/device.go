@@ -12,6 +12,278 @@ import (
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
 )
 
+// DevicePoeMode is the closed set of PoE modes (shared by port + switch defaults).
+type DevicePoeMode string
+
+const (
+	DevicePoeModeAuto        DevicePoeMode = "auto"
+	DevicePoeModePasv24      DevicePoeMode = "pasv24"
+	DevicePoeModePassthrough DevicePoeMode = "passthrough"
+	DevicePoeModeOff         DevicePoeMode = "off"
+)
+
+// Values enumerates the allowed DevicePoeMode values for the schema/SDK.
+func (DevicePoeMode) Values() []infer.EnumValue[DevicePoeMode] {
+	return []infer.EnumValue[DevicePoeMode]{
+		{Name: "Auto", Value: DevicePoeModeAuto, Description: "Automatic PoE based on device class."},
+		{Name: "Pasv24", Value: DevicePoeModePasv24, Description: "Passive 24V PoE."},
+		{Name: "Passthrough", Value: DevicePoeModePassthrough, Description: "PoE passthrough from uplink."},
+		{Name: "Off", Value: DevicePoeModeOff, Description: "PoE disabled."},
+	}
+}
+
+// DeviceLedMode is the closed set of EtherLighting LED modes.
+type DeviceLedMode string
+
+const (
+	DeviceLedModeStandard      DeviceLedMode = "standard"
+	DeviceLedModeEtherlighting DeviceLedMode = "etherlighting"
+)
+
+// Values enumerates the allowed DeviceLedMode values for the schema/SDK.
+func (DeviceLedMode) Values() []infer.EnumValue[DeviceLedMode] {
+	return []infer.EnumValue[DeviceLedMode]{
+		{Name: "Standard", Value: DeviceLedModeStandard, Description: "Standard status LED."},
+		{Name: "Etherlighting", Value: DeviceLedModeEtherlighting, Description: "EtherLighting LED strip mode."},
+	}
+}
+
+// DeviceEtherLightingMode is the closed set of EtherLighting animation modes.
+type DeviceEtherLightingMode string
+
+const (
+	DeviceEtherLightingModeSpeed   DeviceEtherLightingMode = "speed"
+	DeviceEtherLightingModeNetwork DeviceEtherLightingMode = "network"
+)
+
+// Values enumerates the allowed DeviceEtherLightingMode values for the schema/SDK.
+func (DeviceEtherLightingMode) Values() []infer.EnumValue[DeviceEtherLightingMode] {
+	return []infer.EnumValue[DeviceEtherLightingMode]{
+		{Name: "Speed", Value: DeviceEtherLightingModeSpeed, Description: "Animate by port speed."},
+		{Name: "Network", Value: DeviceEtherLightingModeNetwork, Description: "Animate by network."},
+	}
+}
+
+// DeviceEtherLightingBehavior is the closed set of EtherLighting behaviors.
+type DeviceEtherLightingBehavior string
+
+const (
+	DeviceEtherLightingBehaviorBreath DeviceEtherLightingBehavior = "breath"
+	DeviceEtherLightingBehaviorSteady DeviceEtherLightingBehavior = "steady"
+)
+
+// Values enumerates the allowed DeviceEtherLightingBehavior values for the schema/SDK.
+func (DeviceEtherLightingBehavior) Values() []infer.EnumValue[DeviceEtherLightingBehavior] {
+	return []infer.EnumValue[DeviceEtherLightingBehavior]{
+		{Name: "Breath", Value: DeviceEtherLightingBehaviorBreath, Description: "Breathing animation."},
+		{Name: "Steady", Value: DeviceEtherLightingBehaviorSteady, Description: "Steady (no animation)."},
+	}
+}
+
+// DeviceTxPowerMode is the closed set of radio transmit-power modes.
+type DeviceTxPowerMode string
+
+const (
+	DeviceTxPowerModeAuto   DeviceTxPowerMode = "auto"
+	DeviceTxPowerModeMedium DeviceTxPowerMode = "medium"
+	DeviceTxPowerModeHigh   DeviceTxPowerMode = "high"
+	DeviceTxPowerModeLow    DeviceTxPowerMode = "low"
+	DeviceTxPowerModeCustom DeviceTxPowerMode = "custom"
+)
+
+// Values enumerates the allowed DeviceTxPowerMode values for the schema/SDK.
+func (DeviceTxPowerMode) Values() []infer.EnumValue[DeviceTxPowerMode] {
+	return []infer.EnumValue[DeviceTxPowerMode]{
+		{Name: "Auto", Value: DeviceTxPowerModeAuto, Description: "Automatic transmit power."},
+		{Name: "Medium", Value: DeviceTxPowerModeMedium, Description: "Medium transmit power."},
+		{Name: "High", Value: DeviceTxPowerModeHigh, Description: "High transmit power."},
+		{Name: "Low", Value: DeviceTxPowerModeLow, Description: "Low transmit power."},
+		{Name: "Custom", Value: DeviceTxPowerModeCustom, Description: "Custom transmit power (use txPower)."},
+	}
+}
+
+// DevicePortOpMode is the closed set of switch-port operating modes.
+type DevicePortOpMode string
+
+const (
+	DevicePortOpModeSwitch    DevicePortOpMode = "switch"
+	DevicePortOpModeMirror    DevicePortOpMode = "mirror"
+	DevicePortOpModeAggregate DevicePortOpMode = "aggregate"
+)
+
+// Values enumerates the allowed DevicePortOpMode values for the schema/SDK.
+func (DevicePortOpMode) Values() []infer.EnumValue[DevicePortOpMode] {
+	return []infer.EnumValue[DevicePortOpMode]{
+		{Name: "Switch", Value: DevicePortOpModeSwitch, Description: "Normal switching."},
+		{Name: "Mirror", Value: DevicePortOpModeMirror, Description: "Port mirroring."},
+		{Name: "Aggregate", Value: DevicePortOpModeAggregate, Description: "Link aggregation."},
+	}
+}
+
+// DeviceTaggedVlanMgmt is the closed set of tagged-VLAN management modes.
+type DeviceTaggedVlanMgmt string
+
+const (
+	DeviceTaggedVlanMgmtAuto     DeviceTaggedVlanMgmt = "auto"
+	DeviceTaggedVlanMgmtBlockAll DeviceTaggedVlanMgmt = "block_all"
+	DeviceTaggedVlanMgmtCustom   DeviceTaggedVlanMgmt = "custom"
+)
+
+// Values enumerates the allowed DeviceTaggedVlanMgmt values for the schema/SDK.
+func (DeviceTaggedVlanMgmt) Values() []infer.EnumValue[DeviceTaggedVlanMgmt] {
+	return []infer.EnumValue[DeviceTaggedVlanMgmt]{
+		{Name: "Auto", Value: DeviceTaggedVlanMgmtAuto, Description: "Allow all tagged VLANs."},
+		{Name: "BlockAll", Value: DeviceTaggedVlanMgmtBlockAll, Description: "Block all tagged VLANs."},
+		{Name: "Custom", Value: DeviceTaggedVlanMgmtCustom, Description: "Use excludedNetworkIds."},
+	}
+}
+
+// DevicePortForward is the closed set of port forwarding modes.
+type DevicePortForward string
+
+const (
+	DevicePortForwardAll       DevicePortForward = "all"
+	DevicePortForwardNative    DevicePortForward = "native"
+	DevicePortForwardCustomize DevicePortForward = "customize"
+	DevicePortForwardDisabled  DevicePortForward = "disabled"
+)
+
+// Values enumerates the allowed DevicePortForward values for the schema/SDK.
+func (DevicePortForward) Values() []infer.EnumValue[DevicePortForward] {
+	return []infer.EnumValue[DevicePortForward]{
+		{Name: "All", Value: DevicePortForwardAll, Description: "Forward all VLANs."},
+		{Name: "Native", Value: DevicePortForwardNative, Description: "Forward only the native VLAN."},
+		{Name: "Customize", Value: DevicePortForwardCustomize, Description: "Forward a custom VLAN set."},
+		{Name: "Disabled", Value: DevicePortForwardDisabled, Description: "Forward nothing."},
+	}
+}
+
+// DeviceStormctrlType is the closed set of storm-control measurement types.
+type DeviceStormctrlType string
+
+const (
+	DeviceStormctrlTypeLevel DeviceStormctrlType = "level"
+	DeviceStormctrlTypeRate  DeviceStormctrlType = "rate"
+)
+
+// Values enumerates the allowed DeviceStormctrlType values for the schema/SDK.
+func (DeviceStormctrlType) Values() []infer.EnumValue[DeviceStormctrlType] {
+	return []infer.EnumValue[DeviceStormctrlType]{
+		{Name: "Level", Value: DeviceStormctrlTypeLevel, Description: "Percent-of-line-rate threshold."},
+		{Name: "Rate", Value: DeviceStormctrlTypeRate, Description: "Packets-per-second threshold."},
+	}
+}
+
+// DeviceDot1xCtrl is the closed set of per-port 802.1X control modes.
+type DeviceDot1xCtrl string
+
+const (
+	DeviceDot1xCtrlAuto              DeviceDot1xCtrl = "auto"
+	DeviceDot1xCtrlForceAuthorized   DeviceDot1xCtrl = "force_authorized"
+	DeviceDot1xCtrlForceUnauthorized DeviceDot1xCtrl = "force_unauthorized"
+	DeviceDot1xCtrlMacBased          DeviceDot1xCtrl = "mac_based"
+	DeviceDot1xCtrlMultiHost         DeviceDot1xCtrl = "multi_host"
+)
+
+// Values enumerates the allowed DeviceDot1xCtrl values for the schema/SDK.
+func (DeviceDot1xCtrl) Values() []infer.EnumValue[DeviceDot1xCtrl] {
+	return []infer.EnumValue[DeviceDot1xCtrl]{
+		{Name: "Auto", Value: DeviceDot1xCtrlAuto, Description: "802.1X authentication."},
+		{Name: "ForceAuthorized", Value: DeviceDot1xCtrlForceAuthorized, Description: "Always authorized."},
+		{Name: "ForceUnauthorized", Value: DeviceDot1xCtrlForceUnauthorized, Description: "Always unauthorized."},
+		{Name: "MacBased", Value: DeviceDot1xCtrlMacBased, Description: "Per-MAC authentication."},
+		{Name: "MultiHost", Value: DeviceDot1xCtrlMultiHost, Description: "Multi-host authentication."},
+	}
+}
+
+// DeviceFecMode is the closed set of SFP+/SFP28 forward-error-correction modes.
+type DeviceFecMode string
+
+const (
+	DeviceFecModeRsFec    DeviceFecMode = "rs-fec"
+	DeviceFecModeFcFec    DeviceFecMode = "fc-fec"
+	DeviceFecModeDefault  DeviceFecMode = "default"
+	DeviceFecModeDisabled DeviceFecMode = "disabled"
+)
+
+// Values enumerates the allowed DeviceFecMode values for the schema/SDK.
+func (DeviceFecMode) Values() []infer.EnumValue[DeviceFecMode] {
+	return []infer.EnumValue[DeviceFecMode]{
+		{Name: "RsFec", Value: DeviceFecModeRsFec, Description: "Reed-Solomon FEC."},
+		{Name: "FcFec", Value: DeviceFecModeFcFec, Description: "Fire-code FEC."},
+		{Name: "Default", Value: DeviceFecModeDefault, Description: "Device default FEC."},
+		{Name: "Disabled", Value: DeviceFecModeDisabled, Description: "FEC disabled."},
+	}
+}
+
+// DeviceSettingPreference is the closed set of port setting-source preferences.
+type DeviceSettingPreference string
+
+const (
+	DeviceSettingPreferenceAuto   DeviceSettingPreference = "auto"
+	DeviceSettingPreferenceManual DeviceSettingPreference = "manual"
+)
+
+// Values enumerates the allowed DeviceSettingPreference values for the schema/SDK.
+func (DeviceSettingPreference) Values() []infer.EnumValue[DeviceSettingPreference] {
+	return []infer.EnumValue[DeviceSettingPreference]{
+		{Name: "Auto", Value: DeviceSettingPreferenceAuto, Description: "Inherit profile."},
+		{Name: "Manual", Value: DeviceSettingPreferenceManual, Description: "Use these overrides."},
+	}
+}
+
+// DeviceLedOverride is the closed set of status-LED override modes.
+type DeviceLedOverride string
+
+const (
+	DeviceLedOverrideDefault DeviceLedOverride = "default"
+	DeviceLedOverrideOn      DeviceLedOverride = "on"
+	DeviceLedOverrideOff     DeviceLedOverride = "off"
+)
+
+// Values enumerates the allowed DeviceLedOverride values for the schema/SDK.
+func (DeviceLedOverride) Values() []infer.EnumValue[DeviceLedOverride] {
+	return []infer.EnumValue[DeviceLedOverride]{
+		{Name: "Default", Value: DeviceLedOverrideDefault, Description: "Use the global LED setting."},
+		{Name: "On", Value: DeviceLedOverrideOn, Description: "LED on."},
+		{Name: "Off", Value: DeviceLedOverrideOff, Description: "LED off."},
+	}
+}
+
+// DeviceStpVersion is the closed set of spanning-tree protocol versions.
+type DeviceStpVersion string
+
+const (
+	DeviceStpVersionStp      DeviceStpVersion = "stp"
+	DeviceStpVersionRstp     DeviceStpVersion = "rstp"
+	DeviceStpVersionDisabled DeviceStpVersion = "disabled"
+)
+
+// Values enumerates the allowed DeviceStpVersion values for the schema/SDK.
+func (DeviceStpVersion) Values() []infer.EnumValue[DeviceStpVersion] {
+	return []infer.EnumValue[DeviceStpVersion]{
+		{Name: "Stp", Value: DeviceStpVersionStp, Description: "Classic spanning tree."},
+		{Name: "Rstp", Value: DeviceStpVersionRstp, Description: "Rapid spanning tree."},
+		{Name: "Disabled", Value: DeviceStpVersionDisabled, Description: "Spanning tree disabled."},
+	}
+}
+
+// DeviceVrrpMode is the closed set of gateway VRRP roles.
+type DeviceVrrpMode string
+
+const (
+	DeviceVrrpModePrimary   DeviceVrrpMode = "primary"
+	DeviceVrrpModeSecondary DeviceVrrpMode = "secondary"
+)
+
+// Values enumerates the allowed DeviceVrrpMode values for the schema/SDK.
+func (DeviceVrrpMode) Values() []infer.EnumValue[DeviceVrrpMode] {
+	return []infer.EnumValue[DeviceVrrpMode]{
+		{Name: "Primary", Value: DeviceVrrpModePrimary, Description: "VRRP primary."},
+		{Name: "Secondary", Value: DeviceVrrpModeSecondary, Description: "VRRP secondary."},
+	}
+}
+
 // Device manages the settings of an EXISTING, already-adopted UniFi network
 // device (gateway, switch, access point, PDU, ...).
 //
@@ -29,11 +301,11 @@ type Device struct{}
 // switches (e.g. the 24-port EtherLighting PoE switch).
 type DeviceEtherLightingArgs struct {
 	// LedMode: standard | etherlighting.
-	LedMode *string `pulumi:"ledMode,optional"`
+	LedMode *DeviceLedMode `pulumi:"ledMode,optional"`
 	// Mode of the lighting animation: speed | network.
-	Mode *string `pulumi:"mode,optional"`
+	Mode *DeviceEtherLightingMode `pulumi:"mode,optional"`
 	// Behavior of the lighting: breath | steady.
-	Behavior *string `pulumi:"behavior,optional"`
+	Behavior *DeviceEtherLightingBehavior `pulumi:"behavior,optional"`
 	// Brightness of the LED strip (1-100).
 	Brightness *int `pulumi:"brightness,optional"`
 }
@@ -73,7 +345,7 @@ type DeviceRadioOverride struct {
 	// TxPower is the transmit power in dBm, or "auto". Honored only when txPowerMode is "custom".
 	TxPower *string `pulumi:"txPower,optional"`
 	// TxPowerMode: auto | medium | high | low | custom.
-	TxPowerMode *string `pulumi:"txPowerMode,optional"`
+	TxPowerMode *DeviceTxPowerMode `pulumi:"txPowerMode,optional"`
 	// MinRssi is the minimum RSSI (dBm, negative) below which clients are kicked. Setting it enables the feature unless minRssiEnabled is given.
 	MinRssi *int `pulumi:"minRssi,optional"`
 	// MinRssiEnabled toggles the minimum-RSSI kick feature.
@@ -91,21 +363,21 @@ type DevicePortOverride struct {
 	// Name is the port label.
 	Name *string `pulumi:"name,optional"`
 	// PoeMode: auto | pasv24 | passthrough | off.
-	PoeMode *string `pulumi:"poeMode,optional"`
+	PoeMode *DevicePoeMode `pulumi:"poeMode,optional"`
 	// PortProfileId applies a saved port profile (the profile's `_id`, sent as portconf_id).
 	PortProfileId *string `pulumi:"portProfileId,optional"`
 	// OpMode: switch | mirror | aggregate.
-	OpMode *string `pulumi:"opMode,optional"`
+	OpMode *DevicePortOpMode `pulumi:"opMode,optional"`
 	// AggregateNumPorts is the number of consecutive ports in a link aggregation group (1-8).
 	AggregateNumPorts *int `pulumi:"aggregateNumPorts,optional"`
 	// NativeNetworkId is the untagged/native network for the port (native_networkconf_id).
 	NativeNetworkId *string `pulumi:"nativeNetworkId,optional"`
 	// TaggedVlanMgmt: auto | block_all | custom. With "custom", use excludedNetworkIds.
-	TaggedVlanMgmt *string `pulumi:"taggedVlanMgmt,optional"`
+	TaggedVlanMgmt *DeviceTaggedVlanMgmt `pulumi:"taggedVlanMgmt,optional"`
 	// ExcludedNetworkIds lists tagged networks to block on the port (excluded_networkconf_ids).
 	ExcludedNetworkIds []string `pulumi:"excludedNetworkIds,optional"`
 	// Forward: all | native | customize | disabled.
-	Forward *string `pulumi:"forward,optional"`
+	Forward *DevicePortForward `pulumi:"forward,optional"`
 	// Speed forces a link speed in Mbps: 10 | 100 | 1000 | 2500 | 5000 | 10000 | 20000 | 25000 | 40000 | 50000 | 100000.
 	Speed *int `pulumi:"speed,optional"`
 	// Autoneg enables link speed/duplex auto-negotiation.
@@ -117,7 +389,7 @@ type DevicePortOverride struct {
 	// MirrorPortIdx is the source port to mirror when opMode is "mirror".
 	MirrorPortIdx *int `pulumi:"mirrorPortIdx,optional"`
 	// StormctrlType: level | rate.
-	StormctrlType *string `pulumi:"stormctrlType,optional"`
+	StormctrlType *DeviceStormctrlType `pulumi:"stormctrlType,optional"`
 	// StormctrlBroadcastEnabled enables broadcast storm control.
 	StormctrlBroadcastEnabled *bool `pulumi:"stormctrlBroadcastEnabled,optional"`
 	// StormctrlBroadcastLevel is the broadcast storm control level (0-100, percent).
@@ -141,7 +413,7 @@ type DevicePortOverride struct {
 	// PortSecurityMacAddress lists the MACs permitted when portSecurityEnabled is true.
 	PortSecurityMacAddress []string `pulumi:"portSecurityMacAddress,optional"`
 	// Dot1xCtrl: auto | force_authorized | force_unauthorized | mac_based | multi_host.
-	Dot1xCtrl *string `pulumi:"dot1xCtrl,optional"`
+	Dot1xCtrl *DeviceDot1xCtrl `pulumi:"dot1xCtrl,optional"`
 	// Dot1xIdleTimeout is the 802.1X idle timeout in seconds.
 	Dot1xIdleTimeout *int `pulumi:"dot1xIdleTimeout,optional"`
 	// LldpmedEnabled enables LLDP-MED on the port.
@@ -163,20 +435,20 @@ type DevicePortOverride struct {
 	// PriorityQueue4Level is the QoS priority-queue 4 level (0-100).
 	PriorityQueue4Level *int `pulumi:"priorityQueue4Level,optional"`
 	// FecMode: rs-fec | fc-fec | default | disabled (for SFP+/SFP28 ports).
-	FecMode *string `pulumi:"fecMode,optional"`
+	FecMode *DeviceFecMode `pulumi:"fecMode,optional"`
 	// VoiceNetworkId is the voice VLAN network for VoIP phones (voice_networkconf_id).
 	VoiceNetworkId *string `pulumi:"voiceNetworkId,optional"`
 	// PortKeepaliveEnabled enables PoE keepalive for legacy powered devices.
 	PortKeepaliveEnabled *bool `pulumi:"portKeepaliveEnabled,optional"`
 	// SettingPreference: auto (inherit profile) | manual (use these overrides).
-	SettingPreference *string `pulumi:"settingPreference,optional"`
+	SettingPreference *DeviceSettingPreference `pulumi:"settingPreference,optional"`
 }
 
 // DeviceLed groups the status-LED indicator settings, including the
 // EtherLighting LED strip on supported switches.
 type DeviceLed struct {
 	// Override controls the status LED: default | on | off.
-	Override *string `pulumi:"override,optional"`
+	Override *DeviceLedOverride `pulumi:"override,optional"`
 	// OverrideColor is the LED color as a hex string, e.g. "#0000ff".
 	OverrideColor *string `pulumi:"overrideColor,optional"`
 	// OverrideColorBrightness is the LED brightness (0-100).
@@ -199,7 +471,7 @@ type DeviceStp struct {
 	// Priority is the spanning-tree bridge priority: a multiple of 4096 from 0 to 61440.
 	Priority *string `pulumi:"priority,optional"`
 	// Version: stp | rstp | disabled.
-	Version *string `pulumi:"version,optional"`
+	Version *DeviceStpVersion `pulumi:"version,optional"`
 }
 
 // DeviceSwitching groups the switch-wide L2 toggles plus the device-wide default
@@ -212,7 +484,7 @@ type DeviceSwitching struct {
 	// FlowControlEnabled enables 802.3x flow control switch-wide.
 	FlowControlEnabled *bool `pulumi:"flowControlEnabled,optional"`
 	// PoeMode is the device-wide default PoE mode: auto | pasv24 | passthrough | off.
-	PoeMode *string `pulumi:"poeMode,optional"`
+	PoeMode *DevicePoeMode `pulumi:"poeMode,optional"`
 }
 
 // DeviceDot1x groups the switch-wide 802.1X settings (distinct from the per-port
@@ -238,7 +510,7 @@ type DeviceOutlet struct {
 // DeviceVrrp groups the gateway VRRP high-availability role/priority.
 type DeviceVrrp struct {
 	// Mode is the gateway VRRP role: primary | secondary.
-	Mode *string `pulumi:"mode,optional"`
+	Mode *DeviceVrrpMode `pulumi:"mode,optional"`
 	// Priority is the VRRP priority (10-200).
 	Priority *int `pulumi:"priority,optional"`
 }
@@ -522,7 +794,7 @@ func (a DeviceArgs) applyTo(d *unifi.Device) {
 // applyTo overlays the managed LED settings (including the EtherLighting strip).
 func (l DeviceLed) applyTo(d *unifi.Device) {
 	if l.Override != nil {
-		d.LedOverride = *l.Override
+		d.LedOverride = string(*l.Override)
 	}
 	if l.OverrideColor != nil {
 		d.LedOverrideColor = *l.OverrideColor
@@ -551,7 +823,7 @@ func (s DeviceStp) applyTo(d *unifi.Device) {
 		d.StpPriority = *s.Priority
 	}
 	if s.Version != nil {
-		d.StpVersion = *s.Version
+		d.StpVersion = string(*s.Version)
 	}
 }
 
@@ -567,7 +839,7 @@ func (s DeviceSwitching) applyTo(d *unifi.Device) {
 		d.FlowctrlEnabled = *s.FlowControlEnabled
 	}
 	if s.PoeMode != nil {
-		d.PoeMode = *s.PoeMode
+		d.PoeMode = string(*s.PoeMode)
 	}
 }
 
@@ -598,7 +870,7 @@ func (o DeviceOutlet) applyTo(d *unifi.Device) {
 // applyTo overlays the managed gateway VRRP settings.
 func (v DeviceVrrp) applyTo(d *unifi.Device) {
 	if v.Mode != nil {
-		d.GatewayVrrpMode = *v.Mode
+		d.GatewayVrrpMode = string(*v.Mode)
 	}
 	if v.Priority != nil {
 		d.GatewayVrrpPriority = *v.Priority
@@ -630,13 +902,13 @@ func (l DeviceLcm) applyTo(d *unifi.Device) {
 
 func (e DeviceEtherLightingArgs) applyTo(u *unifi.DeviceEtherLighting) {
 	if e.LedMode != nil {
-		u.LedMode = *e.LedMode
+		u.LedMode = string(*e.LedMode)
 	}
 	if e.Mode != nil {
-		u.Mode = *e.Mode
+		u.Mode = string(*e.Mode)
 	}
 	if e.Behavior != nil {
-		u.Behavior = *e.Behavior
+		u.Behavior = string(*e.Behavior)
 	}
 	if e.Brightness != nil {
 		u.Brightness = *e.Brightness
@@ -678,7 +950,7 @@ func (r DeviceRadioOverride) applyTo(u *unifi.DeviceRadioTable) {
 		u.TxPower = *r.TxPower
 	}
 	if r.TxPowerMode != nil {
-		u.TxPowerMode = *r.TxPowerMode
+		u.TxPowerMode = string(*r.TxPowerMode)
 	}
 	if r.MinRssi != nil {
 		u.MinRssi = *r.MinRssi
@@ -700,13 +972,13 @@ func (p DevicePortOverride) applyTo(u *unifi.DevicePortOverrides) {
 		u.Name = *p.Name
 	}
 	if p.PoeMode != nil {
-		u.PoeMode = *p.PoeMode
+		u.PoeMode = string(*p.PoeMode)
 	}
 	if p.PortProfileId != nil {
 		u.PortProfileID = *p.PortProfileId
 	}
 	if p.OpMode != nil {
-		u.OpMode = *p.OpMode
+		u.OpMode = string(*p.OpMode)
 	}
 	if p.AggregateNumPorts != nil {
 		u.AggregateNumPorts = *p.AggregateNumPorts
@@ -715,13 +987,13 @@ func (p DevicePortOverride) applyTo(u *unifi.DevicePortOverrides) {
 		u.NATiveNetworkID = *p.NativeNetworkId
 	}
 	if p.TaggedVlanMgmt != nil {
-		u.TaggedVLANMgmt = *p.TaggedVlanMgmt
+		u.TaggedVLANMgmt = string(*p.TaggedVlanMgmt)
 	}
 	if p.ExcludedNetworkIds != nil {
 		u.ExcludedNetworkIDs = p.ExcludedNetworkIds
 	}
 	if p.Forward != nil {
-		u.Forward = *p.Forward
+		u.Forward = string(*p.Forward)
 	}
 	if p.Speed != nil {
 		u.Speed = *p.Speed
@@ -739,7 +1011,7 @@ func (p DevicePortOverride) applyTo(u *unifi.DevicePortOverrides) {
 		u.MirrorPortIDX = *p.MirrorPortIdx
 	}
 	if p.StormctrlType != nil {
-		u.StormctrlType = *p.StormctrlType
+		u.StormctrlType = string(*p.StormctrlType)
 	}
 	if p.StormctrlBroadcastEnabled != nil {
 		u.StormctrlBroadcastastEnabled = *p.StormctrlBroadcastEnabled
@@ -775,7 +1047,7 @@ func (p DevicePortOverride) applyTo(u *unifi.DevicePortOverrides) {
 		u.PortSecurityMACAddress = p.PortSecurityMacAddress
 	}
 	if p.Dot1xCtrl != nil {
-		u.Dot1XCtrl = *p.Dot1xCtrl
+		u.Dot1XCtrl = string(*p.Dot1xCtrl)
 	}
 	if p.Dot1xIdleTimeout != nil {
 		u.Dot1XIDleTimeout = *p.Dot1xIdleTimeout
@@ -808,7 +1080,7 @@ func (p DevicePortOverride) applyTo(u *unifi.DevicePortOverrides) {
 		u.PriorityQueue4Level = *p.PriorityQueue4Level
 	}
 	if p.FecMode != nil {
-		u.FecMode = *p.FecMode
+		u.FecMode = string(*p.FecMode)
 	}
 	if p.VoiceNetworkId != nil {
 		u.VoiceNetworkID = *p.VoiceNetworkId
@@ -817,7 +1089,7 @@ func (p DevicePortOverride) applyTo(u *unifi.DevicePortOverrides) {
 		u.PortKeepaliveEnabled = *p.PortKeepaliveEnabled
 	}
 	if p.SettingPreference != nil {
-		u.SettingPreference = *p.SettingPreference
+		u.SettingPreference = string(*p.SettingPreference)
 	}
 }
 
@@ -898,7 +1170,7 @@ func deviceStateFrom(d *unifi.Device, prior DeviceArgs) DeviceState {
 	if prior.Led != nil {
 		led := *prior.Led
 		if prior.Led.Override != nil {
-			led.Override = ptr(d.LedOverride)
+			led.Override = ptr(DeviceLedOverride(d.LedOverride))
 		}
 		if prior.Led.OverrideColor != nil {
 			led.OverrideColor = ptr(d.LedOverrideColor)
@@ -924,7 +1196,7 @@ func deviceStateFrom(d *unifi.Device, prior DeviceArgs) DeviceState {
 			stp.Priority = ptr(d.StpPriority)
 		}
 		if prior.Stp.Version != nil {
-			stp.Version = ptr(d.StpVersion)
+			stp.Version = ptr(DeviceStpVersion(d.StpVersion))
 		}
 		args.Stp = &stp
 	}
@@ -940,7 +1212,7 @@ func deviceStateFrom(d *unifi.Device, prior DeviceArgs) DeviceState {
 			switching.FlowControlEnabled = ptr(d.FlowctrlEnabled)
 		}
 		if prior.Switching.PoeMode != nil {
-			switching.PoeMode = ptr(d.PoeMode)
+			switching.PoeMode = ptr(DevicePoeMode(d.PoeMode))
 		}
 		args.Switching = &switching
 	}
@@ -967,7 +1239,7 @@ func deviceStateFrom(d *unifi.Device, prior DeviceArgs) DeviceState {
 	if prior.Vrrp != nil {
 		vrrp := *prior.Vrrp
 		if prior.Vrrp.Mode != nil {
-			vrrp.Mode = ptr(d.GatewayVrrpMode)
+			vrrp.Mode = ptr(DeviceVrrpMode(d.GatewayVrrpMode))
 		}
 		if prior.Vrrp.Priority != nil {
 			vrrp.Priority = ptr(d.GatewayVrrpPriority)

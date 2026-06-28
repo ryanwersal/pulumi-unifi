@@ -12,6 +12,38 @@ import (
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
 )
 
+// StaticRouteType selects the static route kind.
+type StaticRouteType string
+
+const (
+	StaticRouteTypeNexthopRoute   StaticRouteType = "nexthop-route"
+	StaticRouteTypeInterfaceRoute StaticRouteType = "interface-route"
+	StaticRouteTypeBlackhole      StaticRouteType = "blackhole"
+)
+
+func (StaticRouteType) Values() []infer.EnumValue[StaticRouteType] {
+	return []infer.EnumValue[StaticRouteType]{
+		{Name: "NexthopRoute", Value: StaticRouteTypeNexthopRoute, Description: "Route via a next-hop IP address."},
+		{Name: "InterfaceRoute", Value: StaticRouteTypeInterfaceRoute, Description: "Route out an egress interface."},
+		{Name: "Blackhole", Value: StaticRouteTypeBlackhole, Description: "Silently drop matching traffic."},
+	}
+}
+
+// StaticRouteGatewayType selects which gateway handles the route.
+type StaticRouteGatewayType string
+
+const (
+	StaticRouteGatewayTypeDefault StaticRouteGatewayType = "default"
+	StaticRouteGatewayTypeSwitch  StaticRouteGatewayType = "switch"
+)
+
+func (StaticRouteGatewayType) Values() []infer.EnumValue[StaticRouteGatewayType] {
+	return []infer.EnumValue[StaticRouteGatewayType]{
+		{Name: "Default", Value: StaticRouteGatewayTypeDefault, Description: "Handled by the default gateway."},
+		{Name: "Switch", Value: StaticRouteGatewayTypeSwitch, Description: "Handled by a switch."},
+	}
+}
+
 // staticRouteType is the upstream Routing.Type discriminator value used for
 // static routes. The Routing object is generic (it also backs other routing
 // objects), so this resource always pins Type to this value internally and does
@@ -28,7 +60,7 @@ type StaticRouteArgs struct {
 	// Network is the destination network in CIDR notation (IPv4 or IPv6), e.g. 10.0.0.0/24.
 	Network string `pulumi:"network"`
 	// StaticRouteType selects the route kind: nexthop-route | interface-route | blackhole.
-	StaticRouteType string `pulumi:"staticRouteType"`
+	StaticRouteType StaticRouteType `pulumi:"staticRouteType"`
 	// Enabled controls whether the route is active. Defaults to true.
 	Enabled *bool `pulumi:"enabled,optional"`
 	// Nexthop is the next-hop IP address (required when staticRouteType=nexthop-route).
@@ -40,7 +72,7 @@ type StaticRouteArgs struct {
 	// GatewayDevice is the MAC address of the gateway device that hosts the route.
 	GatewayDevice *string `pulumi:"gatewayDevice,optional"`
 	// GatewayType selects which gateway handles the route: default | switch.
-	GatewayType *string `pulumi:"gatewayType,optional"`
+	GatewayType *StaticRouteGatewayType `pulumi:"gatewayType,optional"`
 }
 
 // StaticRouteState is the persisted state: inputs plus controller-assigned fields.
@@ -82,7 +114,7 @@ func (a StaticRouteArgs) toUnifi(id string) *unifi.Routing {
 		Type:               staticRouteType,
 		Name:               a.Name,
 		StaticRouteNetwork: a.Network,
-		StaticRouteType:    a.StaticRouteType,
+		StaticRouteType:    string(a.StaticRouteType),
 		Enabled:            derefOr(a.Enabled, true),
 	}
 	if a.Nexthop != nil {
@@ -98,7 +130,7 @@ func (a StaticRouteArgs) toUnifi(id string) *unifi.Routing {
 		r.GatewayDevice = *a.GatewayDevice
 	}
 	if a.GatewayType != nil {
-		r.GatewayType = *a.GatewayType
+		r.GatewayType = string(*a.GatewayType)
 	}
 	return r
 }
@@ -119,7 +151,7 @@ func staticRouteStateFrom(r *unifi.Routing, prior StaticRouteArgs) StaticRouteSt
 	args := StaticRouteArgs{
 		Name:            r.Name,
 		Network:         r.StaticRouteNetwork,
-		StaticRouteType: r.StaticRouteType,
+		StaticRouteType: StaticRouteType(r.StaticRouteType),
 		Enabled:         ptr(r.Enabled),
 	}
 	args.Nexthop = staticRouteStrPtr(r.StaticRouteNexthop, prior.Nexthop)
@@ -130,7 +162,11 @@ func staticRouteStateFrom(r *unifi.Routing, prior StaticRouteArgs) StaticRouteSt
 	}
 	args.Interface = staticRouteStrPtr(r.StaticRouteInterface, prior.Interface)
 	args.GatewayDevice = staticRouteStrPtr(r.GatewayDevice, prior.GatewayDevice)
-	args.GatewayType = staticRouteStrPtr(r.GatewayType, prior.GatewayType)
+	if r.GatewayType != "" {
+		args.GatewayType = ptr(StaticRouteGatewayType(r.GatewayType))
+	} else {
+		args.GatewayType = prior.GatewayType
+	}
 	return StaticRouteState{StaticRouteArgs: args, StaticRouteId: r.ID}
 }
 

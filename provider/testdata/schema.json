@@ -92,10 +92,40 @@
       },
       "type": "object"
     },
+    "unifi:network:DeviceDot1xCtrl": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Auto",
+          "description": "802.1X authentication.",
+          "value": "auto"
+        },
+        {
+          "name": "ForceAuthorized",
+          "description": "Always authorized.",
+          "value": "force_authorized"
+        },
+        {
+          "name": "ForceUnauthorized",
+          "description": "Always unauthorized.",
+          "value": "force_unauthorized"
+        },
+        {
+          "name": "MacBased",
+          "description": "Per-MAC authentication.",
+          "value": "mac_based"
+        },
+        {
+          "name": "MultiHost",
+          "description": "Multi-host authentication.",
+          "value": "multi_host"
+        }
+      ]
+    },
     "unifi:network:DeviceEtherLightingArgs": {
       "properties": {
         "behavior": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:DeviceEtherLightingBehavior",
           "description": "Behavior of the lighting: breath | steady."
         },
         "brightness": {
@@ -103,15 +133,45 @@
           "description": "Brightness of the LED strip (1-100)."
         },
         "ledMode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:DeviceLedMode",
           "description": "LedMode: standard | etherlighting."
         },
         "mode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:DeviceEtherLightingMode",
           "description": "Mode of the lighting animation: speed | network."
         }
       },
       "type": "object"
+    },
+    "unifi:network:DeviceEtherLightingBehavior": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Breath",
+          "description": "Breathing animation.",
+          "value": "breath"
+        },
+        {
+          "name": "Steady",
+          "description": "Steady (no animation).",
+          "value": "steady"
+        }
+      ]
+    },
+    "unifi:network:DeviceEtherLightingMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Speed",
+          "description": "Animate by port speed.",
+          "value": "speed"
+        },
+        {
+          "name": "Network",
+          "description": "Animate by network.",
+          "value": "network"
+        }
+      ]
     },
     "unifi:network:DeviceEthernetOverride": {
       "properties": {
@@ -127,6 +187,31 @@
       "type": "object",
       "required": [
         "ifname"
+      ]
+    },
+    "unifi:network:DeviceFecMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "RsFec",
+          "description": "Reed-Solomon FEC.",
+          "value": "rs-fec"
+        },
+        {
+          "name": "FcFec",
+          "description": "Fire-code FEC.",
+          "value": "fc-fec"
+        },
+        {
+          "name": "Default",
+          "description": "Device default FEC.",
+          "value": "default"
+        },
+        {
+          "name": "Disabled",
+          "description": "FEC disabled.",
+          "value": "disabled"
+        }
       ]
     },
     "unifi:network:DeviceLcm": {
@@ -161,7 +246,7 @@
           "description": "EtherLighting configures the EtherLighting LED strip (supported switches)."
         },
         "override": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:DeviceLedOverride",
           "description": "Override controls the status LED: default | on | off."
         },
         "overrideColor": {
@@ -174,6 +259,41 @@
         }
       },
       "type": "object"
+    },
+    "unifi:network:DeviceLedMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Standard",
+          "description": "Standard status LED.",
+          "value": "standard"
+        },
+        {
+          "name": "Etherlighting",
+          "description": "EtherLighting LED strip mode.",
+          "value": "etherlighting"
+        }
+      ]
+    },
+    "unifi:network:DeviceLedOverride": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Default",
+          "description": "Use the global LED setting.",
+          "value": "default"
+        },
+        {
+          "name": "On",
+          "description": "LED on.",
+          "value": "on"
+        },
+        {
+          "name": "Off",
+          "description": "LED off.",
+          "value": "off"
+        }
+      ]
     },
     "unifi:network:DeviceOutlet": {
       "properties": {
@@ -219,6 +339,76 @@
         "index"
       ]
     },
+    "unifi:network:DevicePoeMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Auto",
+          "description": "Automatic PoE based on device class.",
+          "value": "auto"
+        },
+        {
+          "name": "Pasv24",
+          "description": "Passive 24V PoE.",
+          "value": "pasv24"
+        },
+        {
+          "name": "Passthrough",
+          "description": "PoE passthrough from uplink.",
+          "value": "passthrough"
+        },
+        {
+          "name": "Off",
+          "description": "PoE disabled.",
+          "value": "off"
+        }
+      ]
+    },
+    "unifi:network:DevicePortForward": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "All",
+          "description": "Forward all VLANs.",
+          "value": "all"
+        },
+        {
+          "name": "Native",
+          "description": "Forward only the native VLAN.",
+          "value": "native"
+        },
+        {
+          "name": "Customize",
+          "description": "Forward a custom VLAN set.",
+          "value": "customize"
+        },
+        {
+          "name": "Disabled",
+          "description": "Forward nothing.",
+          "value": "disabled"
+        }
+      ]
+    },
+    "unifi:network:DevicePortOpMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Switch",
+          "description": "Normal switching.",
+          "value": "switch"
+        },
+        {
+          "name": "Mirror",
+          "description": "Port mirroring.",
+          "value": "mirror"
+        },
+        {
+          "name": "Aggregate",
+          "description": "Link aggregation.",
+          "value": "aggregate"
+        }
+      ]
+    },
     "unifi:network:DevicePortOverride": {
       "properties": {
         "aggregateNumPorts": {
@@ -230,7 +420,7 @@
           "description": "Autoneg enables link speed/duplex auto-negotiation."
         },
         "dot1xCtrl": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:DeviceDot1xCtrl",
           "description": "Dot1xCtrl: auto | force_authorized | force_unauthorized | mac_based | multi_host."
         },
         "dot1xIdleTimeout": {
@@ -253,11 +443,11 @@
           "description": "ExcludedNetworkIds lists tagged networks to block on the port (excluded_networkconf_ids)."
         },
         "fecMode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:DeviceFecMode",
           "description": "FecMode: rs-fec | fc-fec | default | disabled (for SFP+/SFP28 ports)."
         },
         "forward": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:DevicePortForward",
           "description": "Forward: all | native | customize | disabled."
         },
         "fullDuplex": {
@@ -289,11 +479,11 @@
           "description": "NativeNetworkId is the untagged/native network for the port (native_networkconf_id)."
         },
         "opMode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:DevicePortOpMode",
           "description": "OpMode: switch | mirror | aggregate."
         },
         "poeMode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:DevicePoeMode",
           "description": "PoeMode: auto | pasv24 | passthrough | off."
         },
         "portIdx": {
@@ -336,7 +526,7 @@
           "description": "PriorityQueue4Level is the QoS priority-queue 4 level (0-100)."
         },
         "settingPreference": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:DeviceSettingPreference",
           "description": "SettingPreference: auto (inherit profile) | manual (use these overrides)."
         },
         "speed": {
@@ -368,7 +558,7 @@
           "description": "StormctrlMcastRate is the multicast storm control rate (pps)."
         },
         "stormctrlType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:DeviceStormctrlType",
           "description": "StormctrlType: level | rate."
         },
         "stormctrlUcastEnabled": {
@@ -388,7 +578,7 @@
           "description": "StpPortMode enables spanning-tree on the port."
         },
         "taggedVlanMgmt": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:DeviceTaggedVlanMgmt",
           "description": "TaggedVlanMgmt: auto | block_all | custom. With \"custom\", use excludedNetworkIds."
         },
         "voiceNetworkId": {
@@ -436,13 +626,28 @@
           "description": "TxPower is the transmit power in dBm, or \"auto\". Honored only when txPowerMode is \"custom\"."
         },
         "txPowerMode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:DeviceTxPowerMode",
           "description": "TxPowerMode: auto | medium | high | low | custom."
         }
       },
       "type": "object",
       "required": [
         "radio"
+      ]
+    },
+    "unifi:network:DeviceSettingPreference": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Auto",
+          "description": "Inherit profile.",
+          "value": "auto"
+        },
+        {
+          "name": "Manual",
+          "description": "Use these overrides.",
+          "value": "manual"
+        }
       ]
     },
     "unifi:network:DeviceSnmp": {
@@ -458,6 +663,21 @@
       },
       "type": "object"
     },
+    "unifi:network:DeviceStormctrlType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Level",
+          "description": "Percent-of-line-rate threshold.",
+          "value": "level"
+        },
+        {
+          "name": "Rate",
+          "description": "Packets-per-second threshold.",
+          "value": "rate"
+        }
+      ]
+    },
     "unifi:network:DeviceStp": {
       "properties": {
         "priority": {
@@ -465,11 +685,31 @@
           "description": "Priority is the spanning-tree bridge priority: a multiple of 4096 from 0 to 61440."
         },
         "version": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:DeviceStpVersion",
           "description": "Version: stp | rstp | disabled."
         }
       },
       "type": "object"
+    },
+    "unifi:network:DeviceStpVersion": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Stp",
+          "description": "Classic spanning tree.",
+          "value": "stp"
+        },
+        {
+          "name": "Rstp",
+          "description": "Rapid spanning tree.",
+          "value": "rstp"
+        },
+        {
+          "name": "Disabled",
+          "description": "Spanning tree disabled.",
+          "value": "disabled"
+        }
+      ]
     },
     "unifi:network:DeviceSwitching": {
       "properties": {
@@ -482,7 +722,7 @@
           "description": "JumboFrameEnabled enables jumbo frames switch-wide."
         },
         "poeMode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:DevicePoeMode",
           "description": "PoeMode is the device-wide default PoE mode: auto | pasv24 | passthrough | off."
         },
         "vlanEnabled": {
@@ -492,10 +732,60 @@
       },
       "type": "object"
     },
+    "unifi:network:DeviceTaggedVlanMgmt": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Auto",
+          "description": "Allow all tagged VLANs.",
+          "value": "auto"
+        },
+        {
+          "name": "BlockAll",
+          "description": "Block all tagged VLANs.",
+          "value": "block_all"
+        },
+        {
+          "name": "Custom",
+          "description": "Use excludedNetworkIds.",
+          "value": "custom"
+        }
+      ]
+    },
+    "unifi:network:DeviceTxPowerMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Auto",
+          "description": "Automatic transmit power.",
+          "value": "auto"
+        },
+        {
+          "name": "Medium",
+          "description": "Medium transmit power.",
+          "value": "medium"
+        },
+        {
+          "name": "High",
+          "description": "High transmit power.",
+          "value": "high"
+        },
+        {
+          "name": "Low",
+          "description": "Low transmit power.",
+          "value": "low"
+        },
+        {
+          "name": "Custom",
+          "description": "Custom transmit power (use txPower).",
+          "value": "custom"
+        }
+      ]
+    },
     "unifi:network:DeviceVrrp": {
       "properties": {
         "mode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:DeviceVrrpMode",
           "description": "Mode is the gateway VRRP role: primary | secondary."
         },
         "priority": {
@@ -504,6 +794,21 @@
         }
       },
       "type": "object"
+    },
+    "unifi:network:DeviceVrrpMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Primary",
+          "description": "VRRP primary.",
+          "value": "primary"
+        },
+        {
+          "name": "Secondary",
+          "description": "VRRP secondary.",
+          "value": "secondary"
+        }
+      ]
     },
     "unifi:network:DnsRecordType": {
       "type": "string",
@@ -575,6 +880,26 @@
         }
       ]
     },
+    "unifi:network:FirewallRuleAction": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Accept",
+          "description": "Permit matching traffic.",
+          "value": "accept"
+        },
+        {
+          "name": "Drop",
+          "description": "Silently discard matching traffic.",
+          "value": "drop"
+        },
+        {
+          "name": "Reject",
+          "description": "Discard matching traffic and send a rejection.",
+          "value": "reject"
+        }
+      ]
+    },
     "unifi:network:FirewallRuleConnectionState": {
       "properties": {
         "established": {
@@ -618,7 +943,7 @@
           "description": "NetworkId is the destination network (firewall network conf) ID to match."
         },
         "networkType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:FirewallRuleNetworkType",
           "description": "NetworkType selects how NetworkId is interpreted: ADDRv4 | NETv4."
         },
         "port": {
@@ -627,6 +952,36 @@
         }
       },
       "type": "object"
+    },
+    "unifi:network:FirewallRuleIpSec": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "MatchIpsec",
+          "description": "Match IPsec-encapsulated traffic.",
+          "value": "match-ipsec"
+        },
+        {
+          "name": "MatchNone",
+          "description": "Match non-IPsec traffic.",
+          "value": "match-none"
+        }
+      ]
+    },
+    "unifi:network:FirewallRuleNetworkType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Addrv4",
+          "description": "Interpret the network ID as an IPv4 host address.",
+          "value": "ADDRv4"
+        },
+        {
+          "name": "Netv4",
+          "description": "Interpret the network ID as an IPv4 network.",
+          "value": "NETv4"
+        }
+      ]
     },
     "unifi:network:FirewallRuleProtocolMatch": {
       "properties": {
@@ -652,6 +1007,21 @@
         }
       },
       "type": "object"
+    },
+    "unifi:network:FirewallRuleSettingPreference": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Auto",
+          "description": "Use automatic settings.",
+          "value": "auto"
+        },
+        {
+          "name": "Manual",
+          "description": "Use manual settings.",
+          "value": "manual"
+        }
+      ]
     },
     "unifi:network:FirewallRuleSource": {
       "properties": {
@@ -679,7 +1049,7 @@
           "description": "NetworkId is the source network (firewall network conf) ID to match."
         },
         "networkType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:FirewallRuleNetworkType",
           "description": "NetworkType selects how NetworkId is interpreted: ADDRv4 | NETv4."
         },
         "port": {
@@ -765,11 +1135,11 @@
           "description": "MatchOppositePorts inverts (negates) the destination port match."
         },
         "matchingTarget": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:FirewallZonePolicyDestinationMatchingTarget",
           "description": "What the destination matches: ANY | APP | APP_CATEGORY | IP | REGION | WEB."
         },
         "matchingTargetType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:FirewallZonePolicyDestinationMatchingTargetType",
           "description": "Refines the destination match: ANY | OBJECT (saved group) | SPECIFIC (inline values)."
         },
         "port": {
@@ -781,7 +1151,7 @@
           "description": "PortGroupId references a saved port group as the destination ports."
         },
         "portMatchingType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:FirewallZonePolicyPortMatchingType",
           "description": "PortMatchingType selects how destination ports match: ANY | SPECIFIC | OBJECT."
         },
         "regions": {
@@ -808,6 +1178,61 @@
         "zoneId"
       ]
     },
+    "unifi:network:FirewallZonePolicyDestinationMatchingTarget": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Any",
+          "description": "Match any destination.",
+          "value": "ANY"
+        },
+        {
+          "name": "App",
+          "description": "Match applications.",
+          "value": "APP"
+        },
+        {
+          "name": "AppCategory",
+          "description": "Match application categories.",
+          "value": "APP_CATEGORY"
+        },
+        {
+          "name": "Ip",
+          "description": "Match destination IP addresses.",
+          "value": "IP"
+        },
+        {
+          "name": "Region",
+          "description": "Match geographic regions.",
+          "value": "REGION"
+        },
+        {
+          "name": "Web",
+          "description": "Match web domains.",
+          "value": "WEB"
+        }
+      ]
+    },
+    "unifi:network:FirewallZonePolicyDestinationMatchingTargetType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Any",
+          "description": "Match any.",
+          "value": "ANY"
+        },
+        {
+          "name": "Object",
+          "description": "Match a saved group.",
+          "value": "OBJECT"
+        },
+        {
+          "name": "Specific",
+          "description": "Match inline values.",
+          "value": "SPECIFIC"
+        }
+      ]
+    },
     "unifi:network:FirewallZonePolicyIpVersion": {
       "type": "string",
       "enum": [
@@ -825,6 +1250,21 @@
           "name": "Ipv6",
           "description": "Match IPv6 traffic only.",
           "value": "IPV6"
+        }
+      ]
+    },
+    "unifi:network:FirewallZonePolicyMatchIpSecType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "MatchIpSec",
+          "description": "Match IPsec-encapsulated traffic.",
+          "value": "MATCH_IP_SEC"
+        },
+        {
+          "name": "MatchNonIpSec",
+          "description": "Match non-IPsec traffic.",
+          "value": "MATCH_NON_IP_SEC"
         }
       ]
     },
@@ -850,7 +1290,7 @@
           "description": "MatchIpSec enables matching on IPsec-encapsulated traffic."
         },
         "matchIpSecType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:FirewallZonePolicyMatchIpSecType",
           "description": "IPsec matching mode: MATCH_IP_SEC | MATCH_NON_IP_SEC."
         },
         "matchOppositeProtocol": {
@@ -863,6 +1303,26 @@
         }
       },
       "type": "object"
+    },
+    "unifi:network:FirewallZonePolicyPortMatchingType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Any",
+          "description": "Match any port.",
+          "value": "ANY"
+        },
+        {
+          "name": "Specific",
+          "description": "Match inline ports.",
+          "value": "SPECIFIC"
+        },
+        {
+          "name": "Object",
+          "description": "Match a saved port group.",
+          "value": "OBJECT"
+        }
+      ]
     },
     "unifi:network:FirewallZonePolicyScheduleArgs": {
       "properties": {
@@ -879,7 +1339,7 @@
           "description": "DateStart is the range start date in YYYY-MM-DD format."
         },
         "mode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:FirewallZonePolicyScheduleMode",
           "description": "Schedule pattern: ALWAYS | EVERY_DAY | EVERY_WEEK | ONE_TIME_ONLY | CUSTOM."
         },
         "repeatOnDays": {
@@ -903,6 +1363,36 @@
         }
       },
       "type": "object"
+    },
+    "unifi:network:FirewallZonePolicyScheduleMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Always",
+          "description": "Always active.",
+          "value": "ALWAYS"
+        },
+        {
+          "name": "EveryDay",
+          "description": "Active every day.",
+          "value": "EVERY_DAY"
+        },
+        {
+          "name": "EveryWeek",
+          "description": "Active on selected weekdays.",
+          "value": "EVERY_WEEK"
+        },
+        {
+          "name": "OneTimeOnly",
+          "description": "Active once on a single date.",
+          "value": "ONE_TIME_ONLY"
+        },
+        {
+          "name": "Custom",
+          "description": "Custom recurring schedule.",
+          "value": "CUSTOM"
+        }
+      ]
     },
     "unifi:network:FirewallZonePolicySourceArgs": {
       "properties": {
@@ -952,11 +1442,11 @@
           "description": "MatchOppositePorts inverts (negates) the source port match."
         },
         "matchingTarget": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:FirewallZonePolicySourceMatchingTarget",
           "description": "What the source matches: ANY | CLIENT | NETWORK | IP | MAC."
         },
         "matchingTargetType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:FirewallZonePolicySourceMatchingTargetType",
           "description": "Refines the source match: OBJECT (saved group) | SPECIFIC (inline values)."
         },
         "networkIds": {
@@ -975,7 +1465,7 @@
           "description": "PortGroupId references a saved port group as the source ports."
         },
         "portMatchingType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:FirewallZonePolicyPortMatchingType",
           "description": "PortMatchingType selects how source ports match: ANY | SPECIFIC | OBJECT."
         },
         "zoneId": {
@@ -986,6 +1476,51 @@
       "type": "object",
       "required": [
         "zoneId"
+      ]
+    },
+    "unifi:network:FirewallZonePolicySourceMatchingTarget": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Any",
+          "description": "Match any source.",
+          "value": "ANY"
+        },
+        {
+          "name": "Client",
+          "description": "Match source clients.",
+          "value": "CLIENT"
+        },
+        {
+          "name": "Network",
+          "description": "Match source networks.",
+          "value": "NETWORK"
+        },
+        {
+          "name": "Ip",
+          "description": "Match source IP addresses.",
+          "value": "IP"
+        },
+        {
+          "name": "Mac",
+          "description": "Match source MAC addresses.",
+          "value": "MAC"
+        }
+      ]
+    },
+    "unifi:network:FirewallZonePolicySourceMatchingTargetType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Object",
+          "description": "Match a saved group.",
+          "value": "OBJECT"
+        },
+        {
+          "name": "Specific",
+          "description": "Match inline values.",
+          "value": "SPECIFIC"
+        }
       ]
     },
     "unifi:network:NetworkIgmpQuerierSwitch": {
@@ -1019,11 +1554,11 @@
           "description": "IpAddressPool is a list of outbound NAT source IPs/ranges."
         },
         "mode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanNatOutboundMode",
           "description": "Outbound NAT strategy: all | ip_address | ip_address_pool."
         },
         "wanNetworkGroup": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanNatWanGroup",
           "description": "WAN interface group the mapping applies to: WAN | WAN2."
         }
       },
@@ -1059,6 +1594,21 @@
       },
       "type": "object"
     },
+    "unifi:network:PortForwardDestinationInterface": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Wan",
+          "description": "Primary WAN interface.",
+          "value": "wan"
+        },
+        {
+          "name": "Wan2",
+          "description": "Secondary WAN interface.",
+          "value": "wan2"
+        }
+      ]
+    },
     "unifi:network:PortForwardDestinationIp": {
       "properties": {
         "destinationIp": {
@@ -1066,11 +1616,36 @@
           "description": "DestinationIp is the public/destination IPv4 address this entry matches, or \"any\"."
         },
         "interface": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:PortForwardDestinationInterface",
           "description": "WAN interface this destination IP binds to: wan | wan2."
         }
       },
       "type": "object"
+    },
+    "unifi:network:PortForwardPfwdInterface": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Wan",
+          "description": "Primary WAN interface.",
+          "value": "wan"
+        },
+        {
+          "name": "Wan2",
+          "description": "Secondary WAN interface.",
+          "value": "wan2"
+        },
+        {
+          "name": "Both",
+          "description": "Both WAN interfaces.",
+          "value": "both"
+        },
+        {
+          "name": "All",
+          "description": "All WAN interfaces.",
+          "value": "all"
+        }
+      ]
     },
     "unifi:network:PortForwardProtocol": {
       "type": "string",
@@ -1092,10 +1667,25 @@
         }
       ]
     },
+    "unifi:network:PortForwardSrcLimitingType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Ip",
+          "description": "Limit by source IP address.",
+          "value": "ip"
+        },
+        {
+          "name": "FirewallGroup",
+          "description": "Limit by firewall group.",
+          "value": "firewall_group"
+        }
+      ]
+    },
     "unifi:network:PortProfileDot1x": {
       "properties": {
         "ctrl": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:PortProfileDot1xCtrl",
           "description": "Ctrl is the 802.1X PNAC mode: auto | force_authorized | force_unauthorized | mac_based | multi_host. Defaults to \"force_authorized\"."
         },
         "idleTimeout": {
@@ -1104,6 +1694,36 @@
         }
       },
       "type": "object"
+    },
+    "unifi:network:PortProfileDot1xCtrl": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Auto",
+          "description": "802.1X authentication required.",
+          "value": "auto"
+        },
+        {
+          "name": "ForceAuthorized",
+          "description": "Always authorized.",
+          "value": "force_authorized"
+        },
+        {
+          "name": "ForceUnauthorized",
+          "description": "Always unauthorized.",
+          "value": "force_unauthorized"
+        },
+        {
+          "name": "MacBased",
+          "description": "MAC-based authentication.",
+          "value": "mac_based"
+        },
+        {
+          "name": "MultiHost",
+          "description": "Multi-host authentication.",
+          "value": "multi_host"
+        }
+      ]
     },
     "unifi:network:PortProfileEgressRateLimit": {
       "properties": {
@@ -1118,6 +1738,31 @@
       },
       "type": "object"
     },
+    "unifi:network:PortProfileFecMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "RsFec",
+          "description": "Reed-Solomon FEC.",
+          "value": "rs-fec"
+        },
+        {
+          "name": "FcFec",
+          "description": "Fire-code FEC.",
+          "value": "fc-fec"
+        },
+        {
+          "name": "Default",
+          "description": "Controller default FEC.",
+          "value": "default"
+        },
+        {
+          "name": "Disabled",
+          "description": "FEC disabled.",
+          "value": "disabled"
+        }
+      ]
+    },
     "unifi:network:PortProfileLink": {
       "properties": {
         "autoneg": {
@@ -1125,7 +1770,7 @@
           "description": "Autoneg enables auto-negotiation of speed/duplex. Defaults to true. When true it overrides the manual speed and fullDuplex settings."
         },
         "fecMode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:PortProfileFecMode",
           "description": "FecMode is the forward error correction mode: rs-fec | fc-fec | default | disabled."
         },
         "fullDuplex": {
@@ -1151,6 +1796,31 @@
         }
       },
       "type": "object"
+    },
+    "unifi:network:PortProfileOpMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Switch",
+          "description": "Switch operation mode.",
+          "value": "switch"
+        }
+      ]
+    },
+    "unifi:network:PortProfilePoeMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Auto",
+          "description": "Auto-detect and supply PoE.",
+          "value": "auto"
+        },
+        {
+          "name": "Off",
+          "description": "Disable PoE on the port.",
+          "value": "off"
+        }
+      ]
     },
     "unifi:network:PortProfilePortSecurity": {
       "properties": {
@@ -1189,6 +1859,21 @@
       },
       "type": "object"
     },
+    "unifi:network:PortProfileSettingPreference": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Auto",
+          "description": "Controller-managed configuration.",
+          "value": "auto"
+        },
+        {
+          "name": "Manual",
+          "description": "Manually configured.",
+          "value": "manual"
+        }
+      ]
+    },
     "unifi:network:PortProfileStormControl": {
       "properties": {
         "broadcastEnabled": {
@@ -1216,7 +1901,7 @@
           "description": "MulticastRate is the multicast rate in pps (0-14880000)."
         },
         "type": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:PortProfileStormControlType",
           "description": "Type selects the storm-control metric: level | rate."
         },
         "unknownUnicastEnabled": {
@@ -1233,6 +1918,41 @@
         }
       },
       "type": "object"
+    },
+    "unifi:network:PortProfileStormControlType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Level",
+          "description": "Percentage-of-bandwidth metric.",
+          "value": "level"
+        },
+        {
+          "name": "Rate",
+          "description": "Packets-per-second metric.",
+          "value": "rate"
+        }
+      ]
+    },
+    "unifi:network:PortProfileTaggedVlanMgmt": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Auto",
+          "description": "Automatically manage tagged VLANs.",
+          "value": "auto"
+        },
+        {
+          "name": "BlockAll",
+          "description": "Block all tagged VLANs.",
+          "value": "block_all"
+        },
+        {
+          "name": "Custom",
+          "description": "Use a custom tagged-VLAN set.",
+          "value": "custom"
+        }
+      ]
     },
     "unifi:network:PortProfileVlan": {
       "properties": {
@@ -1259,7 +1979,7 @@
           "description": "NativeNetworkId is the network `_id` used as the native (untagged) VLAN."
         },
         "taggedVlanMgmt": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:PortProfileTaggedVlanMgmt",
           "description": "TaggedVlanMgmt controls tagged VLAN behavior: auto | block_all | custom."
         },
         "voiceNetworkId": {
@@ -1268,6 +1988,41 @@
         }
       },
       "type": "object"
+    },
+    "unifi:network:StaticRouteGatewayType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Default",
+          "description": "Handled by the default gateway.",
+          "value": "default"
+        },
+        {
+          "name": "Switch",
+          "description": "Handled by a switch.",
+          "value": "switch"
+        }
+      ]
+    },
+    "unifi:network:StaticRouteType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "NexthopRoute",
+          "description": "Route via a next-hop IP address.",
+          "value": "nexthop-route"
+        },
+        {
+          "name": "InterfaceRoute",
+          "description": "Route out an egress interface.",
+          "value": "interface-route"
+        },
+        {
+          "name": "Blackhole",
+          "description": "Silently drop matching traffic.",
+          "value": "blackhole"
+        }
+      ]
     },
     "unifi:network:VlanDhcp": {
       "properties": {
@@ -1431,6 +2186,21 @@
       },
       "type": "object"
     },
+    "unifi:network:VlanGatewayType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Default",
+          "description": "Routed by the UniFi gateway.",
+          "value": "default"
+        },
+        {
+          "name": "Switch",
+          "description": "Layer-3 routed by a switch.",
+          "value": "switch"
+        }
+      ]
+    },
     "unifi:network:VlanIgmp": {
       "properties": {
         "fastLeave": {
@@ -1461,7 +2231,7 @@
           "description": "ProxyDownstreamNetworkIds lists downstream networks when proxyFor=some."
         },
         "proxyFor": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanIgmpProxyFor",
           "description": "ProxyFor selects downstream proxy scope: all | some | none."
         },
         "proxyUpstream": {
@@ -1486,14 +2256,34 @@
       },
       "type": "object"
     },
+    "unifi:network:VlanIgmpProxyFor": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "All",
+          "description": "Proxy for all downstream networks.",
+          "value": "all"
+        },
+        {
+          "name": "Some",
+          "description": "Proxy for selected networks.",
+          "value": "some"
+        },
+        {
+          "name": "None",
+          "description": "No downstream proxying.",
+          "value": "none"
+        }
+      ]
+    },
     "unifi:network:VlanIpv6": {
       "properties": {
         "clientAddressAssignment": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanIpv6ClientAddressAssignment",
           "description": "ClientAddressAssignment: slaac | dhcpv6."
         },
         "interfaceType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanIpv6InterfaceType",
           "description": "InterfaceType: none | static | pd | single_network."
         },
         "pdAutoPrefixIdEnabled": {
@@ -1501,7 +2291,7 @@
           "description": "PdAutoPrefixIdEnabled lets the controller auto-assign the PD prefix ID."
         },
         "pdInterface": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanIpv6PdInterface",
           "description": "PdInterface is the WAN used for prefix delegation: wan | wan2."
         },
         "pdPrefixId": {
@@ -1525,7 +2315,7 @@
           "description": "RaPreferredLifetime is the RA preferred lifetime in seconds (default 14400)."
         },
         "raPriority": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanIpv6RaPriority",
           "description": "RaPriority: high | medium | low."
         },
         "raValidLifetime": {
@@ -1533,7 +2323,7 @@
           "description": "RaValidLifetime is the RA valid lifetime in seconds (default 86400)."
         },
         "settingPreference": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanPreference",
           "description": "SettingPreference: auto | manual."
         },
         "singleNetworkInterface": {
@@ -1545,11 +2335,106 @@
           "description": "Subnet is the static IPv6 subnet (CIDR) when interfaceType=static."
         },
         "wanDelegationType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanIpv6WanDelegationType",
           "description": "WanDelegationType (WAN networks): pd | single_network | none."
         }
       },
       "type": "object"
+    },
+    "unifi:network:VlanIpv6ClientAddressAssignment": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Slaac",
+          "description": "Stateless address autoconfiguration.",
+          "value": "slaac"
+        },
+        {
+          "name": "Dhcpv6",
+          "description": "Stateful DHCPv6 assignment.",
+          "value": "dhcpv6"
+        }
+      ]
+    },
+    "unifi:network:VlanIpv6InterfaceType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "None",
+          "description": "No IPv6 addressing.",
+          "value": "none"
+        },
+        {
+          "name": "Static",
+          "description": "Static IPv6 subnet.",
+          "value": "static"
+        },
+        {
+          "name": "Pd",
+          "description": "Prefix delegation from WAN.",
+          "value": "pd"
+        },
+        {
+          "name": "SingleNetwork",
+          "description": "Derived from another network.",
+          "value": "single_network"
+        }
+      ]
+    },
+    "unifi:network:VlanIpv6PdInterface": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Wan",
+          "description": "Delegate from primary WAN.",
+          "value": "wan"
+        },
+        {
+          "name": "Wan2",
+          "description": "Delegate from secondary WAN.",
+          "value": "wan2"
+        }
+      ]
+    },
+    "unifi:network:VlanIpv6RaPriority": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "High",
+          "description": "High RA priority.",
+          "value": "high"
+        },
+        {
+          "name": "Medium",
+          "description": "Medium RA priority.",
+          "value": "medium"
+        },
+        {
+          "name": "Low",
+          "description": "Low RA priority.",
+          "value": "low"
+        }
+      ]
+    },
+    "unifi:network:VlanIpv6WanDelegationType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Pd",
+          "description": "Delegate the prefix downstream.",
+          "value": "pd"
+        },
+        {
+          "name": "SingleNetwork",
+          "description": "Assign to a single network.",
+          "value": "single_network"
+        },
+        {
+          "name": "None",
+          "description": "No delegation.",
+          "value": "none"
+        }
+      ]
     },
     "unifi:network:VlanNat": {
       "properties": {
@@ -1566,6 +2451,56 @@
         }
       },
       "type": "object"
+    },
+    "unifi:network:VlanNatOutboundMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "All",
+          "description": "NAT all outbound traffic.",
+          "value": "all"
+        },
+        {
+          "name": "IpAddress",
+          "description": "NAT to a single IP.",
+          "value": "ip_address"
+        },
+        {
+          "name": "IpAddressPool",
+          "description": "NAT to an IP pool.",
+          "value": "ip_address_pool"
+        }
+      ]
+    },
+    "unifi:network:VlanNatWanGroup": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Wan",
+          "description": "Primary WAN interface.",
+          "value": "WAN"
+        },
+        {
+          "name": "Wan2",
+          "description": "Secondary WAN interface.",
+          "value": "WAN2"
+        }
+      ]
+    },
+    "unifi:network:VlanPreference": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Auto",
+          "description": "Controller-managed automatic values.",
+          "value": "auto"
+        },
+        {
+          "name": "Manual",
+          "description": "User-specified manual values.",
+          "value": "manual"
+        }
+      ]
     },
     "unifi:network:VlanPurpose": {
       "type": "string",
@@ -1641,7 +2576,7 @@
           "description": "Dns4 is the fourth WAN DNS server."
         },
         "dnsPreference": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanPreference",
           "description": "DnsPreference: auto | manual."
         },
         "dsliteRemoteHost": {
@@ -1684,11 +2619,11 @@
           "description": "Ipv6Dns2 is the second WAN IPv6 DNS server."
         },
         "ipv6DnsPreference": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanPreference",
           "description": "Ipv6DnsPreference: auto | manual."
         },
         "loadBalanceType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanWanLoadBalanceType",
           "description": "LoadBalanceType: failover-only | weighted."
         },
         "loadBalanceWeight": {
@@ -1700,7 +2635,7 @@
           "description": "Netmask is the static WAN IPv4 netmask."
         },
         "networkGroup": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanWanNetworkGroup",
           "description": "NetworkGroup is the WAN interface group: WAN | WAN2 | WAN_LTE_FAILOVER."
         },
         "password": {
@@ -1737,11 +2672,11 @@
           "description": "SmartqUpRate is the SmartQueue upload limit in kbps."
         },
         "type": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanWanType",
           "description": "Type (purpose=wan): disabled | dhcp | static | pppoe | dslite."
         },
         "typeV6": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanWanTypeV6",
           "description": "TypeV6 (purpose=wan): disabled | slaac | dhcpv6 | static."
         },
         "username": {
@@ -1759,6 +2694,96 @@
       },
       "type": "object"
     },
+    "unifi:network:VlanWanLoadBalanceType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "FailoverOnly",
+          "description": "Use only as failover.",
+          "value": "failover-only"
+        },
+        {
+          "name": "Weighted",
+          "description": "Weighted load balancing.",
+          "value": "weighted"
+        }
+      ]
+    },
+    "unifi:network:VlanWanNetworkGroup": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Wan",
+          "description": "Primary WAN interface.",
+          "value": "WAN"
+        },
+        {
+          "name": "Wan2",
+          "description": "Secondary WAN interface.",
+          "value": "WAN2"
+        },
+        {
+          "name": "WanLteFailover",
+          "description": "LTE failover WAN interface.",
+          "value": "WAN_LTE_FAILOVER"
+        }
+      ]
+    },
+    "unifi:network:VlanWanType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Disabled",
+          "description": "WAN disabled.",
+          "value": "disabled"
+        },
+        {
+          "name": "Dhcp",
+          "description": "DHCP-assigned address.",
+          "value": "dhcp"
+        },
+        {
+          "name": "Static",
+          "description": "Static address.",
+          "value": "static"
+        },
+        {
+          "name": "Pppoe",
+          "description": "PPPoE connection.",
+          "value": "pppoe"
+        },
+        {
+          "name": "Dslite",
+          "description": "DS-Lite connection.",
+          "value": "dslite"
+        }
+      ]
+    },
+    "unifi:network:VlanWanTypeV6": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Disabled",
+          "description": "WAN IPv6 disabled.",
+          "value": "disabled"
+        },
+        {
+          "name": "Slaac",
+          "description": "SLAAC-assigned address.",
+          "value": "slaac"
+        },
+        {
+          "name": "Dhcpv6",
+          "description": "DHCPv6-assigned address.",
+          "value": "dhcpv6"
+        },
+        {
+          "name": "Static",
+          "description": "Static IPv6 address.",
+          "value": "static"
+        }
+      ]
+    },
     "unifi:network:WlanApGroups": {
       "properties": {
         "ids": {
@@ -1769,16 +2794,56 @@
           "description": "Ids are the AP groups that should broadcast this SSID."
         },
         "mode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:WlanApGroupsMode",
           "description": "Mode controls AP selection: all | groups | devices."
         }
       },
       "type": "object"
     },
+    "unifi:network:WlanApGroupsMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "All",
+          "description": "Broadcast on all APs.",
+          "value": "all"
+        },
+        {
+          "name": "Groups",
+          "description": "Broadcast on the listed AP groups.",
+          "value": "groups"
+        },
+        {
+          "name": "Devices",
+          "description": "Broadcast on the listed devices.",
+          "value": "devices"
+        }
+      ]
+    },
+    "unifi:network:WlanBand": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "2g",
+          "description": "2.4GHz band.",
+          "value": "2g"
+        },
+        {
+          "name": "5g",
+          "description": "5GHz band.",
+          "value": "5g"
+        },
+        {
+          "name": "Both",
+          "description": "Both bands.",
+          "value": "both"
+        }
+      ]
+    },
     "unifi:network:WlanBandSteering": {
       "properties": {
         "band": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:WlanBand",
           "description": "Band is the radio band: 2g | 5g | both."
         },
         "bands": {
@@ -1811,7 +2876,7 @@
     "unifi:network:WlanDtim": {
       "properties": {
         "mode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:WlanDtimMode",
           "description": "Mode controls DTIM interval handling: default | custom."
         },
         "na": {
@@ -1828,6 +2893,21 @@
         }
       },
       "type": "object"
+    },
+    "unifi:network:WlanDtimMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Default",
+          "description": "Use controller default DTIM intervals.",
+          "value": "default"
+        },
+        {
+          "name": "Custom",
+          "description": "Use per-band custom DTIM intervals.",
+          "value": "custom"
+        }
+      ]
     },
     "unifi:network:WlanIot": {
       "properties": {
@@ -1856,11 +2936,26 @@
           "description": "List is the list of MACs (XX:XX:XX:XX:XX:XX) the policy applies to."
         },
         "policy": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:WlanMacFilterPolicy",
           "description": "Policy: allow | deny."
         }
       },
       "type": "object"
+    },
+    "unifi:network:WlanMacFilterPolicy": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Allow",
+          "description": "Allow only listed MACs.",
+          "value": "allow"
+        },
+        {
+          "name": "Deny",
+          "description": "Deny listed MACs.",
+          "value": "deny"
+        }
+      ]
     },
     "unifi:network:WlanMinrate": {
       "properties": {
@@ -1889,7 +2984,7 @@
           "description": "NgEnabled enables the 2.4GHz minimum data rate control."
         },
         "settingPreference": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:WlanSettingPreference",
           "description": "SettingPreference: auto | manual."
         }
       },
@@ -1919,6 +3014,36 @@
       },
       "type": "object"
     },
+    "unifi:network:WlanNasIdentifierType": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "ApName",
+          "description": "Use the AP name.",
+          "value": "ap_name"
+        },
+        {
+          "name": "ApMac",
+          "description": "Use the AP MAC address.",
+          "value": "ap_mac"
+        },
+        {
+          "name": "Bssid",
+          "description": "Use the BSSID.",
+          "value": "bssid"
+        },
+        {
+          "name": "SiteName",
+          "description": "Use the site name.",
+          "value": "site_name"
+        },
+        {
+          "name": "Custom",
+          "description": "Use a custom value.",
+          "value": "custom"
+        }
+      ]
+    },
     "unifi:network:WlanP2p": {
       "properties": {
         "crossConnect": {
@@ -1931,6 +3056,46 @@
         }
       },
       "type": "object"
+    },
+    "unifi:network:WlanPmfCipher": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Auto",
+          "description": "Let the controller choose the PMF cipher.",
+          "value": "auto"
+        },
+        {
+          "name": "Aes128Cmac",
+          "description": "AES-128-CMAC cipher.",
+          "value": "aes-128-cmac"
+        },
+        {
+          "name": "BipGmac256",
+          "description": "BIP-GMAC-256 cipher.",
+          "value": "bip-gmac-256"
+        }
+      ]
+    },
+    "unifi:network:WlanPriority": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Medium",
+          "description": "Medium priority.",
+          "value": "medium"
+        },
+        {
+          "name": "High",
+          "description": "High priority.",
+          "value": "high"
+        },
+        {
+          "name": "Low",
+          "description": "Low priority.",
+          "value": "low"
+        }
+      ]
     },
     "unifi:network:WlanPrivatePresharedKeys": {
       "properties": {
@@ -1988,7 +3153,7 @@
           "description": "NasIdentifier is the RADIUS NAS identifier value (0-48 chars)."
         },
         "nasIdentifierType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:WlanNasIdentifierType",
           "description": "NasIdentifierType: ap_name | ap_mac | bssid | site_name | custom."
         },
         "profileId": {
@@ -1997,6 +3162,26 @@
         }
       },
       "type": "object"
+    },
+    "unifi:network:WlanRequirementMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Disabled",
+          "description": "Feature disabled.",
+          "value": "disabled"
+        },
+        {
+          "name": "Optional",
+          "description": "Feature optional.",
+          "value": "optional"
+        },
+        {
+          "name": "Required",
+          "description": "Feature required.",
+          "value": "required"
+        }
+      ]
     },
     "unifi:network:WlanRoaming": {
       "properties": {
@@ -2153,6 +3338,21 @@
         }
       ]
     },
+    "unifi:network:WlanSettingPreference": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Auto",
+          "description": "Automatic configuration.",
+          "value": "auto"
+        },
+        {
+          "name": "Manual",
+          "description": "Manual configuration.",
+          "value": "manual"
+        }
+      ]
+    },
     "unifi:network:WlanVlanTagging": {
       "properties": {
         "enabled": {
@@ -2183,7 +3383,7 @@
     "unifi:network:WlanWpa": {
       "properties": {
         "enc": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:WlanWpaEnc",
           "description": "Enc is the WPA encryption cipher: auto | ccmp | gcmp | ccmp-256 | gcmp-256."
         },
         "groupRekey": {
@@ -2191,19 +3391,19 @@
           "description": "GroupRekey is the group key rekey interval in seconds (0 disables)."
         },
         "mode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:WlanWpaMode",
           "description": "Mode is the WPA mode: auto | wpa1 | wpa2."
         },
         "pmfCipher": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:WlanPmfCipher",
           "description": "PmfCipher is the PMF cipher: auto | aes-128-cmac | bip-gmac-256."
         },
         "pmfMode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:WlanRequirementMode",
           "description": "PmfMode is Protected Management Frames mode: disabled | optional | required."
         },
         "pskRadius": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:WlanRequirementMode",
           "description": "PskRadius controls RADIUS PSK auth: disabled | optional | required. This is a mode enum, not a credential, so it is not marked secret."
         }
       },
@@ -2229,6 +3429,56 @@
         }
       },
       "type": "object"
+    },
+    "unifi:network:WlanWpaEnc": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Auto",
+          "description": "Let the controller choose the cipher.",
+          "value": "auto"
+        },
+        {
+          "name": "Ccmp",
+          "description": "AES-CCMP cipher.",
+          "value": "ccmp"
+        },
+        {
+          "name": "Gcmp",
+          "description": "GCMP cipher.",
+          "value": "gcmp"
+        },
+        {
+          "name": "Ccmp256",
+          "description": "AES-CCMP-256 cipher.",
+          "value": "ccmp-256"
+        },
+        {
+          "name": "Gcmp256",
+          "description": "GCMP-256 cipher.",
+          "value": "gcmp-256"
+        }
+      ]
+    },
+    "unifi:network:WlanWpaMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Auto",
+          "description": "Let the controller choose the WPA mode.",
+          "value": "auto"
+        },
+        {
+          "name": "Wpa1",
+          "description": "WPA1 only.",
+          "value": "wpa1"
+        },
+        {
+          "name": "Wpa2",
+          "description": "WPA2 only.",
+          "value": "wpa2"
+        }
+      ]
     },
     "unifi:protect:AlarmCondition": {
       "properties": {
@@ -2761,7 +4011,7 @@
       "description": "A classic (per-ruleset) UniFi firewall rule. Rules are evaluated in order within a ruleset, controlled by ruleIndex. Use firewall groups, networks, addresses, ports and connection-state matching to permit or block traffic. Match selectors are grouped into nested objects (protocolMatch, source, destination, connectionState).",
       "properties": {
         "action": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:FirewallRuleAction",
           "description": "Action taken on matching traffic: accept | drop | reject."
         },
         "connectionState": {
@@ -2782,7 +4032,7 @@
           "description": "FirewallRuleId is the controller-assigned identifier (the UniFi `_id`)."
         },
         "ipSec": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:FirewallRuleIpSec",
           "description": "IpSec matches on IPsec encapsulation: match-ipsec | match-none."
         },
         "logging": {
@@ -2806,7 +4056,7 @@
           "description": "Ruleset the rule belongs to, from the perspective of the security gateway: WAN_IN | WAN_OUT | WAN_LOCAL | LAN_IN | LAN_OUT | LAN_LOCAL | GUEST_IN | GUEST_OUT | GUEST_LOCAL | WANv6_IN | WANv6_OUT | WANv6_LOCAL | LANv6_IN | LANv6_OUT | LANv6_LOCAL | GUESTv6_IN | GUESTv6_OUT | GUESTv6_LOCAL."
         },
         "settingPreference": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:FirewallRuleSettingPreference",
           "description": "SettingPreference controls whether the rule uses automatic or manual settings: auto | manual."
         },
         "source": {
@@ -2821,7 +4071,7 @@
       ],
       "inputProperties": {
         "action": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:FirewallRuleAction",
           "description": "Action taken on matching traffic: accept | drop | reject."
         },
         "connectionState": {
@@ -2838,7 +4088,7 @@
           "default": true
         },
         "ipSec": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:FirewallRuleIpSec",
           "description": "IpSec matches on IPsec encapsulation: match-ipsec | match-none."
         },
         "logging": {
@@ -2862,7 +4112,7 @@
           "description": "Ruleset the rule belongs to, from the perspective of the security gateway: WAN_IN | WAN_OUT | WAN_LOCAL | LAN_IN | LAN_OUT | LAN_LOCAL | GUEST_IN | GUEST_OUT | GUEST_LOCAL | WANv6_IN | WANv6_OUT | WANv6_LOCAL | LANv6_IN | LANv6_OUT | LANv6_LOCAL | GUESTv6_IN | GUESTv6_OUT | GUESTv6_LOCAL."
         },
         "settingPreference": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:FirewallRuleSettingPreference",
           "description": "SettingPreference controls whether the rule uses automatic or manual settings: auto | manual."
         },
         "source": {
@@ -3029,7 +4279,7 @@
           "description": "Name of the port-forwarding rule (1-128 characters)."
         },
         "pfwdInterface": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:PortForwardPfwdInterface",
           "description": "PfwdInterface selects the inbound WAN interface: wan | wan2 | both | all."
         },
         "portForwardId": {
@@ -3055,7 +4305,7 @@
           "description": "SrcLimitingEnabled enables restricting the rule by source address or firewall group."
         },
         "srcLimitingType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:PortForwardSrcLimitingType",
           "description": "SrcLimitingType selects how the source is limited: ip | firewall_group."
         }
       },
@@ -3100,7 +4350,7 @@
           "description": "Name of the port-forwarding rule (1-128 characters)."
         },
         "pfwdInterface": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:PortForwardPfwdInterface",
           "description": "PfwdInterface selects the inbound WAN interface: wan | wan2 | both | all."
         },
         "proto": {
@@ -3122,7 +4372,7 @@
           "description": "SrcLimitingEnabled enables restricting the rule by source address or firewall group."
         },
         "srcLimitingType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:PortForwardSrcLimitingType",
           "description": "SrcLimitingType selects how the source is limited: ip | firewall_group."
         }
       }
@@ -3155,12 +4405,12 @@
           "description": "Name is a descriptive name for the port profile."
         },
         "opMode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:PortProfileOpMode",
           "description": "OpMode is the operation mode. Only \"switch\" is supported. Defaults to \"switch\".",
           "default": "switch"
         },
         "poeMode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:PortProfilePoeMode",
           "description": "PoeMode controls Power-over-Ethernet: auto | off (the values go-unifi accepts for a port profile). Per-port passthrough/pasv24 modes are set via a Device port override's poeMode, not here."
         },
         "portKeepaliveEnabled": {
@@ -3180,7 +4430,7 @@
           "description": "PriorityQueues groups the QoS priority-queue levels."
         },
         "settingPreference": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:PortProfileSettingPreference",
           "description": "SettingPreference controls config source: auto | manual."
         },
         "stormControl": {
@@ -3227,12 +4477,12 @@
           "description": "Name is a descriptive name for the port profile."
         },
         "opMode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:PortProfileOpMode",
           "description": "OpMode is the operation mode. Only \"switch\" is supported. Defaults to \"switch\".",
           "default": "switch"
         },
         "poeMode": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:PortProfilePoeMode",
           "description": "PoeMode controls Power-over-Ethernet: auto | off (the values go-unifi accepts for a port profile). Per-port passthrough/pasv24 modes are set via a Device port override's poeMode, not here."
         },
         "portKeepaliveEnabled": {
@@ -3248,7 +4498,7 @@
           "description": "PriorityQueues groups the QoS priority-queue levels."
         },
         "settingPreference": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:PortProfileSettingPreference",
           "description": "SettingPreference controls config source: auto | manual."
         },
         "stormControl": {
@@ -3286,7 +4536,7 @@
           "description": "GatewayDevice is the MAC address of the gateway device that hosts the route."
         },
         "gatewayType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:StaticRouteGatewayType",
           "description": "GatewayType selects which gateway handles the route: default | switch."
         },
         "interface": {
@@ -3310,7 +4560,7 @@
           "description": "StaticRouteId is the controller-assigned identifier (the UniFi `_id`)."
         },
         "staticRouteType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:StaticRouteType",
           "description": "StaticRouteType selects the route kind: nexthop-route | interface-route | blackhole."
         }
       },
@@ -3335,7 +4585,7 @@
           "description": "GatewayDevice is the MAC address of the gateway device that hosts the route."
         },
         "gatewayType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:StaticRouteGatewayType",
           "description": "GatewayType selects which gateway handles the route: default | switch."
         },
         "interface": {
@@ -3355,7 +4605,7 @@
           "description": "Nexthop is the next-hop IP address (required when staticRouteType=nexthop-route)."
         },
         "staticRouteType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:StaticRouteType",
           "description": "StaticRouteType selects the route kind: nexthop-route | interface-route | blackhole."
         }
       },
@@ -3595,7 +4845,7 @@
           "default": true
         },
         "gatewayType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanGatewayType",
           "description": "GatewayType: default | switch."
         },
         "igmp": {
@@ -3658,7 +4908,7 @@
           "default": "corporate"
         },
         "settingPreference": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanPreference",
           "description": "SettingPreference: auto | manual. Controls whether device-specific overrides apply."
         },
         "subnet": {
@@ -3709,7 +4959,7 @@
           "default": true
         },
         "gatewayType": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanGatewayType",
           "description": "GatewayType: default | switch."
         },
         "igmp": {
@@ -3768,7 +5018,7 @@
           "default": "corporate"
         },
         "settingPreference": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:VlanPreference",
           "description": "SettingPreference: auto | manual. Controls whether device-specific overrides apply."
         },
         "subnet": {
@@ -3866,7 +5116,7 @@
           "secret": true
         },
         "priority": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:WlanPriority",
           "description": "Priority: medium | high | low."
         },
         "privatePresharedKeys": {
@@ -4004,7 +5254,7 @@
           "secret": true
         },
         "priority": {
-          "type": "string",
+          "$ref": "#/types/unifi:network:WlanPriority",
           "description": "Priority: medium | high | low."
         },
         "privatePresharedKeys": {

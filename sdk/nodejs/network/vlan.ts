@@ -64,7 +64,7 @@ export class Vlan extends pulumi.CustomResource {
     /**
      * GatewayType: default | switch.
      */
-    declare public readonly gatewayType: pulumi.Output<string | undefined>;
+    declare public readonly gatewayType: pulumi.Output<enums.network.VlanGatewayType | undefined>;
     /**
      * Igmp groups the multicast / IGMP settings.
      */
@@ -124,7 +124,7 @@ export class Vlan extends pulumi.CustomResource {
     /**
      * SettingPreference: auto | manual. Controls whether device-specific overrides apply.
      */
-    declare public readonly settingPreference: pulumi.Output<string | undefined>;
+    declare public readonly settingPreference: pulumi.Output<enums.network.VlanPreference | undefined>;
     /**
      * Subnet is the gateway IP/CIDR for the network, e.g. 192.168.20.1/24.
      */
@@ -246,7 +246,7 @@ export interface VlanArgs {
     /**
      * GatewayType: default | switch.
      */
-    gatewayType?: pulumi.Input<string | undefined>;
+    gatewayType?: pulumi.Input<enums.network.VlanGatewayType | undefined>;
     /**
      * Igmp groups the multicast / IGMP settings.
      */
@@ -302,7 +302,7 @@ export interface VlanArgs {
     /**
      * SettingPreference: auto | manual. Controls whether device-specific overrides apply.
      */
-    settingPreference?: pulumi.Input<string | undefined>;
+    settingPreference?: pulumi.Input<enums.network.VlanPreference | undefined>;
     /**
      * Subnet is the gateway IP/CIDR for the network, e.g. 192.168.20.1/24.
      */

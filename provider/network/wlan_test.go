@@ -18,14 +18,14 @@ func TestWlanRoundTrip(t *testing.T) {
 		MloEnabled:   ptr(true),
 		L2Isolation:  ptr(false),
 		IsGuest:      ptr(false),
-		Priority:     ptr("high"),
+		Priority:     ptr(WlanPriority("high")),
 
 		Wpa: &WlanWpa{
-			Mode:       ptr("wpa2"),
-			Enc:        ptr("gcmp-256"),
-			PskRadius:  ptr("optional"),
-			PmfMode:    ptr("required"),
-			PmfCipher:  ptr("bip-gmac-256"),
+			Mode:       ptr(WlanWpaMode("wpa2")),
+			Enc:        ptr(WlanWpaEnc("gcmp-256")),
+			PskRadius:  ptr(WlanRequirementMode("optional")),
+			PmfMode:    ptr(WlanRequirementMode("required")),
+			PmfCipher:  ptr(WlanPmfCipher("bip-gmac-256")),
 			GroupRekey: ptr(3600),
 		},
 		Wpa3: &WlanWpa3{
@@ -51,19 +51,19 @@ func TestWlanRoundTrip(t *testing.T) {
 		},
 		ApGroups: &WlanApGroups{
 			Ids:  []string{"ap1", "ap2"},
-			Mode: ptr("groups"),
+			Mode: ptr(WlanApGroupsMode("groups")),
 		},
 		VlanTagging: &WlanVlanTagging{
 			Vlan:    ptr(20),
 			Enabled: ptr(true),
 		},
 		BandSteering: &WlanBandSteering{
-			Band:      ptr("both"),
+			Band:      ptr(WlanBand("both")),
 			Bands:     []string{"2g", "5g", "6g"},
 			No2GhzOui: ptr(true),
 		},
 		Dtim: &WlanDtim{
-			Mode: ptr("custom"),
+			Mode: ptr(WlanDtimMode("custom")),
 			Na:   ptr(3),
 			Ng:   ptr(1),
 			SixE: ptr(3),
@@ -73,11 +73,11 @@ func TestWlanRoundTrip(t *testing.T) {
 			NaDataRateKbps:    ptr(6000),
 			NgEnabled:         ptr(true),
 			NgDataRateKbps:    ptr(1000),
-			SettingPreference: ptr("manual"),
+			SettingPreference: ptr(WlanSettingPreference("manual")),
 		},
 		MacFilter: &WlanMacFilter{
 			Enabled: ptr(true),
-			Policy:  ptr("allow"),
+			Policy:  ptr(WlanMacFilterPolicy("allow")),
 			List:    []string{"aa:bb:cc:dd:ee:ff"},
 		},
 		Schedule: &WlanSchedule{
@@ -110,7 +110,7 @@ func TestWlanRoundTrip(t *testing.T) {
 			MacaclEmptyPassword: ptr(true),
 			DasEnabled:          ptr(true),
 			NasIdentifier:       ptr("nas1"),
-			NasIdentifierType:   ptr("custom"),
+			NasIdentifierType:   ptr(WlanNasIdentifierType("custom")),
 		},
 		PrivatePresharedKeys: &WlanPrivatePresharedKeys{
 			Enabled: ptr(true),

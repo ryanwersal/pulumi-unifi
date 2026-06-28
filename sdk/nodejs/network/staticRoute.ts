@@ -2,6 +2,9 @@
 // *** Do not edit by hand unless you're certain you know what you are doing! ***
 
 import * as pulumi from "@pulumi/pulumi";
+import * as inputs from "../types/input";
+import * as outputs from "../types/output";
+import * as enums from "../types/enums";
 import * as utilities from "../utilities";
 
 /**
@@ -49,7 +52,7 @@ export class StaticRoute extends pulumi.CustomResource {
     /**
      * GatewayType selects which gateway handles the route: default | switch.
      */
-    declare public readonly gatewayType: pulumi.Output<string | undefined>;
+    declare public readonly gatewayType: pulumi.Output<enums.network.StaticRouteGatewayType | undefined>;
     /**
      * Interface is the egress interface when staticRouteType=interface-route: WAN1 | WAN2 | a network ID.
      */
@@ -73,7 +76,7 @@ export class StaticRoute extends pulumi.CustomResource {
     /**
      * StaticRouteType selects the route kind: nexthop-route | interface-route | blackhole.
      */
-    declare public readonly staticRouteType: pulumi.Output<string>;
+    declare public readonly staticRouteType: pulumi.Output<enums.network.StaticRouteType>;
 
     /**
      * Create a StaticRoute resource with the given unique name, arguments, and options.
@@ -141,7 +144,7 @@ export interface StaticRouteArgs {
     /**
      * GatewayType selects which gateway handles the route: default | switch.
      */
-    gatewayType?: pulumi.Input<string | undefined>;
+    gatewayType?: pulumi.Input<enums.network.StaticRouteGatewayType | undefined>;
     /**
      * Interface is the egress interface when staticRouteType=interface-route: WAN1 | WAN2 | a network ID.
      */
@@ -161,5 +164,5 @@ export interface StaticRouteArgs {
     /**
      * StaticRouteType selects the route kind: nexthop-route | interface-route | blackhole.
      */
-    staticRouteType: pulumi.Input<string>;
+    staticRouteType: pulumi.Input<enums.network.StaticRouteType>;
 }
