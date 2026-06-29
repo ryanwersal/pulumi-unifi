@@ -27,34 +27,45 @@ func TestCameraToPatchRoundTrip(t *testing.T) {
 		SmartDetectAudioTypes:  []string{"smoke"},
 	}
 
-	p := args.toPatch()
+	body := args.toPatchBody()
 
-	if p.Name != "Front Door" {
-		t.Errorf("Name = %q, want Front Door", p.Name)
+	if body["name"] != "Front Door" {
+		t.Errorf("name = %v, want Front Door", body["name"])
 	}
-	if p.MicVolume != 80 {
-		t.Errorf("MicVolume = %d, want 80", p.MicVolume)
+	if body["micVolume"] != 80 {
+		t.Errorf("micVolume = %v, want 80", body["micVolume"])
 	}
-	if p.VideoMode != "highFps" {
-		t.Errorf("VideoMode = %q, want highFps", p.VideoMode)
+	if body["videoMode"] != "highFps" {
+		t.Errorf("videoMode = %v, want highFps", body["videoMode"])
 	}
-	if p.HdrType != "auto" {
-		t.Errorf("HdrType = %q, want auto", p.HdrType)
+	if body["hdrType"] != "auto" {
+		t.Errorf("hdrType = %v, want auto", body["hdrType"])
 	}
-	if !p.LedSettings.IsEnabled {
-		t.Error("LedSettings.IsEnabled = false, want true")
+	led, _ := body["ledSettings"].(map[string]any)
+	if led["isEnabled"] != true {
+		t.Errorf("ledSettings.isEnabled = %v, want true", led["isEnabled"])
 	}
-	if !p.OsdSettings.IsNameEnabled || !p.OsdSettings.IsLogoEnabled {
-		t.Error("OsdSettings name/logo should be enabled")
+	osd, _ := body["osdSettings"].(map[string]any)
+	if osd["isNameEnabled"] != true || osd["isLogoEnabled"] != true {
+		t.Error("osd name/logo should be enabled")
 	}
-	if p.LcdMessage.Type != "CUSTOM_MESSAGE" || p.LcdMessage.Text != "Be right there" || p.LcdMessage.ResetAt != 1700000000000 {
-		t.Errorf("LcdMessage = %+v, want CUSTOM_MESSAGE/Be right there/1700000000000", p.LcdMessage)
+	// The off direction must be transmitted (the bug fix): false present, not dropped.
+	if v, ok := osd["isDateEnabled"]; !ok || v != false {
+		t.Errorf("osd isDateEnabled = %v (present=%v), want false present", v, ok)
 	}
-	if len(p.SmartDetectSettings.ObjectTypes) != 2 || p.SmartDetectSettings.ObjectTypes[0] != "person" {
-		t.Errorf("SmartDetectSettings.ObjectTypes = %v, want [person vehicle]", p.SmartDetectSettings.ObjectTypes)
+	if v, ok := osd["isDebugEnabled"]; !ok || v != false {
+		t.Errorf("osd isDebugEnabled = %v (present=%v), want false present", v, ok)
 	}
-	if len(p.SmartDetectSettings.AudioTypes) != 1 || p.SmartDetectSettings.AudioTypes[0] != "smoke" {
-		t.Errorf("SmartDetectSettings.AudioTypes = %v, want [smoke]", p.SmartDetectSettings.AudioTypes)
+	lcd, _ := body["lcdMessage"].(map[string]any)
+	if lcd["type"] != "CUSTOM_MESSAGE" || lcd["text"] != "Be right there" || lcd["resetAt"] != 1700000000000 {
+		t.Errorf("lcdMessage = %+v, want CUSTOM_MESSAGE/Be right there/1700000000000", lcd)
+	}
+	smart, _ := body["smartDetectSettings"].(map[string]any)
+	if objs, _ := smart["objectTypes"].([]string); len(objs) != 2 || objs[0] != "person" {
+		t.Errorf("smartDetect objectTypes = %v, want [person vehicle]", smart["objectTypes"])
+	}
+	if auds, _ := smart["audioTypes"].([]string); len(auds) != 1 || auds[0] != "smoke" {
+		t.Errorf("smartDetect audioTypes = %v, want [smoke]", smart["audioTypes"])
 	}
 
 	// Build a device echoing the patch and confirm stateFrom maps it back.

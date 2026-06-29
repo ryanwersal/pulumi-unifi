@@ -5,8 +5,10 @@ package protect
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	protecttypes "github.com/ClifHouck/unified/types"
+	"github.com/filipowm/go-unifi/unifi"
 	"github.com/pulumi/pulumi-go-provider/infer"
 
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
@@ -107,51 +109,82 @@ func (s *CameraState) Annotate(a infer.Annotator) {
 	a.Describe(&s.State, "State is the connection state, e.g. \"CONNECTED\" (read-only).")
 }
 
-func (a CameraArgs) toPatch() *protecttypes.CameraPatchRequest {
-	p := &protecttypes.CameraPatchRequest{}
-	if a.Name != nil {
-		p.Name = *a.Name
+// cameraPatchPath is the Protect integration API camera resource.
+const cameraPatchPath = "/proxy/protect/integration/v1/cameras/"
+
+// toPatchBody builds the PATCH body as a map so explicit `false` toggles and
+// empty smart-detect lists survive marshaling. The typed CameraPatchRequest
+// can't: its bool/slice fields are `omitempty` (and the nested settings structs
+// `omitzero`), so a false/empty value is dropped and the toggle can never be
+// turned off. Strings/ints keep the "omit zero" behavior (the API ignores a 0
+// micVolume / empty string).
+func (a CameraArgs) toPatchBody() map[string]any {
+	body := map[string]any{}
+	if a.Name != nil && *a.Name != "" {
+		body["name"] = *a.Name
 	}
-	if a.MicVolume != nil {
-		p.MicVolume = *a.MicVolume
+	if a.MicVolume != nil && *a.MicVolume != 0 {
+		body["micVolume"] = *a.MicVolume
 	}
-	if a.VideoMode != nil {
-		p.VideoMode = *a.VideoMode
+	if a.VideoMode != nil && *a.VideoMode != "" {
+		body["videoMode"] = *a.VideoMode
 	}
-	if a.HdrType != nil {
-		p.HdrType = *a.HdrType
+	if a.HdrType != nil && *a.HdrType != "" {
+		body["hdrType"] = *a.HdrType
 	}
 	if a.LedEnabled != nil {
-		p.LedSettings.IsEnabled = *a.LedEnabled
+		body["ledSettings"] = map[string]any{"isEnabled": *a.LedEnabled}
 	}
+	osd := map[string]any{}
 	if a.OsdNameEnabled != nil {
-		p.OsdSettings.IsNameEnabled = *a.OsdNameEnabled
+		osd["isNameEnabled"] = *a.OsdNameEnabled
 	}
 	if a.OsdDateEnabled != nil {
-		p.OsdSettings.IsDateEnabled = *a.OsdDateEnabled
+		osd["isDateEnabled"] = *a.OsdDateEnabled
 	}
 	if a.OsdLogoEnabled != nil {
-		p.OsdSettings.IsLogoEnabled = *a.OsdLogoEnabled
+		osd["isLogoEnabled"] = *a.OsdLogoEnabled
 	}
 	if a.OsdDebugEnabled != nil {
-		p.OsdSettings.IsDebugEnabled = *a.OsdDebugEnabled
+		osd["isDebugEnabled"] = *a.OsdDebugEnabled
 	}
-	if a.LcdMessageType != nil {
-		p.LcdMessage.Type = *a.LcdMessageType
+	if len(osd) > 0 {
+		body["osdSettings"] = osd
 	}
-	if a.LcdMessageText != nil {
-		p.LcdMessage.Text = *a.LcdMessageText
+	lcd := map[string]any{}
+	if a.LcdMessageType != nil && *a.LcdMessageType != "" {
+		lcd["type"] = *a.LcdMessageType
 	}
-	if a.LcdMessageResetAt != nil {
-		p.LcdMessage.ResetAt = *a.LcdMessageResetAt
+	if a.LcdMessageText != nil && *a.LcdMessageText != "" {
+		lcd["text"] = *a.LcdMessageText
 	}
+	if a.LcdMessageResetAt != nil && *a.LcdMessageResetAt != 0 {
+		lcd["resetAt"] = *a.LcdMessageResetAt
+	}
+	if len(lcd) > 0 {
+		body["lcdMessage"] = lcd
+	}
+	smart := map[string]any{}
 	if a.SmartDetectObjectTypes != nil {
-		p.SmartDetectSettings.ObjectTypes = a.SmartDetectObjectTypes
+		smart["objectTypes"] = a.SmartDetectObjectTypes
 	}
 	if a.SmartDetectAudioTypes != nil {
-		p.SmartDetectSettings.AudioTypes = a.SmartDetectAudioTypes
+		smart["audioTypes"] = a.SmartDetectAudioTypes
 	}
-	return p
+	if len(smart) > 0 {
+		body["smartDetectSettings"] = smart
+	}
+	return body
+}
+
+// cameraPatch PATCHes the camera via the go-unifi client (which carries the
+// X-API-Key) with a raw body, then decodes the updated camera.
+func cameraPatch(ctx context.Context, nc unifi.Client, id string, body map[string]any) (*protecttypes.Camera, error) {
+	var cam protecttypes.Camera
+	if err := nc.Do(ctx, http.MethodPatch, cameraPatchPath+id, body, &cam); err != nil {
+		return nil, err
+	}
+	return &cam, nil
 }
 
 // cameraStrPtr reflects a device string, falling back to the prior input when empty.
@@ -215,15 +248,15 @@ func (Camera) Create(ctx context.Context, req infer.CreateRequest[CameraArgs]) (
 	if req.DryRun {
 		return infer.CreateResponse[CameraState]{Output: CameraState{CameraArgs: req.Inputs}}, nil
 	}
-	pc, err := cfgProtect(ctx)
+	cfg := infer.GetConfig[config.Config](ctx)
+	pc, err := cfg.Protect()
 	if err != nil {
 		return infer.CreateResponse[CameraState]{}, err
 	}
-	id := protecttypes.CameraID(req.Inputs.CameraId)
-	if _, err := pc.CameraDetails(id); err != nil {
+	if _, err := pc.CameraDetails(protecttypes.CameraID(req.Inputs.CameraId)); err != nil {
 		return infer.CreateResponse[CameraState]{}, fmt.Errorf("camera %q must already be adopted in Protect: %w", req.Inputs.CameraId, err)
 	}
-	cam, err := pc.CameraPatch(id, req.Inputs.toPatch())
+	cam, err := cameraPatch(ctx, cfg.Controller(), req.Inputs.CameraId, req.Inputs.toPatchBody())
 	if err != nil {
 		return infer.CreateResponse[CameraState]{}, wrap(fmt.Sprintf("create camera %q", req.Inputs.CameraId), err)
 	}
@@ -250,11 +283,12 @@ func (Camera) Update(ctx context.Context, req infer.UpdateRequest[CameraArgs, Ca
 	if req.DryRun {
 		return infer.UpdateResponse[CameraState]{Output: CameraState{CameraArgs: req.Inputs}}, nil
 	}
-	pc, err := cfgProtect(ctx)
-	if err != nil {
+	cfg := infer.GetConfig[config.Config](ctx)
+	// Protect requires an API key; gate on it for a clear error before patching.
+	if _, err := cfg.Protect(); err != nil {
 		return infer.UpdateResponse[CameraState]{}, err
 	}
-	cam, err := pc.CameraPatch(protecttypes.CameraID(req.ID), req.Inputs.toPatch())
+	cam, err := cameraPatch(ctx, cfg.Controller(), req.ID, req.Inputs.toPatchBody())
 	if err != nil {
 		return infer.UpdateResponse[CameraState]{}, wrap(fmt.Sprintf("update camera %q", req.ID), err)
 	}

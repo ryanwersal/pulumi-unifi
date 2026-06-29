@@ -232,14 +232,19 @@ func headerList(m map[string]string) []protectapi.Header {
 // actions (e.g. notifications added in the UI) are not representable and are
 // skipped; this resource owns the actions list, so they disappear on the next
 // update anyway.
-func alarmStateFrom(auto protectapi.Automation) AlarmAutomationState {
+func alarmStateFrom(auto protectapi.Automation, prior AlarmAutomationArgs) AlarmAutomationState {
 	args := AlarmAutomationArgs{
 		Name:    auto.Name,
 		Enabled: ptr(auto.Enable),
-		Cooldown: &AlarmCooldown{
+	}
+	// Cooldown has no input default (a default can't be applied to a nil optional
+	// struct pointer), so only surface it when the user managed it — otherwise an
+	// omitted cooldown would reappear on refresh as a spurious diff.
+	if prior.Cooldown != nil {
+		args.Cooldown = &AlarmCooldown{
 			Enabled:   auto.Cooldown.Enable,
 			TimeoutMs: auto.Cooldown.Timeout,
-		},
+		}
 	}
 	for _, s := range auto.Sources {
 		args.Sources = append(args.Sources, AlarmSource{Device: s.Device, Type: ptr(s.Type)})
@@ -292,7 +297,7 @@ func (AlarmAutomation) Create(ctx context.Context, req infer.CreateRequest[Alarm
 	if created.ID == "" {
 		return infer.CreateResponse[AlarmAutomationState]{}, infer.ProviderErrorf("created alarm automation but controller returned no ID")
 	}
-	return infer.CreateResponse[AlarmAutomationState]{ID: created.ID, Output: alarmStateFrom(created)}, nil
+	return infer.CreateResponse[AlarmAutomationState]{ID: created.ID, Output: alarmStateFrom(created, req.Inputs)}, nil
 }
 
 func (AlarmAutomation) Read(ctx context.Context, req infer.ReadRequest[AlarmAutomationArgs, AlarmAutomationState]) (infer.ReadResponse[AlarmAutomationArgs, AlarmAutomationState], error) {
@@ -309,7 +314,7 @@ func (AlarmAutomation) Read(ctx context.Context, req infer.ReadRequest[AlarmAuto
 	if err := json.Unmarshal(raw, &auto); err != nil {
 		return infer.ReadResponse[AlarmAutomationArgs, AlarmAutomationState]{}, fmt.Errorf("decode alarm automation %q: %w", req.ID, err)
 	}
-	st := alarmStateFrom(auto)
+	st := alarmStateFrom(auto, req.State.AlarmAutomationArgs)
 	return infer.ReadResponse[AlarmAutomationArgs, AlarmAutomationState]{ID: req.ID, Inputs: st.AlarmAutomationArgs, State: st}, nil
 }
 
@@ -336,7 +341,7 @@ func (AlarmAutomation) Update(ctx context.Context, req infer.UpdateRequest[Alarm
 	if err != nil {
 		return infer.UpdateResponse[AlarmAutomationState]{}, err
 	}
-	return infer.UpdateResponse[AlarmAutomationState]{Output: alarmStateFrom(updated)}, nil
+	return infer.UpdateResponse[AlarmAutomationState]{Output: alarmStateFrom(updated, req.Inputs)}, nil
 }
 
 func (AlarmAutomation) Delete(ctx context.Context, req infer.DeleteRequest[AlarmAutomationState]) (infer.DeleteResponse, error) {

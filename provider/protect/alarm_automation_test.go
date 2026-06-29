@@ -97,7 +97,7 @@ func TestAlarmStateRoundTrip(t *testing.T) {
 		t.Fatalf("toAutomation: %v", err)
 	}
 	auto.ID = "6746a0a203df5603e4001e3b"
-	st := alarmStateFrom(auto)
+	st := alarmStateFrom(auto, args)
 
 	if st.AutomationId != auto.ID {
 		t.Errorf("AutomationId = %q", st.AutomationId)
@@ -119,9 +119,19 @@ func TestAlarmStateFromSkipsNonHTTPActions(t *testing.T) {
 			{Type: "HTTP_REQUEST", Metadata: json.RawMessage(`{"url":"https://example.test","method":"POST","headers":[],"timeout":30000,"useThumbnail":true}`), Order: -1},
 		},
 	}
-	st := alarmStateFrom(auto)
+	st := alarmStateFrom(auto, AlarmAutomationArgs{})
 	if len(st.WebhookActions) != 1 || st.WebhookActions[0].Url != "https://example.test" {
 		t.Errorf("expected only the HTTP_REQUEST action mapped: %+v", st.WebhookActions)
+	}
+}
+
+func TestAlarmStateFromCooldownFollowsPrior(t *testing.T) {
+	auto := protectapi.Automation{Name: "n", Cooldown: protectapi.Cooldown{Enable: false, Timeout: defaultCooldownMs}}
+	if st := alarmStateFrom(auto, AlarmAutomationArgs{}); st.Cooldown != nil {
+		t.Errorf("unmanaged cooldown should stay nil (no spurious diff), got %+v", st.Cooldown)
+	}
+	if st := alarmStateFrom(auto, AlarmAutomationArgs{Cooldown: &AlarmCooldown{}}); st.Cooldown == nil {
+		t.Error("managed cooldown should surface")
 	}
 }
 

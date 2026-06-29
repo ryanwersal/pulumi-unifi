@@ -5,6 +5,8 @@ package provider
 import (
 	"context"
 	"fmt"
+	"net/http"
+	"strings"
 	"testing"
 
 	protecttypes "github.com/ClifHouck/unified/types"
@@ -77,6 +79,9 @@ type fakeNetwork struct {
 	firewallGrp  map[string]*unifi.FirewallGroup
 	dnsRecords   map[string]*unifi.DNSRecord
 	userGroups   map[string]*unifi.UserGroup
+	// cameras backs the raw Protect camera PATCH (Camera writes go through the
+	// go-unifi client's Do, not the typed Protect client).
+	cameras map[string]*protecttypes.Camera
 }
 
 func newFakeNetwork() *fakeNetwork {
@@ -88,6 +93,37 @@ func newFakeNetwork() *fakeNetwork {
 }
 
 func (f *fakeNetwork) id(prefix string) string { f.seq++; return fmt.Sprintf("%s-%d", prefix, f.seq) }
+
+// Do handles the raw Protect camera PATCH; it applies the map body (including
+// explicit false toggles) to the shared camera and echoes it back.
+func (f *fakeNetwork) Do(_ context.Context, method, apiPath string, reqBody, respBody any) error {
+	if method != http.MethodPatch || !strings.Contains(apiPath, "/cameras/") {
+		panic("fakeNetwork.Do: unexpected " + method + " " + apiPath)
+	}
+	id := apiPath[strings.LastIndex(apiPath, "/")+1:]
+	cam, ok := f.cameras[id]
+	if !ok {
+		return unifi.ErrNotFound
+	}
+	body, _ := reqBody.(map[string]any)
+	if v, ok := body["name"].(string); ok {
+		cam.Name = v
+	}
+	if led, ok := body["ledSettings"].(map[string]any); ok {
+		if v, ok := led["isEnabled"].(bool); ok {
+			cam.LedSettings.IsEnabled = v
+		}
+	}
+	if osd, ok := body["osdSettings"].(map[string]any); ok {
+		if v, ok := osd["isNameEnabled"].(bool); ok {
+			cam.OsdSettings.IsNameEnabled = v
+		}
+	}
+	if out, ok := respBody.(*protecttypes.Camera); ok {
+		*out = *cam
+	}
+	return nil
+}
 
 func (f *fakeNetwork) CreateFirewallGroup(_ context.Context, _ string, d *unifi.FirewallGroup) (*unifi.FirewallGroup, error) {
 	cp := *d
@@ -201,18 +237,6 @@ func (f *fakeProtect) CameraDetails(id protecttypes.CameraID) (*protecttypes.Cam
 	return &out, nil
 }
 
-func (f *fakeProtect) CameraPatch(id protecttypes.CameraID, req *protecttypes.CameraPatchRequest) (*protecttypes.Camera, error) {
-	cam, ok := f.cameras[string(id)]
-	if !ok {
-		return nil, fmt.Errorf("got unexpected http code 404 for camera %s", id)
-	}
-	if req.Name != "" {
-		cam.Name = req.Name
-	}
-	out := *cam
-	return &out, nil
-}
-
 // --- lifecycle tests ---
 
 func TestFirewallGroupLifecycle(t *testing.T) {
@@ -303,22 +327,34 @@ func TestUserGroupLifecycle(t *testing.T) {
 }
 
 func TestCameraLifecycle(t *testing.T) {
-	fp := &fakeProtect{cameras: map[string]*protecttypes.Camera{
-		"cam-1": {ID: "cam-1", Name: "old", ModelKey: "UVC-G4", State: "CONNECTED"},
-	}}
-	server := newLifecycleServer(t, newFakeNetwork(), fp)
+	cam := &protecttypes.Camera{ID: "cam-1", Name: "old", ModelKey: "UVC-G4", State: "CONNECTED"}
+	cam.LedSettings.IsEnabled = true
+	cam.OsdSettings.IsNameEnabled = true
+	cameras := map[string]*protecttypes.Camera{"cam-1": cam}
+	fp := &fakeProtect{cameras: cameras}
+	fn := newFakeNetwork()
+	fn.cameras = cameras // the Protect read fake and the raw-PATCH fake share state
+	server := newLifecycleServer(t, fn, fp)
 	integration.LifeCycleTest{
 		Resource: "unifi:protect:Camera",
 		Create: integration.Operation{
 			Inputs: pmap(map[string]property.Value{
-				"cameraId": property.New("cam-1"),
-				"name":     property.New("Front Door"),
+				"cameraId":       property.New("cam-1"),
+				"name":           property.New("Front Door"),
+				"ledEnabled":     property.New(false), // turning a toggle OFF must land (the bug fix)
+				"osdNameEnabled": property.New(false),
 			}),
 			Hook: func(_, out property.Map) {
 				eq(t, out, "cameraId", "cam-1")
 				eq(t, out, "name", "Front Door")
 				eq(t, out, "type", "UVC-G4")
 				eq(t, out, "state", "CONNECTED")
+				if v := out.Get("ledEnabled"); !v.IsBool() || v.AsBool() {
+					t.Errorf("ledEnabled = %v, want false (off toggle must transmit)", v)
+				}
+				if v := out.Get("osdNameEnabled"); !v.IsBool() || v.AsBool() {
+					t.Errorf("osdNameEnabled = %v, want false", v)
+				}
 			},
 		},
 		Updates: []integration.Operation{{
