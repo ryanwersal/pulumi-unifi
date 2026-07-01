@@ -11,6 +11,13 @@ svu = "3.4.0"
 # Used to build/publish the generated TypeScript SDK.
 node = "24.15.0"
 
+[hooks]
+# node 24.15.0 bundles npm 11.12.1, too old for the trusted-publishing
+# permission flags (npm trust --allow-publish); pin a newer npm in place.
+# A "npm:npm" tool entry can't do this — node's bundled npm always wins PATH,
+# so overwrite it inside the node install dir. Guarded to skip when current.
+postinstall = '[ "$(npm --version)" = "11.18.0" ] || npm install --global --prefix "$(mise where node)" npm@11.18.0'
+
 [env]
 # Plugin name (Pulumi convention: the binary is pulumi-resource-<NAME>).
 PROVIDER_NAME = "unifi"
@@ -76,7 +83,7 @@ git checkout -- "$SDK_DIR"   # undo the throwaway 0.0.1 regen
 
 [tasks.trust]
 description = "One-time: configure npm trusted publishing (OIDC) for the release workflow"
-run = "npm trust github $NPM_PACKAGE --file release.yml --repo $REPO -y"
+run = "npm trust github $NPM_PACKAGE --file release.yml --repository $REPO --allow-publish --yes"
 
 [tasks.snapshot]
 description = "Local cross-platform release build, no publish — sanity check before tagging"
