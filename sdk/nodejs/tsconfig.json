@@ -21,6 +21,9 @@
     "files": [
         "config/index.ts",
         "config/vars.ts",
+        "drive/index.ts",
+        "drive/nfsExport.ts",
+        "drive/share.ts",
         "index.ts",
         "network/device.ts",
         "network/dnsRecord.ts",
@@ -39,6 +42,7 @@
         "protect/camera.ts",
         "protect/index.ts",
         "provider.ts",
+        "types/enums/drive/index.ts",
         "types/enums/index.ts",
         "types/enums/network/index.ts",
         "types/index.ts",

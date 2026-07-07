@@ -16,6 +16,8 @@ import (
 	"github.com/filipowm/go-unifi/unifi"
 	"github.com/pulumi/pulumi-go-provider/infer"
 	"github.com/sirupsen/logrus"
+
+	"github.com/ryanwersal/pulumi-unifi/provider/internal/driveapi"
 )
 
 // Config is the provider configuration. Secret fields are marked
@@ -35,8 +37,19 @@ type Config struct {
 	Password *string `pulumi:"password,optional" provider:"secret"`
 	// Site is the UniFi site name. Defaults to "default".
 	Site *string `pulumi:"site,optional"`
-	// InsecureTLS skips TLS verification (self-signed controller certs).
+	// InsecureTLS skips TLS verification (self-signed controller certs). Applies
+	// to both the controller and the UNAS appliance.
 	InsecureTLS *bool `pulumi:"insecureTls,optional"`
+
+	// UnasURL is the base URL of the UNAS appliance that hosts UniFi Drive, e.g.
+	// https://192.168.1.20. This is a SEPARATE host from `url`: the UNAS is its
+	// own UniFi OS console, not reachable through the main controller.
+	UnasURL *string `pulumi:"unasUrl,optional"`
+	// UnasUsername is a LOCAL UniFi OS admin account on the UNAS appliance (Drive
+	// has no API-key auth; cloud/SSO logins do not work for the local API).
+	UnasUsername *string `pulumi:"unasUsername,optional"`
+	// UnasPassword is the password for unasUsername.
+	UnasPassword *string `pulumi:"unasPassword,optional" provider:"secret"`
 
 	// net is the configured Network client, populated by Configure. It is not a
 	// Pulumi field (no struct tag) and never appears in state.
@@ -45,6 +58,10 @@ type Config struct {
 	// supplied (the official Protect integration API is API-key only). nil
 	// otherwise; Protect resources error with a clear message in that case.
 	protect protecttypes.ProtectV1
+	// drive is the configured UniFi Drive client for the UNAS appliance. Only
+	// built when unasUrl + credentials are supplied. nil otherwise; Drive
+	// resources error with a clear message in that case.
+	drive driveapi.Client
 }
 
 // Annotate attaches descriptions, defaults, and env-var fallbacks to the config.
@@ -59,8 +76,14 @@ func (c *Config) Annotate(a infer.Annotator) {
 	a.SetDefault(&c.Password, nil, "UNIFI_PASSWORD")
 	a.Describe(&c.Site, `UniFi site name (defaults to "default").`)
 	a.SetDefault(&c.Site, "default", "UNIFI_SITE")
-	a.Describe(&c.InsecureTLS, "Skip TLS certificate verification (for self-signed controller certs).")
+	a.Describe(&c.InsecureTLS, "Skip TLS certificate verification (for self-signed controller and UNAS certs).")
 	a.SetDefault(&c.InsecureTLS, nil, "UNIFI_INSECURE_TLS")
+	a.Describe(&c.UnasURL, "Base URL of the UNAS appliance hosting UniFi Drive, e.g. https://192.168.1.20. A SEPARATE host from `url`; required to manage `unifi:drive:*` resources.")
+	a.SetDefault(&c.UnasURL, nil, "UNIFI_UNAS_URL")
+	a.Describe(&c.UnasUsername, "Local UniFi OS admin username on the UNAS appliance (UniFi Drive has no API-key auth).")
+	a.SetDefault(&c.UnasUsername, nil, "UNIFI_UNAS_USERNAME")
+	a.Describe(&c.UnasPassword, "Password for unasUsername.")
+	a.SetDefault(&c.UnasPassword, nil, "UNIFI_UNAS_PASSWORD")
 }
 
 // buildNetworkClient and buildProtectClient construct the real clients. They are
@@ -75,15 +98,32 @@ var (
 		quiet.SetOutput(io.Discard)
 		return unifiprotect.NewClient(context.Background(), pc, quiet).Protect
 	}
+	// buildDriveClient returns the UNAS Drive client, or (nil, nil) when Drive is
+	// not configured, or an error when unasUrl is set without credentials.
+	buildDriveClient = func(c *Config) (driveapi.Client, error) {
+		if c.UnasURL == nil || *c.UnasURL == "" {
+			return nil, nil
+		}
+		if c.UnasUsername == nil || *c.UnasUsername == "" || c.UnasPassword == nil || *c.UnasPassword == "" {
+			return nil, fmt.Errorf("unifi provider: `unasUrl` is set but `unasUsername`/`unasPassword` are required to manage UniFi Drive")
+		}
+		return driveapi.New(driveapi.Config{
+			Host:               *c.UnasURL,
+			Username:           *c.UnasUsername,
+			Password:           *c.UnasPassword,
+			InsecureSkipVerify: c.InsecureTLS != nil && *c.InsecureTLS,
+		}), nil
+	}
 )
 
 // InjectClientsForTest swaps in fake clients and returns a restore func. It lets
 // tests in other packages drive CRUD without a live controller. Test-only.
-func InjectClientsForTest(net unifi.Client, protect protecttypes.ProtectV1) func() {
-	origNet, origProtect := buildNetworkClient, buildProtectClient
+func InjectClientsForTest(net unifi.Client, protect protecttypes.ProtectV1, drive driveapi.Client) func() {
+	origNet, origProtect, origDrive := buildNetworkClient, buildProtectClient, buildDriveClient
 	buildNetworkClient = func(*unifi.ClientConfig) (unifi.Client, error) { return net, nil }
 	buildProtectClient = func(string, string, bool) protecttypes.ProtectV1 { return protect }
-	return func() { buildNetworkClient, buildProtectClient = origNet, origProtect }
+	buildDriveClient = func(*Config) (driveapi.Client, error) { return drive, nil }
+	return func() { buildNetworkClient, buildProtectClient, buildDriveClient = origNet, origProtect, origDrive }
 }
 
 // Configure builds the authenticated UniFi client. Called once per provider
@@ -122,6 +162,14 @@ func (c *Config) Configure(_ context.Context) error {
 		}
 		c.protect = buildProtectClient(cc.APIKey, host, !cc.VerifySSL)
 	}
+
+	// Build the UniFi Drive client when the UNAS appliance is configured. The
+	// UNAS is a separate host with its own local credentials.
+	drive, err := buildDriveClient(c)
+	if err != nil {
+		return err
+	}
+	c.drive = drive
 	return nil
 }
 
@@ -154,6 +202,17 @@ func (c Config) Protect() (protecttypes.ProtectV1, error) {
 		return nil, fmt.Errorf("unifi provider: Protect resources require `apiKey` to be set")
 	}
 	return c.protect, nil
+}
+
+// Drive returns the configured UniFi Drive client for the UNAS appliance, or an
+// error if the UNAS endpoint was not configured. Drive runs on the UNAS host —
+// a separate UniFi OS console — so it needs its own `unasUrl` and local
+// `unasUsername`/`unasPassword`.
+func (c Config) Drive() (driveapi.Client, error) {
+	if c.drive == nil {
+		return nil, fmt.Errorf("unifi provider: Drive resources require `unasUrl`, `unasUsername`, and `unasPassword` to be set (the UNAS appliance is a separate host from the main controller)")
+	}
+	return c.drive, nil
 }
 
 // ResolvedSite returns the configured site, defaulting to "default".

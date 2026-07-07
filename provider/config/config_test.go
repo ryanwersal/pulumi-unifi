@@ -78,4 +78,35 @@ func TestConfigureRequiresURL(t *testing.T) {
 	}
 }
 
+// TestDriveUnconfigured verifies Drive() errors clearly when the UNAS endpoint
+// was not configured.
+func TestDriveUnconfigured(t *testing.T) {
+	cfg := Config{}
+	if _, err := cfg.Drive(); err == nil || !strings.Contains(err.Error(), "unasUrl") {
+		t.Fatalf("Drive() with no UNAS config should error mentioning unasUrl, got: %v", err)
+	}
+}
+
+// TestBuildDriveClient covers the three UNAS-configuration outcomes.
+func TestBuildDriveClient(t *testing.T) {
+	// Not configured -> (nil, nil): Drive is simply unavailable.
+	if c, err := buildDriveClient(&Config{}); c != nil || err != nil {
+		t.Errorf("unset UNAS should yield (nil, nil), got (%v, %v)", c, err)
+	}
+	// URL without credentials -> error.
+	if _, err := buildDriveClient(&Config{UnasURL: strPtr("https://unas.test")}); err == nil ||
+		!strings.Contains(err.Error(), "unasUsername") {
+		t.Errorf("unasUrl without credentials should error, got: %v", err)
+	}
+	// Fully configured -> a client.
+	c, err := buildDriveClient(&Config{
+		UnasURL:      strPtr("https://unas.test"),
+		UnasUsername: strPtr("admin"),
+		UnasPassword: strPtr("secret"),
+	})
+	if err != nil || c == nil {
+		t.Errorf("fully configured UNAS should yield a client, got (%v, %v)", c, err)
+	}
+}
+
 func strPtr(s string) *string { return &s }

@@ -32,6 +32,18 @@ export class Provider extends pulumi.ProviderResource {
      */
     declare public readonly site: pulumi.Output<string | undefined>;
     /**
+     * Password for unasUsername.
+     */
+    declare public readonly unasPassword: pulumi.Output<string | undefined>;
+    /**
+     * Base URL of the UNAS appliance hosting UniFi Drive, e.g. https://192.168.1.20. A SEPARATE host from `url`; required to manage `unifi:drive:*` resources.
+     */
+    declare public readonly unasUrl: pulumi.Output<string | undefined>;
+    /**
+     * Local UniFi OS admin username on the UNAS appliance (UniFi Drive has no API-key auth).
+     */
+    declare public readonly unasUsername: pulumi.Output<string | undefined>;
+    /**
      * Base URL of the UniFi controller, e.g. https://192.168.1.1 (omit any /api suffix).
      */
     declare public readonly url: pulumi.Output<string | undefined>;
@@ -55,11 +67,14 @@ export class Provider extends pulumi.ProviderResource {
             resourceInputs["insecureTls"] = pulumi.output((args?.insecureTls) ?? utilities.getEnvBoolean("UNIFI_INSECURE_TLS")).apply(JSON.stringify);
             resourceInputs["password"] = (args?.password ? pulumi.secret(args.password) : undefined) ?? utilities.getEnv("UNIFI_PASSWORD");
             resourceInputs["site"] = (args?.site) ?? (utilities.getEnv("UNIFI_SITE") || "default");
+            resourceInputs["unasPassword"] = (args?.unasPassword ? pulumi.secret(args.unasPassword) : undefined) ?? utilities.getEnv("UNIFI_UNAS_PASSWORD");
+            resourceInputs["unasUrl"] = (args?.unasUrl) ?? utilities.getEnv("UNIFI_UNAS_URL");
+            resourceInputs["unasUsername"] = (args?.unasUsername) ?? utilities.getEnv("UNIFI_UNAS_USERNAME");
             resourceInputs["url"] = (args?.url) ?? utilities.getEnv("UNIFI_URL");
             resourceInputs["username"] = (args?.username) ?? utilities.getEnv("UNIFI_USERNAME");
         }
         opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        const secretOpts = { additionalSecretOutputs: ["apiKey", "password"] };
+        const secretOpts = { additionalSecretOutputs: ["apiKey", "password", "unasPassword"] };
         opts = pulumi.mergeOptions(opts, secretOpts);
         super(Provider.__pulumiType, name, resourceInputs, opts);
     }
@@ -74,7 +89,7 @@ export interface ProviderArgs {
      */
     apiKey?: pulumi.Input<string | undefined>;
     /**
-     * Skip TLS certificate verification (for self-signed controller certs).
+     * Skip TLS certificate verification (for self-signed controller and UNAS certs).
      */
     insecureTls?: pulumi.Input<boolean | undefined>;
     /**
@@ -85,6 +100,18 @@ export interface ProviderArgs {
      * UniFi site name (defaults to "default").
      */
     site?: pulumi.Input<string | undefined>;
+    /**
+     * Password for unasUsername.
+     */
+    unasPassword?: pulumi.Input<string | undefined>;
+    /**
+     * Base URL of the UNAS appliance hosting UniFi Drive, e.g. https://192.168.1.20. A SEPARATE host from `url`; required to manage `unifi:drive:*` resources.
+     */
+    unasUrl?: pulumi.Input<string | undefined>;
+    /**
+     * Local UniFi OS admin username on the UNAS appliance (UniFi Drive has no API-key auth).
+     */
+    unasUsername?: pulumi.Input<string | undefined>;
     /**
      * Base URL of the UniFi controller, e.g. https://192.168.1.1 (omit any /api suffix).
      */

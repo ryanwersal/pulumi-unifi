@@ -10,6 +10,7 @@ import (
 	"github.com/pulumi/pulumi-go-provider/infer"
 
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
+	"github.com/ryanwersal/pulumi-unifi/provider/drive"
 	"github.com/ryanwersal/pulumi-unifi/provider/network"
 	"github.com/ryanwersal/pulumi-unifi/provider/protect"
 )
@@ -36,7 +37,7 @@ const npmPackageName = "@ryanwersal/pulumi-unifi"
 func New() (p.Provider, error) {
 	return infer.NewProviderBuilder().
 		WithDisplayName("UniFi").
-		WithDescription("A Pulumi provider for managing a Ubiquiti UniFi Dream Machine's Network and Protect applications via the local controller API.").
+		WithDescription("A Pulumi provider for managing a Ubiquiti UniFi deployment — the Network and Protect applications on a Dream Machine, and UniFi Drive on a UNAS appliance — via the local UniFi OS APIs.").
 		WithKeywords("unifi", "ubiquiti", "category/network", "kind/native").
 		WithHomepage("https://github.com/ryanwersal/pulumi-unifi").
 		WithRepository("https://github.com/ryanwersal/pulumi-unifi").
@@ -68,6 +69,8 @@ func New() (p.Provider, error) {
 			infer.Resource(network.DnsRecord{}),
 			infer.Resource(protect.Camera{}),
 			infer.Resource(protect.AlarmAutomation{}),
+			infer.Resource(drive.Share{}),
+			infer.Resource(drive.NfsExport{}),
 		).
 		Build()
 }

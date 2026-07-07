@@ -13,12 +13,14 @@ utilities.lazyLoad(exports, ["Provider"], () => require("./provider"));
 
 // Export sub-modules:
 import * as config from "./config";
+import * as drive from "./drive";
 import * as network from "./network";
 import * as protect from "./protect";
 import * as types from "./types";
 
 export {
     config,
+    drive,
     network,
     protect,
     types,

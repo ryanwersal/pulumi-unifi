@@ -17,13 +17,20 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/property"
 
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
+	"github.com/ryanwersal/pulumi-unifi/provider/internal/driveapi"
 )
 
 // newLifecycleServer builds the real provider with the given fake clients
 // injected, configured against a dummy controller, ready for LifeCycleTest.
 func newLifecycleServer(t *testing.T, net unifi.Client, protect protecttypes.ProtectV1) integration.Server {
+	return newDriveLifecycleServer(t, net, protect, nil)
+}
+
+// newDriveLifecycleServer is newLifecycleServer plus an injected UniFi Drive
+// client, for the unifi:drive:* resources.
+func newDriveLifecycleServer(t *testing.T, net unifi.Client, protect protecttypes.ProtectV1, drive driveapi.Client) integration.Server {
 	t.Helper()
-	t.Cleanup(config.InjectClientsForTest(net, protect))
+	t.Cleanup(config.InjectClientsForTest(net, protect, drive))
 	prov, err := New()
 	if err != nil {
 		t.Fatalf("New(): %v", err)
@@ -368,3 +375,162 @@ func TestCameraLifecycle(t *testing.T) {
 		}},
 	}.Run(t, server)
 }
+
+// --- fake UniFi Drive client ---
+
+type fakeDrive struct {
+	seq     int
+	shares  map[string]*driveapi.Share
+	exports map[string]map[string]string // shareID -> client -> permission
+	nfsOn   bool
+}
+
+func newFakeDrive() *fakeDrive {
+	return &fakeDrive{shares: map[string]*driveapi.Share{}, exports: map[string]map[string]string{}, nfsOn: true}
+}
+
+func (f *fakeDrive) ListShares(_ context.Context) ([]driveapi.Share, error) {
+	out := make([]driveapi.Share, 0, len(f.shares))
+	for _, s := range f.shares {
+		out = append(out, *s)
+	}
+	return out, nil
+}
+
+func (f *fakeDrive) GetShareByID(_ context.Context, id string) (*driveapi.Share, error) {
+	if s, ok := f.shares[id]; ok {
+		cp := *s
+		return &cp, nil
+	}
+	return nil, driveapi.ErrShareNotFound
+}
+
+func (f *fakeDrive) CreateShare(_ context.Context, spec driveapi.ShareSpec) (*driveapi.Share, error) {
+	for _, s := range f.shares {
+		if s.Name == spec.Name {
+			return nil, fmt.Errorf("driveapi: shared drive %q already exists", spec.Name)
+		}
+	}
+	f.seq++
+	pool := spec.StoragePoolID
+	if pool == "" {
+		pool = "pool-1"
+	}
+	quota := spec.QuotaGiB
+	if quota <= 0 {
+		quota = -1
+	}
+	s := &driveapi.Share{
+		ID:            fmt.Sprintf("d-%d", f.seq),
+		Name:          spec.Name,
+		StoragePoolID: pool,
+		QuotaGiB:      quota,
+		ExportPath:    "/var/nfs/shared/" + spec.Name,
+	}
+	f.shares[s.ID] = s
+	cp := *s
+	return &cp, nil
+}
+
+func (f *fakeDrive) DeleteShare(_ context.Context, id string) error {
+	delete(f.shares, id)
+	delete(f.exports, id)
+	return nil
+}
+
+func (f *fakeDrive) ListStoragePools(_ context.Context) ([]driveapi.StoragePool, error) {
+	return []driveapi.StoragePool{{ID: "pool-1", Number: 1, Status: "ok"}}, nil
+}
+
+func (f *fakeDrive) GetNFSExport(_ context.Context, shareID, client string) (*driveapi.NFSExport, error) {
+	if m, ok := f.exports[shareID]; ok {
+		if perm, ok := m[client]; ok {
+			name := ""
+			if s, ok := f.shares[shareID]; ok {
+				name = s.Name
+			}
+			return &driveapi.NFSExport{ShareID: shareID, ShareName: name, Client: client, Permission: perm}, nil
+		}
+	}
+	return nil, driveapi.ErrExportNotFound
+}
+
+func (f *fakeDrive) EnsureNFSExport(_ context.Context, shareID, client, permission string) error {
+	if _, ok := f.shares[shareID]; !ok {
+		return driveapi.ErrShareNotFound
+	}
+	if f.exports[shareID] == nil {
+		f.exports[shareID] = map[string]string{}
+	}
+	f.exports[shareID][client] = permission
+	return nil
+}
+
+func (f *fakeDrive) RemoveNFSExport(_ context.Context, shareID, client string) error {
+	if m, ok := f.exports[shareID]; ok {
+		delete(m, client)
+	}
+	return nil
+}
+
+func (f *fakeDrive) NFSServiceEnabled(_ context.Context) (bool, error) { return f.nfsOn, nil }
+
+// --- drive lifecycle tests ---
+
+func TestDriveShareLifecycle(t *testing.T) {
+	server := newDriveLifecycleServer(t, nil, nil, newFakeDrive())
+	integration.LifeCycleTest{
+		Resource: "unifi:drive:Share",
+		Create: integration.Operation{
+			Inputs: pmap(map[string]property.Value{
+				"name":     property.New("media"),
+				"quotaGib": property.New(100.0),
+			}),
+			Hook: func(_, out property.Map) {
+				eq(t, out, "name", "media")
+				notEmpty(t, out, "shareId")
+				eq(t, out, "poolId", "pool-1") // resolved first pool
+				eq(t, out, "exportPath", "/var/nfs/shared/media")
+			},
+		},
+		// No Updates: all inputs are replace-only (create+delete API).
+	}.Run(t, server)
+}
+
+func TestDriveNfsExportLifecycle(t *testing.T) {
+	fd := newFakeDrive()
+	share, err := fd.CreateShare(context.Background(), driveapi.ShareSpec{Name: "media"})
+	if err != nil {
+		t.Fatalf("seed share: %v", err)
+	}
+	server := newDriveLifecycleServer(t, nil, nil, fd)
+	integration.LifeCycleTest{
+		Resource: "unifi:drive:NfsExport",
+		Create: integration.Operation{
+			Inputs: pmap(map[string]property.Value{
+				"shareId":    property.New(share.ID),
+				"client":     property.New("10.0.0.5"),
+				"permission": property.New("rw"),
+			}),
+			Hook: func(_, out property.Map) {
+				eq(t, out, "shareId", share.ID)
+				eq(t, out, "client", "10.0.0.5")
+				eq(t, out, "permission", "rw")
+				eq(t, out, "shareName", "media")
+			},
+		},
+		Updates: []integration.Operation{{
+			Inputs: pmap(map[string]property.Value{
+				"shareId":    property.New(share.ID),
+				"client":     property.New("10.0.0.5"),
+				"permission": property.New("ro"),
+			}),
+			Hook: func(_, out property.Map) {
+				eq(t, out, "permission", "ro")
+			},
+		}},
+	}.Run(t, server)
+}
+
+// compile-time assertion that the fake satisfies the interface.
+var _ driveapi.Client = (*fakeDrive)(nil)

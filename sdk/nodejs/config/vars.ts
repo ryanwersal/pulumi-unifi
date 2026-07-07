@@ -19,7 +19,7 @@ Object.defineProperty(exports, "apiKey", {
 });
 
 /**
- * Skip TLS certificate verification (for self-signed controller certs).
+ * Skip TLS certificate verification (for self-signed controller and UNAS certs).
  */
 export declare const insecureTls: boolean | undefined;
 Object.defineProperty(exports, "insecureTls", {
@@ -47,6 +47,39 @@ export declare const site: string;
 Object.defineProperty(exports, "site", {
     get() {
         return __config.get("site") ?? (utilities.getEnv("UNIFI_SITE") || "default");
+    },
+    enumerable: true,
+});
+
+/**
+ * Password for unasUsername.
+ */
+export declare const unasPassword: string | undefined;
+Object.defineProperty(exports, "unasPassword", {
+    get() {
+        return __config.get("unasPassword") ?? utilities.getEnv("UNIFI_UNAS_PASSWORD");
+    },
+    enumerable: true,
+});
+
+/**
+ * Base URL of the UNAS appliance hosting UniFi Drive, e.g. https://192.168.1.20. A SEPARATE host from `url`; required to manage `unifi:drive:*` resources.
+ */
+export declare const unasUrl: string | undefined;
+Object.defineProperty(exports, "unasUrl", {
+    get() {
+        return __config.get("unasUrl") ?? utilities.getEnv("UNIFI_UNAS_URL");
+    },
+    enumerable: true,
+});
+
+/**
+ * Local UniFi OS admin username on the UNAS appliance (UniFi Drive has no API-key auth).
+ */
+export declare const unasUsername: string | undefined;
+Object.defineProperty(exports, "unasUsername", {
+    get() {
+        return __config.get("unasUsername") ?? utilities.getEnv("UNIFI_UNAS_USERNAME");
     },
     enumerable: true,
 });

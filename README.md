@@ -41,6 +41,8 @@ resource covers WPA3/PMF/MLO/band/fast-roaming/MAC-filter/schedules/PPSKs).
 | `unifi:network:DnsRecord` | A controller local DNS record | full CRUD + `Read` (import) |
 | `unifi:protect:Camera` | Settings of an **existing** Protect camera | adoption: Create/Update patch, Read, Delete is a no-op |
 | `unifi:protect:AlarmAutomation` | An Alarm Manager rule (conditions → webhook actions) | full CRUD + `Read` (import) — **private API**, see below |
+| `unifi:drive:Share` | A UniFi Drive shared drive on a UNAS appliance | Create + `Read` (import) + Delete; inputs are replace-only — **private API**, see below |
+| `unifi:drive:NfsExport` | An NFS access grant (share → client) on UniFi Drive | full CRUD + `Read` (import) — **private API**, see below |
 
 ### Adoption-model resources (`Device`, `Camera`)
 
@@ -56,9 +58,29 @@ aggregation/mirroring, rate limiting, QoS), **EtherLighting** + LED, **PDU
 outlet** overrides, STP/jumbo/flow-control, AP **radio** settings, and gateway
 VRRP / LCM display.
 
-> **Not covered:** the **UNAS Pro** NAS is a separate UniFi application; the
-> Network controller API (`go-unifi`) exposes no NAS resources, so it cannot be
-> managed by this provider.
+### UniFi Drive (UNAS) caveats
+
+The **UNAS Pro** runs the **UniFi Drive** application, which has no official
+API. The `drive:*` resources ride Drive's **private, unversioned** HTTP surface
+(`/proxy/drive/api/v1/...`), reverse-engineered against a UNAS Pro. Because the
+UNAS is a **separate UniFi OS console** from the gateway/controller, it needs its
+own endpoint and a **local** admin account — configure `unasUrl` +
+`unasUsername`/`unasPassword` (Drive does not accept API-key auth). Caveats:
+
+- **Unsupported and may change** with UNAS firmware.
+- `drive:Share` supports only **create + delete** (the API has no share-update
+  endpoint), so `name`, `storagePoolId`, and `quotaGib` are **replace-only**:
+  changing any of them **deletes and recreates the drive, destroying its data**.
+  Set `pulumi.protect(true)` on drives whose data must not be lost.
+- `drive:NfsExport` owns one `(share, client)` grant in the appliance's **single
+  global** NFS export list. Writes are read-modify-writes, serialised within a
+  provider process (so parallel exports in one `pulumi up` are safe), but two
+  separate processes writing the same appliance at once can race.
+- Exports need the **global NFS service enabled** in UniFi Drive settings; the
+  provider warns (does not fail) if it is off.
+- Drive credentials never manage anything on the main controller, and vice
+  versa. File contents, storage pools/RAID, users, and snapshots are **not**
+  managed (data-plane / no verified write API).
 
 ### Alarm Manager caveats
 
@@ -86,12 +108,18 @@ surface, which means:
 | `unifi:apiKey` | **secret.** UniFi OS local API key. Preferred. **Required for `protect:Camera`.** |
 | `unifi:username` / `unifi:password` | **secret.** Alternative to `apiKey`. **May be required for `protect:AlarmAutomation`.** |
 | `unifi:site` | Site name, defaults to `default` |
-| `unifi:insecureTls` | Skip TLS verification (self-signed controller certs) |
+| `unifi:insecureTls` | Skip TLS verification (self-signed controller **and** UNAS certs) |
+| `unifi:unasUrl` | UNAS appliance base URL, e.g. `https://192.168.1.20` — a **separate host** from `url`. **Required for `drive:*`.** |
+| `unifi:unasUsername` | Local UniFi OS admin on the UNAS. **Required for `drive:*`.** |
+| `unifi:unasPassword` | **secret.** Password for `unasUsername`. **Required for `drive:*`.** |
 
 Authenticate with **either** an API key **or** username/password. The
 `protect:Camera` resource requires an API key (the official integration API is
 API-key only), while `protect:AlarmAutomation` rides the controller session
-and may require username/password (see the Alarm Manager caveats above).
+and may require username/password (see the Alarm Manager caveats above). The
+`drive:*` resources talk to a **separate** UNAS host and need `unasUrl` plus a
+local `unasUsername`/`unasPassword` (see the UniFi Drive caveats above); env-var
+fallbacks are `UNIFI_UNAS_URL`, `UNIFI_UNAS_USERNAME`, `UNIFI_UNAS_PASSWORD`.
 
 ## Toolchain
 
@@ -227,6 +255,11 @@ mise run sdk:publish      # publish the SDK from a local checkout (manual escape
 - The Protect client (`ClifHouck/unified`) is pre-1.0; pin it and expect churn.
 - `filipowm/go-unifi` is a fork of an archived project. It's active today, but
   worth watching.
+- The UniFi **Drive** client is a small in-tree client (`internal/driveapi`)
+  against Drive's **private, unversioned** API, adapted from
+  [`iperka/unifi-drive-storage-provider`](https://github.com/iperka/unifi-drive-storage-provider)
+  (Apache-2.0). No official API exists; expect breakage across UNAS firmware and
+  see the UniFi Drive caveats above (replace-only shares = data loss on change).
 
 ## License
 

@@ -2,7 +2,7 @@
   "name": "unifi",
   "displayName": "UniFi",
   "version": "0.1.0",
-  "description": "A Pulumi provider for managing a Ubiquiti UniFi Dream Machine's Network and Protect applications via the local controller API.",
+  "description": "A Pulumi provider for managing a Ubiquiti UniFi deployment — the Network and Protect applications on a Dream Machine, and UniFi Drive on a UNAS appliance — via the local UniFi OS APIs.",
   "keywords": [
     "unifi",
     "ubiquiti",
@@ -37,7 +37,7 @@
       },
       "insecureTls": {
         "type": "boolean",
-        "description": "Skip TLS certificate verification (for self-signed controller certs).",
+        "description": "Skip TLS certificate verification (for self-signed controller and UNAS certs).",
         "defaultInfo": {
           "environment": [
             "UNIFI_INSECURE_TLS"
@@ -64,6 +64,34 @@
           ]
         }
       },
+      "unasPassword": {
+        "type": "string",
+        "description": "Password for unasUsername.",
+        "defaultInfo": {
+          "environment": [
+            "UNIFI_UNAS_PASSWORD"
+          ]
+        },
+        "secret": true
+      },
+      "unasUrl": {
+        "type": "string",
+        "description": "Base URL of the UNAS appliance hosting UniFi Drive, e.g. https://192.168.1.20. A SEPARATE host from `url`; required to manage `unifi:drive:*` resources.",
+        "defaultInfo": {
+          "environment": [
+            "UNIFI_UNAS_URL"
+          ]
+        }
+      },
+      "unasUsername": {
+        "type": "string",
+        "description": "Local UniFi OS admin username on the UNAS appliance (UniFi Drive has no API-key auth).",
+        "defaultInfo": {
+          "environment": [
+            "UNIFI_UNAS_USERNAME"
+          ]
+        }
+      },
       "url": {
         "type": "string",
         "description": "Base URL of the UniFi controller, e.g. https://192.168.1.1 (omit any /api suffix).",
@@ -85,6 +113,21 @@
     }
   },
   "types": {
+    "unifi:drive:NfsPermission": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "rw",
+          "description": "Read-write access.",
+          "value": "rw"
+        },
+        {
+          "name": "ro",
+          "description": "Read-only access.",
+          "value": "ro"
+        }
+      ]
+    },
     "unifi:network:DeviceDot1x": {
       "properties": {
         "fallbackNetworkId": {
@@ -3625,7 +3668,7 @@
       },
       "insecureTls": {
         "type": "boolean",
-        "description": "Skip TLS certificate verification (for self-signed controller certs).",
+        "description": "Skip TLS certificate verification (for self-signed controller and UNAS certs).",
         "defaultInfo": {
           "environment": [
             "UNIFI_INSECURE_TLS"
@@ -3649,6 +3692,34 @@
         "defaultInfo": {
           "environment": [
             "UNIFI_SITE"
+          ]
+        }
+      },
+      "unasPassword": {
+        "type": "string",
+        "description": "Password for unasUsername.",
+        "defaultInfo": {
+          "environment": [
+            "UNIFI_UNAS_PASSWORD"
+          ]
+        },
+        "secret": true
+      },
+      "unasUrl": {
+        "type": "string",
+        "description": "Base URL of the UNAS appliance hosting UniFi Drive, e.g. https://192.168.1.20. A SEPARATE host from `url`; required to manage `unifi:drive:*` resources.",
+        "defaultInfo": {
+          "environment": [
+            "UNIFI_UNAS_URL"
+          ]
+        }
+      },
+      "unasUsername": {
+        "type": "string",
+        "description": "Local UniFi OS admin username on the UNAS appliance (UniFi Drive has no API-key auth).",
+        "defaultInfo": {
+          "environment": [
+            "UNIFI_UNAS_USERNAME"
           ]
         }
       },
@@ -3684,7 +3755,7 @@
       },
       "insecureTls": {
         "type": "boolean",
-        "description": "Skip TLS certificate verification (for self-signed controller certs).",
+        "description": "Skip TLS certificate verification (for self-signed controller and UNAS certs).",
         "defaultInfo": {
           "environment": [
             "UNIFI_INSECURE_TLS"
@@ -3711,6 +3782,34 @@
           ]
         }
       },
+      "unasPassword": {
+        "type": "string",
+        "description": "Password for unasUsername.",
+        "defaultInfo": {
+          "environment": [
+            "UNIFI_UNAS_PASSWORD"
+          ]
+        },
+        "secret": true
+      },
+      "unasUrl": {
+        "type": "string",
+        "description": "Base URL of the UNAS appliance hosting UniFi Drive, e.g. https://192.168.1.20. A SEPARATE host from `url`; required to manage `unifi:drive:*` resources.",
+        "defaultInfo": {
+          "environment": [
+            "UNIFI_UNAS_URL"
+          ]
+        }
+      },
+      "unasUsername": {
+        "type": "string",
+        "description": "Local UniFi OS admin username on the UNAS appliance (UniFi Drive has no API-key auth).",
+        "defaultInfo": {
+          "environment": [
+            "UNIFI_UNAS_USERNAME"
+          ]
+        }
+      },
       "url": {
         "type": "string",
         "description": "Base URL of the UniFi controller, e.g. https://192.168.1.1 (omit any /api suffix).",
@@ -3732,6 +3831,114 @@
     }
   },
   "resources": {
+    "unifi:drive:NfsExport": {
+      "description": "An NFS export grant giving one client access to a UniFi Drive shared drive. Owns a single (share, client) entry in the appliance's global NFS export list; writes are read-modify-writes serialised within the provider process. Requires the global NFS service to be enabled on the appliance.",
+      "properties": {
+        "client": {
+          "type": "string",
+          "description": "Client is the NFS client IP or CIDR allowed to mount the drive.",
+          "replaceOnChanges": true
+        },
+        "permission": {
+          "$ref": "#/types/unifi:drive:NfsPermission",
+          "description": "Permission is the access level: \"rw\" (default) or \"ro\".",
+          "default": "rw"
+        },
+        "shareId": {
+          "type": "string",
+          "description": "ShareId is the drive to export (the shareId of a unifi:drive:Share).",
+          "replaceOnChanges": true
+        },
+        "shareName": {
+          "type": "string",
+          "description": "ShareName is the exported drive's name (resolved from ShareId)."
+        }
+      },
+      "required": [
+        "shareId",
+        "client",
+        "shareName"
+      ],
+      "inputProperties": {
+        "client": {
+          "type": "string",
+          "description": "Client is the NFS client IP or CIDR allowed to mount the drive.",
+          "replaceOnChanges": true
+        },
+        "permission": {
+          "$ref": "#/types/unifi:drive:NfsPermission",
+          "description": "Permission is the access level: \"rw\" (default) or \"ro\".",
+          "default": "rw"
+        },
+        "shareId": {
+          "type": "string",
+          "description": "ShareId is the drive to export (the shareId of a unifi:drive:Share).",
+          "replaceOnChanges": true
+        }
+      },
+      "requiredInputs": [
+        "shareId",
+        "client"
+      ]
+    },
+    "unifi:drive:Share": {
+      "description": "A UniFi Drive shared drive on a UNAS appliance. Managed via UniFi Drive's PRIVATE /proxy/drive API (the UNAS is a separate host — configure `unasUrl`/`unasUsername`/`unasPassword`). The API supports only create and delete, so every input is replace-only: changing name, pool, or quota REPLACES the drive and DELETES its data. Use `pulumi.protect(true)` to guard important drives.",
+      "properties": {
+        "exportPath": {
+          "type": "string",
+          "description": "ExportPath is the documented NFS export path for the drive, e.g. /var/nfs/shared/\u003cname\u003e."
+        },
+        "name": {
+          "type": "string",
+          "description": "Name is the shared drive's name. Must be unique on the appliance. Changing it replaces (and deletes) the drive.",
+          "replaceOnChanges": true
+        },
+        "poolId": {
+          "type": "string",
+          "description": "PoolId is the storage pool the drive actually lives in (resolved when StoragePoolId is omitted)."
+        },
+        "quotaGib": {
+          "type": "integer",
+          "description": "QuotaGib is the size limit in gibibytes. Omit (or \u003c= 0) for no quota.",
+          "replaceOnChanges": true
+        },
+        "shareId": {
+          "type": "string",
+          "description": "ShareId is the appliance-assigned drive identifier."
+        },
+        "storagePoolId": {
+          "type": "string",
+          "description": "StoragePoolId pins the storage pool. Omit to use the appliance's first pool.",
+          "replaceOnChanges": true
+        }
+      },
+      "required": [
+        "name",
+        "shareId",
+        "poolId",
+        "exportPath"
+      ],
+      "inputProperties": {
+        "name": {
+          "type": "string",
+          "description": "Name is the shared drive's name. Must be unique on the appliance. Changing it replaces (and deletes) the drive.",
+          "replaceOnChanges": true
+        },
+        "quotaGib": {
+          "type": "integer",
+          "description": "QuotaGib is the size limit in gibibytes. Omit (or \u003c= 0) for no quota.",
+          "replaceOnChanges": true
+        },
+        "storagePoolId": {
+          "type": "string",
+          "description": "StoragePoolId pins the storage pool. Omit to use the appliance's first pool.",
+          "replaceOnChanges": true
+        }
+      },
+      "requiredInputs": [
+        "name"
+      ]
+    },
     "unifi:network:Device": {
       "description": "Manage settings of an existing, already-adopted UniFi network device (gateway, switch, access point, PDU). Adoption model: binds to a device by MAC and read-modify-writes only the managed fields onto the controller's current device object; unmanaged settings and unlisted port/outlet/radio overrides are preserved. Delete is a no-op.",
       "properties": {
