@@ -981,7 +981,14 @@ func (p DevicePortOverride) applyTo(u *unifi.DevicePortOverrides) {
 		u.OpMode = string(*p.OpMode)
 	}
 	if p.AggregateNumPorts != nil {
-		u.AggregateNumPorts = *p.AggregateNumPorts
+		// The controller now expects the explicit list of member port indices
+		// (aggregate_members) instead of a port count. A link aggregation group
+		// spans this port plus the following consecutive ports.
+		members := make([]int, 0, *p.AggregateNumPorts)
+		for i := 0; i < *p.AggregateNumPorts; i++ {
+			members = append(members, p.PortIdx+i)
+		}
+		u.AggregateMembers = members
 	}
 	if p.NativeNetworkId != nil {
 		u.NATiveNetworkID = *p.NativeNetworkId

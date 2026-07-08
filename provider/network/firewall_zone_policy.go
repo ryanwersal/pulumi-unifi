@@ -5,6 +5,7 @@ package network
 import (
 	"context"
 	"fmt"
+	"strconv"
 
 	"github.com/filipowm/go-unifi/unifi"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -551,10 +552,10 @@ func (d FirewallZonePolicyDestinationArgs) toUnifi() unifi.FirewallZonePolicyDes
 		out.IPs = d.Ips
 	}
 	if d.AppIds != nil {
-		out.AppIDs = d.AppIds
+		out.AppIDs = fzpAtoiSlice(d.AppIds)
 	}
 	if d.AppCategoryIds != nil {
-		out.AppCategoryIDs = d.AppCategoryIds
+		out.AppCategoryIDs = fzpAtoiSlice(d.AppCategoryIds)
 	}
 	if d.Regions != nil {
 		out.Regions = d.Regions
@@ -636,6 +637,34 @@ func fzpStrSlice(v []string, prior []string) []string {
 	return prior
 }
 
+// fzpAtoiSlice converts resource string IDs into the controller's int slice,
+// skipping any values that are not valid integers.
+func fzpAtoiSlice(v []string) []int {
+	if len(v) == 0 {
+		return nil
+	}
+	out := make([]int, 0, len(v))
+	for _, s := range v {
+		if n, err := strconv.Atoi(s); err == nil {
+			out = append(out, n)
+		}
+	}
+	return out
+}
+
+// fzpIntStrSlice reflects a controller int slice as resource string IDs,
+// preserving the prior input when empty.
+func fzpIntStrSlice(v []int, prior []string) []string {
+	if len(v) == 0 {
+		return prior
+	}
+	out := make([]string, len(v))
+	for i, n := range v {
+		out[i] = strconv.Itoa(n)
+	}
+	return out
+}
+
 // firewallZonePolicySourceFrom maps a controller source back into resource inputs.
 func firewallZonePolicySourceFrom(u unifi.FirewallZonePolicySource, prior FirewallZonePolicySourceArgs) FirewallZonePolicySourceArgs {
 	out := FirewallZonePolicySourceArgs{
@@ -678,8 +707,8 @@ func firewallZonePolicyDestinationFrom(u unifi.FirewallZonePolicyDestination, pr
 		ZoneId:             u.ZoneID,
 		IpGroupId:          fzpStrPtr(u.IPGroupID, prior.IpGroupId),
 		Ips:                fzpStrSlice(u.IPs, prior.Ips),
-		AppIds:             fzpStrSlice(u.AppIDs, prior.AppIds),
-		AppCategoryIds:     fzpStrSlice(u.AppCategoryIDs, prior.AppCategoryIds),
+		AppIds:             fzpIntStrSlice(u.AppIDs, prior.AppIds),
+		AppCategoryIds:     fzpIntStrSlice(u.AppCategoryIDs, prior.AppCategoryIds),
 		Regions:            fzpStrSlice(u.Regions, prior.Regions),
 		WebDomains:         fzpStrSlice(u.WebDomains, prior.WebDomains),
 		Port:               fzpStrPtr(u.Port, prior.Port),

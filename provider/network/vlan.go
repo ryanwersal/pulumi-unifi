@@ -1003,7 +1003,7 @@ func (a VlanArgs) toUnifi(id string) *unifi.Network {
 			n.IGMPFastleave = *g.FastLeave
 		}
 		if g.ForwardUnknownMulticast != nil {
-			n.IGMPForwardUnknownMulticast = *g.ForwardUnknownMulticast
+			n.IGMPFloodUnknownMulticast = *g.ForwardUnknownMulticast
 		}
 		if g.GroupMembership != nil {
 			n.IGMPGroupmembership = *g.GroupMembership
@@ -1382,7 +1382,7 @@ func vlanIgmpFrom(n *unifi.Network, prior *VlanIgmp) *VlanIgmp {
 		ProxyUpstream:           vlanBoolPtr(n.IGMPProxyUpstream, p.ProxyUpstream),
 		ProxyFor:                (*VlanIgmpProxyFor)(vlanStrPtr(n.IGMPProxyFor, (*string)(p.ProxyFor))),
 		FastLeave:               vlanBoolPtr(n.IGMPFastleave, p.FastLeave),
-		ForwardUnknownMulticast: vlanBoolPtr(n.IGMPForwardUnknownMulticast, p.ForwardUnknownMulticast),
+		ForwardUnknownMulticast: vlanBoolPtr(n.IGMPFloodUnknownMulticast, p.ForwardUnknownMulticast),
 		GroupMembership:         vlanIntPtr(n.IGMPGroupmembership, p.GroupMembership),
 		MaxResponse:             vlanIntPtr(n.IGMPMaxresponse, p.MaxResponse),
 		McrtrExpireTime:         vlanIntPtr(n.IGMPMcrtrexpiretime, p.McrtrExpireTime),
