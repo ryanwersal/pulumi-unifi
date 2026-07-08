@@ -17,12 +17,3 @@ updates:
       actions:
         patterns:
           - "*"
-
-  - package-ecosystem: npm
-    directory: /sdk/nodejs
-    schedule:
-      interval: weekly
-    groups:
-      sdk-deps:
-        patterns:
-          - "*"
