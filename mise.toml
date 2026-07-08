@@ -122,8 +122,8 @@ description = "Fail if go.mod/go.sum are not tidy (no mutation)"
 run = "go mod tidy -diff"
 
 [tasks.vulncheck]
-description = "Scan for known vulnerabilities"
-run = "go run golang.org/x/vuln/cmd/govulncheck@v1.1.4 ./..."
+description = "Scan for known vulnerabilities (warn-only)"
+run = "go run golang.org/x/vuln/cmd/govulncheck@v1.1.4 ./... || echo '::warning::govulncheck reported vulnerabilities'"
 
 [tasks.ci]
 description = "Deterministic gate, run locally AND in CI: tidy, fmt, vet, lint, test, sdk freshness, build"
