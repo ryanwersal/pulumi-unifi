@@ -4,6 +4,12 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # Default is direct-only, which breaks the build for lockstep module pairs:
+    # bumping pulumi/sdk/v3 alone leaves the indirect pulumi/pkg/v3 pinned at the
+    # old version, and pkg/v3 references sdk internals that move between releases.
+    # Everything lands in one grouped PR, so this doesn't add PR volume.
+    allow:
+      - dependency-type: all
     groups:
       go-deps:
         patterns:
