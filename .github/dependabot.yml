@@ -10,6 +10,12 @@ updates:
     # Everything lands in one grouped PR, so this doesn't add PR volume.
     allow:
       - dependency-type: all
+    ignore:
+      # v2.x is a pre-modules stray with an API pulumi/sdk can't build against,
+      # and it stays the newest this path offers since v3 moved to a /v3 path.
+      - dependency-name: github.com/cheggaaa/pb
+        update-types:
+          - version-update:semver-major
     groups:
       go-deps:
         patterns:
