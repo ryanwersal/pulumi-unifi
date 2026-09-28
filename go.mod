@@ -9,6 +9,7 @@ require (
 	github.com/pulumi/pulumi-go-provider v1.4.1
 	github.com/pulumi/pulumi/sdk/v3 v3.255.0
 	github.com/sirupsen/logrus v1.9.4
+	google.golang.org/protobuf v1.36.11
 )
 
 require (
@@ -130,7 +131,6 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20260727163830-6c54dddc4772 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20260727163830-6c54dddc4772 // indirect
 	google.golang.org/grpc v1.83.0 // indirect
-	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lukechampine.com/frand v1.5.1 // indirect
 )

@@ -6,8 +6,12 @@
 package provider
 
 import (
+	"context"
+	"strings"
+
 	p "github.com/pulumi/pulumi-go-provider"
 	"github.com/pulumi/pulumi-go-provider/infer"
+	"github.com/pulumi/pulumi/sdk/v3/go/property"
 
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
 	"github.com/ryanwersal/pulumi-unifi/provider/drive"
@@ -36,7 +40,7 @@ const npmPackageName = "@ryanwersal/pulumi-unifi"
 // New builds the inferred provider. The infer layer derives the Pulumi schema
 // and gRPC server from the Go types referenced here.
 func New() (p.Provider, error) {
-	return infer.NewProviderBuilder().
+	provider, err := infer.NewProviderBuilder().
 		WithDisplayName("UniFi").
 		WithDescription("A Pulumi provider for managing a Ubiquiti UniFi deployment — the Network and Protect applications on a Dream Machine, and UniFi Drive on a UNAS appliance — via the local UniFi OS APIs.").
 		WithKeywords("unifi", "ubiquiti", "category/network", "kind/native").
@@ -77,4 +81,27 @@ func New() (p.Provider, error) {
 			infer.Resource(unifios.APIKey{}),
 		).
 		Build()
+	if err != nil {
+		return p.Provider{}, err
+	}
+	// The infer framework strips internal metadata from new inputs, but with
+	// engines sending OldInputs it does not strip the old side. That makes a
+	// version-only upgrade appear to replace the provider and all its resources.
+	// Normalize both sides; actual controller/config changes retain infer's
+	// replacement semantics.
+	diffConfig := provider.DiffConfig
+	provider.DiffConfig = func(ctx context.Context, req p.DiffRequest) (p.DiffResponse, error) {
+		clean := func(m property.Map) property.Map {
+			for key := range m.All {
+				if key == "version" || strings.HasPrefix(key, "__") {
+					m = m.Delete(key)
+				}
+			}
+			return m
+		}
+		req.OldInputs = clean(req.OldInputs)
+		req.Inputs = clean(req.Inputs)
+		return diffConfig(ctx, req)
+	}
+	return provider, nil
 }

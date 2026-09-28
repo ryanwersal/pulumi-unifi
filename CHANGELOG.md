@@ -6,6 +6,12 @@ follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html) once released.
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-09-27
+
+- Prevent provider version upgrades from proposing replacement of existing
+  resources due to internal framework metadata in old inputs. Controller
+  configuration changes still require replacement.
+
 ## [0.2.0] - 2026-09-27
 
 - Add UniFi OS custom roles, local administrators, and integration API keys,
