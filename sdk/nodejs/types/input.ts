@@ -1188,6 +1188,10 @@ export namespace network {
          */
         dhcpv6PdSize?: pulumi.Input<number | undefined>;
         /**
+         * Dhcpv6PdSizeAuto lets the controller choose the requested prefix size. Set false to use dhcpv6PdSize.
+         */
+        dhcpv6PdSizeAuto?: pulumi.Input<boolean | undefined>;
+        /**
          * Dns1 is the first WAN DNS server.
          */
         dns1?: pulumi.Input<string | undefined>;

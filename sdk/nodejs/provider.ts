@@ -44,6 +44,14 @@ export class Provider extends pulumi.ProviderResource {
      */
     declare public readonly unasUsername: pulumi.Output<string | undefined>;
     /**
+     * Password for uosUsername.
+     */
+    declare public readonly uosPassword: pulumi.Output<string | undefined>;
+    /**
+     * Local UniFi OS administrator username used to manage console roles and local accounts.
+     */
+    declare public readonly uosUsername: pulumi.Output<string | undefined>;
+    /**
      * Base URL of the UniFi controller, e.g. https://192.168.1.1 (omit any /api suffix).
      */
     declare public readonly url: pulumi.Output<string | undefined>;
@@ -70,11 +78,13 @@ export class Provider extends pulumi.ProviderResource {
             resourceInputs["unasPassword"] = (args?.unasPassword ? pulumi.secret(args.unasPassword) : undefined) ?? utilities.getEnv("UNIFI_UNAS_PASSWORD");
             resourceInputs["unasUrl"] = (args?.unasUrl) ?? utilities.getEnv("UNIFI_UNAS_URL");
             resourceInputs["unasUsername"] = (args?.unasUsername) ?? utilities.getEnv("UNIFI_UNAS_USERNAME");
+            resourceInputs["uosPassword"] = (args?.uosPassword ? pulumi.secret(args.uosPassword) : undefined) ?? utilities.getEnv("UNIFI_UOS_PASSWORD");
+            resourceInputs["uosUsername"] = (args?.uosUsername) ?? utilities.getEnv("UNIFI_UOS_USERNAME");
             resourceInputs["url"] = (args?.url) ?? utilities.getEnv("UNIFI_URL");
             resourceInputs["username"] = (args?.username) ?? utilities.getEnv("UNIFI_USERNAME");
         }
         opts = pulumi.mergeOptions(utilities.resourceOptsDefaults(), opts);
-        const secretOpts = { additionalSecretOutputs: ["apiKey", "password", "unasPassword"] };
+        const secretOpts = { additionalSecretOutputs: ["apiKey", "password", "unasPassword", "uosPassword"] };
         opts = pulumi.mergeOptions(opts, secretOpts);
         super(Provider.__pulumiType, name, resourceInputs, opts);
     }
@@ -112,6 +122,14 @@ export interface ProviderArgs {
      * Local UniFi OS admin username on the UNAS appliance (UniFi Drive has no API-key auth).
      */
     unasUsername?: pulumi.Input<string | undefined>;
+    /**
+     * Password for uosUsername.
+     */
+    uosPassword?: pulumi.Input<string | undefined>;
+    /**
+     * Local UniFi OS administrator username used to manage console roles and local accounts.
+     */
+    uosUsername?: pulumi.Input<string | undefined>;
     /**
      * Base URL of the UniFi controller, e.g. https://192.168.1.1 (omit any /api suffix).
      */

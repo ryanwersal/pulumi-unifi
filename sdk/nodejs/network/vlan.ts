@@ -106,7 +106,7 @@ export class Vlan extends pulumi.CustomResource {
      */
     declare public readonly nat: pulumi.Output<outputs.network.VlanNat | undefined>;
     /**
-     * NetworkGroup is the interface group: LAN, LAN2..LAN8 (or WAN/WAN2 for WAN networks). Defaults to "LAN".
+     * NetworkGroup is the interface group: LAN, LAN2..LAN8 (or WAN/WAN2 for WAN networks). Defaults to "LAN" for non-WAN networks.
      */
     declare public readonly networkGroup: pulumi.Output<string | undefined>;
     /**
@@ -173,7 +173,7 @@ export class Vlan extends pulumi.CustomResource {
             resourceInputs["mdnsEnabled"] = args?.mdnsEnabled;
             resourceInputs["name"] = args?.name;
             resourceInputs["nat"] = args?.nat;
-            resourceInputs["networkGroup"] = (args?.networkGroup) ?? "LAN";
+            resourceInputs["networkGroup"] = args?.networkGroup;
             resourceInputs["networkIsolationEnabled"] = args?.networkIsolationEnabled;
             resourceInputs["purpose"] = (args?.purpose) ?? "corporate";
             resourceInputs["settingPreference"] = args?.settingPreference;
@@ -288,7 +288,7 @@ export interface VlanArgs {
      */
     nat?: pulumi.Input<inputs.network.VlanNatArgs | undefined>;
     /**
-     * NetworkGroup is the interface group: LAN, LAN2..LAN8 (or WAN/WAN2 for WAN networks). Defaults to "LAN".
+     * NetworkGroup is the interface group: LAN, LAN2..LAN8 (or WAN/WAN2 for WAN networks). Defaults to "LAN" for non-WAN networks.
      */
     networkGroup?: pulumi.Input<string | undefined>;
     /**

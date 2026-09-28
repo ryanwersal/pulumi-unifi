@@ -5,6 +5,7 @@ package network
 import (
 	"context"
 	"fmt"
+	"net/http"
 
 	"github.com/filipowm/go-unifi/unifi"
 	"github.com/pulumi/pulumi-go-provider/infer"
@@ -531,6 +532,8 @@ type VlanWan struct {
 	DhcpOptions []NetworkWanDhcpOption `pulumi:"dhcpOptions,optional"`
 	// Dhcpv6PdSize is the IPv6 PD size to request from the ISP (48-64).
 	Dhcpv6PdSize *int `pulumi:"dhcpv6PdSize,optional"`
+	// Dhcpv6PdSizeAuto lets the controller choose the requested prefix size. Set false to use dhcpv6PdSize.
+	Dhcpv6PdSizeAuto *bool `pulumi:"dhcpv6PdSizeAuto,optional"`
 	// Prefixlen is the static WAN IPv6 prefix length (1-128).
 	Prefixlen *int `pulumi:"prefixlen,optional"`
 	// EgressQos is the 802.1p priority for WAN egress (1-7).
@@ -564,7 +567,7 @@ type VlanArgs struct {
 	// Enabled controls whether the network is active. Defaults to true.
 	Enabled *bool `pulumi:"enabled,optional"`
 
-	// NetworkGroup is the interface group: LAN, LAN2..LAN8 (or WAN/WAN2 for WAN networks). Defaults to "LAN".
+	// NetworkGroup is the interface group: LAN, LAN2..LAN8 (or WAN/WAN2 for WAN networks). Defaults to "LAN" for non-WAN networks.
 	NetworkGroup *string `pulumi:"networkGroup,optional"`
 	// DomainName is the DNS domain handed to clients.
 	DomainName *string `pulumi:"domainName,optional"`
@@ -753,6 +756,7 @@ func (w *VlanWan) Annotate(a infer.Annotator) {
 	a.Describe(&w.DhcpCos, "DhcpCos is the 802.1p CoS applied to WAN DHCP traffic (0-7).")
 	a.Describe(&w.DhcpOptions, "DhcpOptions are custom DHCP options requested on the WAN.")
 	a.Describe(&w.Dhcpv6PdSize, "Dhcpv6PdSize is the IPv6 PD size to request from the ISP (48-64).")
+	a.Describe(&w.Dhcpv6PdSizeAuto, "Dhcpv6PdSizeAuto lets the controller choose the requested prefix size. Set false to use dhcpv6PdSize.")
 	a.Describe(&w.Prefixlen, "Prefixlen is the static WAN IPv6 prefix length (1-128).")
 	a.Describe(&w.EgressQos, "EgressQos is the 802.1p priority for WAN egress (1-7).")
 	a.Describe(&w.ProviderCapabilities, "ProviderCapabilities advertises the ISP plan rates for SmartQueue.")
@@ -773,8 +777,7 @@ func (d *VlanArgs) Annotate(a infer.Annotator) {
 	a.Describe(&d.Subnet, "Subnet is the gateway IP/CIDR for the network, e.g. 192.168.20.1/24.")
 	a.Describe(&d.Enabled, "Enabled controls whether the network is active. Defaults to true.")
 	a.SetDefault(&d.Enabled, true)
-	a.Describe(&d.NetworkGroup, "NetworkGroup is the interface group: LAN, LAN2..LAN8 (or WAN/WAN2 for WAN networks). Defaults to \"LAN\".")
-	a.SetDefault(&d.NetworkGroup, "LAN")
+	a.Describe(&d.NetworkGroup, "NetworkGroup is the interface group: LAN, LAN2..LAN8 (or WAN/WAN2 for WAN networks). Defaults to \"LAN\" for non-WAN networks.")
 	a.Describe(&d.DomainName, "DomainName is the DNS domain handed to clients.")
 	a.Describe(&d.MdnsEnabled, "MdnsEnabled enables multicast DNS (Bonjour/mDNS) repeating on this network.")
 	a.Describe(&d.InternetAccessEnabled, "InternetAccessEnabled controls whether clients may reach the internet. Defaults to true.")
@@ -801,6 +804,17 @@ func (s *VlanState) Annotate(a infer.Annotator) {
 	a.Describe(&s.NetworkId, "NetworkId is the controller-assigned identifier (the UniFi `_id`).")
 }
 
+// Check applies the LAN interface-group default only to LAN networks. WAN
+// interfaces use wan.networkGroup; injecting networkGroup=LAN on import would
+// create an unrelated (and misleading) diff.
+func (Vlan) Check(ctx context.Context, req infer.CheckRequest) (infer.CheckResponse[VlanArgs], error) {
+	args, failures, err := infer.DefaultCheck[VlanArgs](ctx, req.NewInputs)
+	if err == nil && len(failures) == 0 && args.NetworkGroup == nil && derefOr(args.Purpose, VlanPurposeCorporate) != VlanPurposeWan {
+		args.NetworkGroup = ptr("LAN")
+	}
+	return infer.CheckResponse[VlanArgs]{Inputs: args, Failures: failures}, err
+}
+
 // toUnifi builds a go-unifi Network from inputs. id is empty on create.
 func (a VlanArgs) toUnifi(id string) *unifi.Network {
 	n := &unifi.Network{
@@ -808,8 +822,11 @@ func (a VlanArgs) toUnifi(id string) *unifi.Network {
 		Name:                  a.Name,
 		Purpose:               string(derefOr(a.Purpose, VlanPurposeCorporate)),
 		Enabled:               derefOr(a.Enabled, true),
-		NetworkGroup:          derefOr(a.NetworkGroup, "LAN"),
+		NetworkGroup:          derefOr(a.NetworkGroup, ""),
 		InternetAccessEnabled: derefOr(a.InternetAccessEnabled, true),
+	}
+	if a.NetworkGroup == nil && n.Purpose != "wan" {
+		n.NetworkGroup = "LAN"
 	}
 	if a.Vlan != nil {
 		n.VLAN = *a.Vlan
@@ -1260,7 +1277,7 @@ func (w VlanWan) isZero() bool {
 		w.Ipv6DnsPreference == nil && w.NetworkGroup == nil && w.Vlan == nil && w.VlanEnabled == nil &&
 		w.Username == nil && w.Password == nil && w.PppoeUsernameEnabled == nil && w.PppoePasswordEnabled == nil &&
 		w.SmartqEnabled == nil && w.SmartqUpRate == nil && w.SmartqDownRate == nil && w.LoadBalanceType == nil &&
-		w.LoadBalanceWeight == nil && w.DhcpCos == nil && w.DhcpOptions == nil && w.Dhcpv6PdSize == nil &&
+		w.LoadBalanceWeight == nil && w.DhcpCos == nil && w.DhcpOptions == nil && w.Dhcpv6PdSize == nil && w.Dhcpv6PdSizeAuto == nil &&
 		w.Prefixlen == nil && w.EgressQos == nil && w.ProviderCapabilities == nil && w.IpAliases == nil &&
 		w.DsliteRemoteHost == nil
 }
@@ -1569,27 +1586,38 @@ func (Vlan) Create(ctx context.Context, req infer.CreateRequest[VlanArgs]) (infe
 		return infer.CreateResponse[VlanState]{Output: VlanState{VlanArgs: req.Inputs}}, nil
 	}
 	cfg := infer.GetConfig[config.Config](ctx)
-	created, err := cfg.Network().CreateNetwork(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(""))
+	payload, err := vlanPayload(req.Inputs, "")
+	if err != nil {
+		return infer.CreateResponse[VlanState]{}, err
+	}
+	raw, err := vlanRequest(ctx, cfg.Network(), http.MethodPost, cfg.ResolvedSite(), "", payload)
 	if err != nil {
 		return infer.CreateResponse[VlanState]{}, wrap(fmt.Sprintf("create network %q (site %q)", req.Inputs.Name, cfg.ResolvedSite()), err)
 	}
-	if created.ID == "" {
+	created, err := vlanRawState(raw, req.Inputs)
+	if err != nil {
+		return infer.CreateResponse[VlanState]{}, err
+	}
+	if created.NetworkId == "" {
 		return infer.CreateResponse[VlanState]{}, infer.ProviderErrorf("created network but controller returned no ID")
 	}
-	return infer.CreateResponse[VlanState]{ID: created.ID, Output: vlanStateFrom(created, req.Inputs)}, nil
+	return infer.CreateResponse[VlanState]{ID: created.NetworkId, Output: created}, nil
 }
 
 // Read recovers state from the controller, enabling `pulumi import`.
 func (Vlan) Read(ctx context.Context, req infer.ReadRequest[VlanArgs, VlanState]) (infer.ReadResponse[VlanArgs, VlanState], error) {
 	cfg := infer.GetConfig[config.Config](ctx)
-	n, err := cfg.Network().GetNetwork(ctx, cfg.ResolvedSite(), req.ID)
+	raw, err := vlanRequest(ctx, cfg.Network(), http.MethodGet, cfg.ResolvedSite(), req.ID, nil)
 	if notFound(err) {
 		return infer.ReadResponse[VlanArgs, VlanState]{}, nil
 	}
 	if err != nil {
 		return infer.ReadResponse[VlanArgs, VlanState]{}, wrap(fmt.Sprintf("read network %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
-	st := vlanStateFrom(n, req.Inputs)
+	st, err := vlanRawState(raw, req.Inputs)
+	if err != nil {
+		return infer.ReadResponse[VlanArgs, VlanState]{}, err
+	}
 	return infer.ReadResponse[VlanArgs, VlanState]{ID: req.ID, Inputs: st.VlanArgs, State: st}, nil
 }
 
@@ -1599,11 +1627,20 @@ func (Vlan) Update(ctx context.Context, req infer.UpdateRequest[VlanArgs, VlanSt
 		return infer.UpdateResponse[VlanState]{Output: VlanState{VlanArgs: req.Inputs, NetworkId: req.ID}}, nil
 	}
 	cfg := infer.GetConfig[config.Config](ctx)
-	updated, err := cfg.Network().UpdateNetwork(ctx, cfg.ResolvedSite(), req.Inputs.toUnifi(req.ID))
+	live, err := vlanRequest(ctx, cfg.Network(), http.MethodGet, cfg.ResolvedSite(), req.ID, nil)
+	if err != nil {
+		return infer.UpdateResponse[VlanState]{}, wrap("read network before update", err)
+	}
+	payload, err := vlanUpdatePayload(live, req.State.VlanArgs, req.Inputs, req.ID)
+	if err != nil {
+		return infer.UpdateResponse[VlanState]{}, err
+	}
+	raw, err := vlanRequest(ctx, cfg.Network(), http.MethodPut, cfg.ResolvedSite(), req.ID, payload)
 	if err != nil {
 		return infer.UpdateResponse[VlanState]{}, wrap(fmt.Sprintf("update network %q (site %q)", req.ID, cfg.ResolvedSite()), err)
 	}
-	return infer.UpdateResponse[VlanState]{Output: vlanStateFrom(updated, req.Inputs)}, nil
+	updated, err := vlanRawState(raw, req.Inputs)
+	return infer.UpdateResponse[VlanState]{Output: updated}, err
 }
 
 // Delete removes the network.

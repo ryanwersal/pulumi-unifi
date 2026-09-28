@@ -15,6 +15,7 @@ utilities.lazyLoad(exports, ["Provider"], () => require("./provider"));
 import * as config from "./config";
 import * as drive from "./drive";
 import * as network from "./network";
+import * as os from "./os";
 import * as protect from "./protect";
 import * as types from "./types";
 
@@ -22,6 +23,7 @@ export {
     config,
     drive,
     network,
+    os,
     protect,
     types,
 };

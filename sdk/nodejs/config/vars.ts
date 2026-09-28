@@ -85,6 +85,28 @@ Object.defineProperty(exports, "unasUsername", {
 });
 
 /**
+ * Password for uosUsername.
+ */
+export declare const uosPassword: string | undefined;
+Object.defineProperty(exports, "uosPassword", {
+    get() {
+        return __config.get("uosPassword") ?? utilities.getEnv("UNIFI_UOS_PASSWORD");
+    },
+    enumerable: true,
+});
+
+/**
+ * Local UniFi OS administrator username used to manage console roles and local accounts.
+ */
+export declare const uosUsername: string | undefined;
+Object.defineProperty(exports, "uosUsername", {
+    get() {
+        return __config.get("uosUsername") ?? utilities.getEnv("UNIFI_UOS_USERNAME");
+    },
+    enumerable: true,
+});
+
+/**
  * Base URL of the UniFi controller, e.g. https://192.168.1.1 (omit any /api suffix).
  */
 export declare const url: string | undefined;

@@ -18,6 +18,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/ryanwersal/pulumi-unifi/provider/internal/driveapi"
+	"github.com/ryanwersal/pulumi-unifi/provider/internal/usersapi"
 )
 
 // Config is the provider configuration. Secret fields are marked
@@ -35,6 +36,11 @@ type Config struct {
 	Username *string `pulumi:"username,optional"`
 	// Password for username/password auth (alternative to APIKey).
 	Password *string `pulumi:"password,optional" provider:"secret"`
+	// UosUsername is a local UniFi OS administrator used only for the private
+	// console Users API (roles and local accounts).
+	UosUsername *string `pulumi:"uosUsername,optional"`
+	// UosPassword is the password for uosUsername.
+	UosPassword *string `pulumi:"uosPassword,optional" provider:"secret"`
 	// Site is the UniFi site name. Defaults to "default".
 	Site *string `pulumi:"site,optional"`
 	// InsecureTLS skips TLS verification (self-signed controller certs). Applies
@@ -62,6 +68,8 @@ type Config struct {
 	// built when unasUrl + credentials are supplied. nil otherwise; Drive
 	// resources error with a clear message in that case.
 	drive driveapi.Client
+	// usersAdmin manages console roles and local administrators.
+	usersAdmin usersapi.Client
 }
 
 // Annotate attaches descriptions, defaults, and env-var fallbacks to the config.
@@ -74,6 +82,10 @@ func (c *Config) Annotate(a infer.Annotator) {
 	a.SetDefault(&c.Username, nil, "UNIFI_USERNAME")
 	a.Describe(&c.Password, "Local admin password.")
 	a.SetDefault(&c.Password, nil, "UNIFI_PASSWORD")
+	a.Describe(&c.UosUsername, "Local UniFi OS administrator username used to manage console roles and local accounts.")
+	a.SetDefault(&c.UosUsername, nil, "UNIFI_UOS_USERNAME")
+	a.Describe(&c.UosPassword, "Password for uosUsername.")
+	a.SetDefault(&c.UosPassword, nil, "UNIFI_UOS_PASSWORD")
 	a.Describe(&c.Site, `UniFi site name (defaults to "default").`)
 	a.SetDefault(&c.Site, "default", "UNIFI_SITE")
 	a.Describe(&c.InsecureTLS, "Skip TLS certificate verification (for self-signed controller and UNAS certs).")
@@ -170,6 +182,19 @@ func (c *Config) Configure(_ context.Context) error {
 		return err
 	}
 	c.drive = drive
+
+	if c.APIKey != nil && *c.APIKey != "" {
+		c.usersAdmin = usersapi.New(usersapi.Config{
+			Host:               c.URL,
+			APIKey:             *c.APIKey,
+			InsecureSkipVerify: c.InsecureTLS != nil && *c.InsecureTLS,
+		})
+	} else if c.UosUsername != nil && *c.UosUsername != "" {
+		if c.UosPassword == nil || *c.UosPassword == "" {
+			return fmt.Errorf("unifi provider: `uosUsername` is set but `uosPassword` is required")
+		}
+		c.usersAdmin = c.UsersFor(*c.UosUsername, *c.UosPassword)
+	}
 	return nil
 }
 
@@ -213,6 +238,26 @@ func (c Config) Drive() (driveapi.Client, error) {
 		return nil, fmt.Errorf("unifi provider: Drive resources require `unasUrl`, `unasUsername`, and `unasPassword` to be set (the UNAS appliance is a separate host from the main controller)")
 	}
 	return c.drive, nil
+}
+
+// UsersAdmin returns the private UniFi OS Users API client configured with
+// uosUsername/uosPassword.
+func (c Config) UsersAdmin() (usersapi.Client, error) {
+	if c.usersAdmin == nil {
+		return nil, fmt.Errorf("unifi provider: UniFi OS user resources require `apiKey` or `uosUsername`/`uosPassword`")
+	}
+	return c.usersAdmin, nil
+}
+
+// UsersFor builds a private Users API session for a specific local user. APIKey
+// resources use this to issue a key owned by the newly-created account.
+func (c Config) UsersFor(username, password string) usersapi.Client {
+	return usersapi.New(usersapi.Config{
+		Host:               c.URL,
+		Username:           username,
+		Password:           password,
+		InsecureSkipVerify: c.InsecureTLS != nil && *c.InsecureTLS,
+	})
 }
 
 // ResolvedSite returns the configured site, defaulting to "default".

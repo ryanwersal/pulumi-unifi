@@ -12,6 +12,7 @@ import (
 	"github.com/ryanwersal/pulumi-unifi/provider/config"
 	"github.com/ryanwersal/pulumi-unifi/provider/drive"
 	"github.com/ryanwersal/pulumi-unifi/provider/network"
+	unifios "github.com/ryanwersal/pulumi-unifi/provider/os"
 	"github.com/ryanwersal/pulumi-unifi/provider/protect"
 )
 
@@ -71,6 +72,9 @@ func New() (p.Provider, error) {
 			infer.Resource(protect.AlarmAutomation{}),
 			infer.Resource(drive.Share{}),
 			infer.Resource(drive.NfsExport{}),
+			infer.Resource(unifios.CustomRole{}),
+			infer.Resource(unifios.LocalAdmin{}),
+			infer.Resource(unifios.APIKey{}),
 		).
 		Build()
 }

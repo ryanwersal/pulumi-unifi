@@ -92,6 +92,25 @@
           ]
         }
       },
+      "uosPassword": {
+        "type": "string",
+        "description": "Password for uosUsername.",
+        "defaultInfo": {
+          "environment": [
+            "UNIFI_UOS_PASSWORD"
+          ]
+        },
+        "secret": true
+      },
+      "uosUsername": {
+        "type": "string",
+        "description": "Local UniFi OS administrator username used to manage console roles and local accounts.",
+        "defaultInfo": {
+          "environment": [
+            "UNIFI_UOS_USERNAME"
+          ]
+        }
+      },
       "url": {
         "type": "string",
         "description": "Base URL of the UniFi controller, e.g. https://192.168.1.1 (omit any /api suffix).",
@@ -2608,6 +2627,10 @@
           "type": "integer",
           "description": "Dhcpv6PdSize is the IPv6 PD size to request from the ISP (48-64)."
         },
+        "dhcpv6PdSizeAuto": {
+          "type": "boolean",
+          "description": "Dhcpv6PdSizeAuto lets the controller choose the requested prefix size. Set false to use dhcpv6PdSize."
+        },
         "dns1": {
           "type": "string",
           "description": "Dns1 is the first WAN DNS server."
@@ -3723,6 +3746,25 @@
           ]
         }
       },
+      "uosPassword": {
+        "type": "string",
+        "description": "Password for uosUsername.",
+        "defaultInfo": {
+          "environment": [
+            "UNIFI_UOS_PASSWORD"
+          ]
+        },
+        "secret": true
+      },
+      "uosUsername": {
+        "type": "string",
+        "description": "Local UniFi OS administrator username used to manage console roles and local accounts.",
+        "defaultInfo": {
+          "environment": [
+            "UNIFI_UOS_USERNAME"
+          ]
+        }
+      },
       "url": {
         "type": "string",
         "description": "Base URL of the UniFi controller, e.g. https://192.168.1.1 (omit any /api suffix).",
@@ -3807,6 +3849,25 @@
         "defaultInfo": {
           "environment": [
             "UNIFI_UNAS_USERNAME"
+          ]
+        }
+      },
+      "uosPassword": {
+        "type": "string",
+        "description": "Password for uosUsername.",
+        "defaultInfo": {
+          "environment": [
+            "UNIFI_UOS_PASSWORD"
+          ]
+        },
+        "secret": true
+      },
+      "uosUsername": {
+        "type": "string",
+        "description": "Local UniFi OS administrator username used to manage console roles and local accounts.",
+        "defaultInfo": {
+          "environment": [
+            "UNIFI_UOS_USERNAME"
           ]
         }
       },
@@ -5139,8 +5200,7 @@
         },
         "networkGroup": {
           "type": "string",
-          "description": "NetworkGroup is the interface group: LAN, LAN2..LAN8 (or WAN/WAN2 for WAN networks). Defaults to \"LAN\".",
-          "default": "LAN"
+          "description": "NetworkGroup is the interface group: LAN, LAN2..LAN8 (or WAN/WAN2 for WAN networks). Defaults to \"LAN\" for non-WAN networks."
         },
         "networkId": {
           "type": "string",
@@ -5253,8 +5313,7 @@
         },
         "networkGroup": {
           "type": "string",
-          "description": "NetworkGroup is the interface group: LAN, LAN2..LAN8 (or WAN/WAN2 for WAN networks). Defaults to \"LAN\".",
-          "default": "LAN"
+          "description": "NetworkGroup is the interface group: LAN, LAN2..LAN8 (or WAN/WAN2 for WAN networks). Defaults to \"LAN\" for non-WAN networks."
         },
         "networkIsolationEnabled": {
           "type": "boolean",
@@ -5562,6 +5621,218 @@
       "requiredInputs": [
         "name",
         "networkId"
+      ]
+    },
+    "unifi:os:APIKey": {
+      "description": "A UniFi OS integration API key owned by the supplied local user. The full key is returned once and stored as a Pulumi secret.",
+      "properties": {
+        "apiKey": {
+          "type": "string",
+          "description": "Full API key. Returned only at creation and stored as a Pulumi secret.",
+          "secret": true
+        },
+        "keyId": {
+          "type": "string",
+          "description": "Console-assigned API key identifier."
+        },
+        "name": {
+          "type": "string",
+          "description": "Display name for the integration key.",
+          "replaceOnChanges": true
+        },
+        "password": {
+          "type": "string",
+          "description": "Password for the local account. Stored as a Pulumi secret.",
+          "secret": true
+        },
+        "username": {
+          "type": "string",
+          "description": "Local account that owns the key.",
+          "replaceOnChanges": true
+        }
+      },
+      "required": [
+        "name",
+        "username",
+        "password",
+        "keyId",
+        "apiKey"
+      ],
+      "inputProperties": {
+        "name": {
+          "type": "string",
+          "description": "Display name for the integration key.",
+          "replaceOnChanges": true
+        },
+        "password": {
+          "type": "string",
+          "description": "Password for the local account. Stored as a Pulumi secret.",
+          "secret": true
+        },
+        "username": {
+          "type": "string",
+          "description": "Local account that will own the key.",
+          "replaceOnChanges": true
+        }
+      },
+      "requiredInputs": [
+        "name",
+        "username",
+        "password"
+      ]
+    },
+    "unifi:os:CustomRole": {
+      "description": "A custom UniFi OS console role, managed through the private Users API.",
+      "properties": {
+        "accessRole": {
+          "type": "string",
+          "description": "Access access: \"admin\" or \"none\".",
+          "default": "none"
+        },
+        "name": {
+          "type": "string",
+          "description": "Role name."
+        },
+        "networkRole": {
+          "type": "string",
+          "description": "Network access: \"admin\", \"hotspot\", \"view\", \"site_admin\", or \"none\".",
+          "default": "none"
+        },
+        "protectRole": {
+          "type": "string",
+          "description": "Protect access: \"admin\", \"live\", \"view\", or \"none\".",
+          "default": "none"
+        },
+        "roleId": {
+          "type": "string",
+          "description": "Console-assigned role identifier."
+        },
+        "talkRole": {
+          "type": "string",
+          "description": "Talk access: \"admin\", \"view\", or \"none\".",
+          "default": "none"
+        }
+      },
+      "required": [
+        "name",
+        "roleId"
+      ],
+      "inputProperties": {
+        "accessRole": {
+          "type": "string",
+          "description": "Access access: \"admin\" or \"none\".",
+          "default": "none"
+        },
+        "name": {
+          "type": "string",
+          "description": "Role name."
+        },
+        "networkRole": {
+          "type": "string",
+          "description": "Network access: \"admin\", \"hotspot\", \"view\", \"site_admin\", or \"none\".",
+          "default": "none"
+        },
+        "protectRole": {
+          "type": "string",
+          "description": "Protect access: \"admin\", \"live\", \"view\", or \"none\".",
+          "default": "none"
+        },
+        "talkRole": {
+          "type": "string",
+          "description": "Talk access: \"admin\", \"view\", or \"none\".",
+          "default": "none"
+        }
+      },
+      "requiredInputs": [
+        "name"
+      ]
+    },
+    "unifi:os:LocalAdmin": {
+      "description": "A local-only UniFi OS console administrator, managed through the private Users API.",
+      "properties": {
+        "email": {
+          "type": "string",
+          "description": "Local account email label; it need not be deliverable.",
+          "replaceOnChanges": true
+        },
+        "firstName": {
+          "type": "string",
+          "description": "First name.",
+          "replaceOnChanges": true
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Last name.",
+          "replaceOnChanges": true
+        },
+        "password": {
+          "type": "string",
+          "description": "Local login password. Stored as a Pulumi secret.",
+          "secret": true
+        },
+        "roleId": {
+          "type": "string",
+          "description": "UniFi OS role ID.",
+          "replaceOnChanges": true
+        },
+        "userId": {
+          "type": "string",
+          "description": "Console-assigned user identifier."
+        },
+        "username": {
+          "type": "string",
+          "description": "Local login username. Changing it replaces the user.",
+          "replaceOnChanges": true
+        }
+      },
+      "required": [
+        "username",
+        "password",
+        "firstName",
+        "lastName",
+        "email",
+        "roleId",
+        "userId"
+      ],
+      "inputProperties": {
+        "email": {
+          "type": "string",
+          "description": "Local account email label; it need not be deliverable.",
+          "replaceOnChanges": true
+        },
+        "firstName": {
+          "type": "string",
+          "description": "First name.",
+          "replaceOnChanges": true
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Last name.",
+          "replaceOnChanges": true
+        },
+        "password": {
+          "type": "string",
+          "description": "Local login password. Stored as a Pulumi secret.",
+          "secret": true
+        },
+        "roleId": {
+          "type": "string",
+          "description": "UniFi OS role ID.",
+          "replaceOnChanges": true
+        },
+        "username": {
+          "type": "string",
+          "description": "Local login username. Changing it replaces the user.",
+          "replaceOnChanges": true
+        }
+      },
+      "requiredInputs": [
+        "username",
+        "password",
+        "firstName",
+        "lastName",
+        "email",
+        "roleId"
       ]
     },
     "unifi:protect:AlarmAutomation": {
