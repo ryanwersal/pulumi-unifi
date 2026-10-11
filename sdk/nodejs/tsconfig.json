@@ -45,6 +45,7 @@
         "os/localAdmin.ts",
         "protect/alarmAutomation.ts",
         "protect/camera.ts",
+        "protect/cameraStream.ts",
         "protect/index.ts",
         "provider.ts",
         "types/enums/drive/index.ts",

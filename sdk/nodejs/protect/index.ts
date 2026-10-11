@@ -15,6 +15,11 @@ export type Camera = import("./camera").Camera;
 export const Camera: typeof import("./camera").Camera = null as any;
 utilities.lazyLoad(exports, ["Camera"], () => require("./camera"));
 
+export { CameraStreamArgs } from "./cameraStream";
+export type CameraStream = import("./cameraStream").CameraStream;
+export const CameraStream: typeof import("./cameraStream").CameraStream = null as any;
+utilities.lazyLoad(exports, ["CameraStream"], () => require("./cameraStream"));
+
 
 const _module = {
     version: utilities.getVersion(),
@@ -24,6 +29,8 @@ const _module = {
                 return new AlarmAutomation(name, <any>undefined, { urn })
             case "unifi:protect:Camera":
                 return new Camera(name, <any>undefined, { urn })
+            case "unifi:protect:CameraStream":
+                return new CameraStream(name, <any>undefined, { urn })
             default:
                 throw new Error(`unknown resource type ${type}`);
         }

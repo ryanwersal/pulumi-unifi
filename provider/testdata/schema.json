@@ -6179,6 +6179,41 @@
       "requiredInputs": [
         "cameraId"
       ]
+    },
+    "unifi:protect:CameraStream": {
+      "description": "Enable one RTSPS stream quality on an existing Protect camera through the public integration API. Imports use cameraId/quality. Delete disables only this quality; use retainOnDelete to leave it enabled. Stream URLs are not stored or exported. Refresh detects streams disabled outside Pulumi.",
+      "properties": {
+        "cameraId": {
+          "type": "string",
+          "description": "ID of an already-adopted Protect camera.",
+          "replaceOnChanges": true
+        },
+        "quality": {
+          "type": "string",
+          "description": "RTSPS quality to enable: high, medium, low, or package (where supported by the camera). Changing camera or quality replaces the resource.",
+          "replaceOnChanges": true
+        }
+      },
+      "required": [
+        "cameraId",
+        "quality"
+      ],
+      "inputProperties": {
+        "cameraId": {
+          "type": "string",
+          "description": "ID of an already-adopted Protect camera.",
+          "replaceOnChanges": true
+        },
+        "quality": {
+          "type": "string",
+          "description": "RTSPS quality to enable: high, medium, low, or package (where supported by the camera). Changing camera or quality replaces the resource.",
+          "replaceOnChanges": true
+        }
+      },
+      "requiredInputs": [
+        "cameraId",
+        "quality"
+      ]
     }
   }
 }

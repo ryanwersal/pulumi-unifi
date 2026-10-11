@@ -41,6 +41,7 @@ resource covers WPA3/PMF/MLO/band/fast-roaming/MAC-filter/schedules/PPSKs).
 | `unifi:network:DynamicDns` | Gateway DDNS updater (Cloudflare and other providers) | full CRUD + `Read` (import) |
 | `unifi:network:DnsRecord` | A controller local DNS record | full CRUD + `Read` (import) |
 | `unifi:protect:Camera` | Settings of an **existing** Protect camera | adoption: Create/Update patch, Read, Delete is a no-op |
+| `unifi:protect:CameraStream` | One camera RTSPS quality | Create + Read/import + Delete; inputs replace-only |
 | `unifi:protect:AlarmAutomation` | An Alarm Manager rule (conditions → webhook actions) | full CRUD + `Read` (import) — **private API**, see below |
 | `unifi:drive:Share` | A UniFi Drive shared drive on a UNAS appliance | Create + `Read` (import) + Delete; inputs are replace-only — **private API**, see below |
 | `unifi:drive:NfsExport` | An NFS access grant (share → client) on UniFi Drive | full CRUD + `Read` (import) — **private API**, see below |
@@ -58,6 +59,29 @@ device from management without touching it. The `Device` resource covers switch
 aggregation/mirroring, rate limiting, QoS), **EtherLighting** + LED, **PDU
 outlet** overrides, STP/jumbo/flow-control, AP **radio** settings, and gateway
 VRRP / LCM display.
+
+### Camera RTSPS streams
+
+`protect.CameraStream` enables one quality (`high`, `medium`, `low`, or
+`package`, where the camera supports it) through the public Protect API:
+
+```typescript
+new unifi.protect.CameraStream("entry-high", {
+    cameraId: "your-adopted-camera-id",
+    quality: "high",
+}, { retainOnDelete: true });
+```
+
+The resource checks for an existing stream before creating one, preserving an
+already-active URL. It reads back the stream after creation and never stores or
+exports the video-access URL. Other qualities and camera settings are untouched.
+Import with ID `cameraId/quality`. Run `pulumi up --refresh` to detect and restore
+streams disabled outside Pulumi; there is no background reconciler.
+
+Deleting the resource disables only its quality, unless `retainOnDelete` is set.
+Changing camera or quality replaces the resource. Enable only one resource per
+camera/quality pair. Home Assistant may require a UniFi Protect integration
+reload to discover streams enabled through this API.
 
 ### UniFi Drive (UNAS) caveats
 
