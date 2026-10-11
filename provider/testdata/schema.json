@@ -4266,6 +4266,104 @@
         "value"
       ]
     },
+    "unifi:network:DynamicDns": {
+      "description": "A gateway dynamic DNS entry. The gateway updates the provider independently of Pulumi runs. Manage the public DNS record separately.",
+      "properties": {
+        "customService": {
+          "type": "string",
+          "description": "Custom provider identifier when service is custom."
+        },
+        "dynamicDnsId": {
+          "type": "string",
+          "description": "Controller-assigned dynamic DNS entry ID, also used for import."
+        },
+        "hostName": {
+          "type": "string",
+          "description": "Fully qualified DNS hostname to update."
+        },
+        "interface": {
+          "type": "string",
+          "description": "Logical WAN interface: wan for Internet 1, wan2 for Internet 2, and so on.",
+          "default": "wan"
+        },
+        "login": {
+          "type": "string",
+          "description": "Provider login. For Cloudflare, use the zone name (for example example.com), not an email address."
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Additional controller DDNS options."
+        },
+        "password": {
+          "type": "string",
+          "description": "Provider password or API token. Stored as a Pulumi secret; retained when the controller omits it on read.",
+          "secret": true
+        },
+        "server": {
+          "type": "string",
+          "description": "Optional DDNS server override. Empty uses the provider default."
+        },
+        "service": {
+          "type": "string",
+          "description": "UniFi DDNS provider identifier, such as cloudflare, dyndns, or custom."
+        }
+      },
+      "required": [
+        "hostName",
+        "service",
+        "login",
+        "password",
+        "dynamicDnsId"
+      ],
+      "inputProperties": {
+        "customService": {
+          "type": "string",
+          "description": "Custom provider identifier when service is custom."
+        },
+        "hostName": {
+          "type": "string",
+          "description": "Fully qualified DNS hostname to update."
+        },
+        "interface": {
+          "type": "string",
+          "description": "Logical WAN interface: wan for Internet 1, wan2 for Internet 2, and so on.",
+          "default": "wan"
+        },
+        "login": {
+          "type": "string",
+          "description": "Provider login. For Cloudflare, use the zone name (for example example.com), not an email address."
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Additional controller DDNS options."
+        },
+        "password": {
+          "type": "string",
+          "description": "Provider password or API token. Stored as a Pulumi secret; retained when the controller omits it on read.",
+          "secret": true
+        },
+        "server": {
+          "type": "string",
+          "description": "Optional DDNS server override. Empty uses the provider default."
+        },
+        "service": {
+          "type": "string",
+          "description": "UniFi DDNS provider identifier, such as cloudflare, dyndns, or custom."
+        }
+      },
+      "requiredInputs": [
+        "hostName",
+        "service",
+        "login",
+        "password"
+      ]
+    },
     "unifi:network:FirewallGroup": {
       "description": "A UniFi firewall group: a reusable set of addresses or ports referenced by firewall rules.",
       "properties": {

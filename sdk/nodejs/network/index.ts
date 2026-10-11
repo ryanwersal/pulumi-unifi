@@ -15,6 +15,11 @@ export type DnsRecord = import("./dnsRecord").DnsRecord;
 export const DnsRecord: typeof import("./dnsRecord").DnsRecord = null as any;
 utilities.lazyLoad(exports, ["DnsRecord"], () => require("./dnsRecord"));
 
+export { DynamicDnsArgs } from "./dynamicDns";
+export type DynamicDns = import("./dynamicDns").DynamicDns;
+export const DynamicDns: typeof import("./dynamicDns").DynamicDns = null as any;
+utilities.lazyLoad(exports, ["DynamicDns"], () => require("./dynamicDns"));
+
 export { FirewallGroupArgs } from "./firewallGroup";
 export type FirewallGroup = import("./firewallGroup").FirewallGroup;
 export const FirewallGroup: typeof import("./firewallGroup").FirewallGroup = null as any;
@@ -77,6 +82,8 @@ const _module = {
                 return new Device(name, <any>undefined, { urn })
             case "unifi:network:DnsRecord":
                 return new DnsRecord(name, <any>undefined, { urn })
+            case "unifi:network:DynamicDns":
+                return new DynamicDns(name, <any>undefined, { urn })
             case "unifi:network:FirewallGroup":
                 return new FirewallGroup(name, <any>undefined, { urn })
             case "unifi:network:FirewallRule":

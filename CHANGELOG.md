@@ -6,6 +6,11 @@ follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html) once released.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-11
+
+- Add `network:DynamicDns` for gateway-managed dynamic DNS, with secret API
+  credentials, import, in-place updates, and idempotent deletion.
+
 ## [0.2.1] - 2026-09-27
 
 - Prevent provider version upgrades from proposing replacement of existing

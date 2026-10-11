@@ -78,6 +78,7 @@ func TestProviderSchemaBuilds(t *testing.T) {
 		"unifi:network:User",
 		"unifi:network:UserGroup",
 		"unifi:network:DnsRecord",
+		"unifi:network:DynamicDns",
 		"unifi:protect:Camera",
 		"unifi:protect:AlarmAutomation",
 	}
@@ -121,7 +122,8 @@ func TestProviderSchemaBuilds(t *testing.T) {
 	// Credentials must be marked secret so they are encrypted in state. The Vlan
 	// PPPoE password now lives on the nested VlanWan type.
 	resourceSecrets := map[string]string{
-		"unifi:network:Wlan": "passphrase",
+		"unifi:network:Wlan":       "passphrase",
+		"unifi:network:DynamicDns": "password",
 	}
 	for tok, field := range resourceSecrets {
 		prop, ok := schema.Resources[tok].InputProperties[field]

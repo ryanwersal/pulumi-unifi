@@ -72,6 +72,7 @@ func New() (p.Provider, error) {
 			infer.Resource(network.User{}),
 			infer.Resource(network.UserGroup{}),
 			infer.Resource(network.DnsRecord{}),
+			infer.Resource(network.DynamicDns{}),
 			infer.Resource(protect.Camera{}),
 			infer.Resource(protect.AlarmAutomation{}),
 			infer.Resource(drive.Share{}),

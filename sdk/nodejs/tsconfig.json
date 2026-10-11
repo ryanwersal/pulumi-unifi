@@ -27,6 +27,7 @@
         "index.ts",
         "network/device.ts",
         "network/dnsRecord.ts",
+        "network/dynamicDns.ts",
         "network/firewallGroup.ts",
         "network/firewallRule.ts",
         "network/firewallZonePolicy.ts",

@@ -38,6 +38,7 @@ resource covers WPA3/PMF/MLO/band/fast-roaming/MAC-filter/schedules/PPSKs).
 | `unifi:network:StaticRoute` | A static route | full CRUD + `Read` (import) |
 | `unifi:network:User` | A known client (fixed IP, group, block, local DNS) | full CRUD + `Read` (import) |
 | `unifi:network:UserGroup` | A bandwidth-limit user group | full CRUD + `Read` (import) |
+| `unifi:network:DynamicDns` | Gateway DDNS updater (Cloudflare and other providers) | full CRUD + `Read` (import) |
 | `unifi:network:DnsRecord` | A controller local DNS record | full CRUD + `Read` (import) |
 | `unifi:protect:Camera` | Settings of an **existing** Protect camera | adoption: Create/Update patch, Read, Delete is a no-op |
 | `unifi:protect:AlarmAutomation` | An Alarm Manager rule (conditions → webhook actions) | full CRUD + `Read` (import) — **private API**, see below |
