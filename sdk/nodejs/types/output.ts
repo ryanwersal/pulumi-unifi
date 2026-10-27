@@ -9,6 +9,41 @@ import * as enums from "../types/enums";
 import * as utilities from "../utilities";
 
 export namespace network {
+    export interface ContentFilteringSchedule {
+        /**
+         * Single activation date, YYYY-MM-DD.
+         */
+        date?: string;
+        /**
+         * Last activation date, YYYY-MM-DD.
+         */
+        dateEnd?: string;
+        /**
+         * First activation date, YYYY-MM-DD.
+         */
+        dateStart?: string;
+        /**
+         * Schedule mode: ALWAYS, EVERY_DAY, EVERY_WEEK, ONE_TIME_ONLY, or CUSTOM.
+         */
+        mode: enums.network.ContentFilteringScheduleMode;
+        /**
+         * Recurring weekdays: mon, tue, wed, thu, fri, sat, sun.
+         */
+        repeatOnDays?: string[];
+        /**
+         * Whether the schedule covers the full day.
+         */
+        timeAllDay?: boolean;
+        /**
+         * End time, HH:MM.
+         */
+        timeRangeEnd?: string;
+        /**
+         * Start time, HH:MM.
+         */
+        timeRangeStart?: string;
+    }
+
     export interface DeviceDot1x {
         /**
          * FallbackNetworkId is the fallback network for failed 802.1X auth (the network's `_id`).

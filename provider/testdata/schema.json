@@ -147,6 +147,79 @@
         }
       ]
     },
+    "unifi:network:ContentFilteringSchedule": {
+      "properties": {
+        "date": {
+          "type": "string",
+          "description": "Single activation date, YYYY-MM-DD."
+        },
+        "dateEnd": {
+          "type": "string",
+          "description": "Last activation date, YYYY-MM-DD."
+        },
+        "dateStart": {
+          "type": "string",
+          "description": "First activation date, YYYY-MM-DD."
+        },
+        "mode": {
+          "$ref": "#/types/unifi:network:ContentFilteringScheduleMode",
+          "description": "Schedule mode: ALWAYS, EVERY_DAY, EVERY_WEEK, ONE_TIME_ONLY, or CUSTOM."
+        },
+        "repeatOnDays": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Recurring weekdays: mon, tue, wed, thu, fri, sat, sun."
+        },
+        "timeAllDay": {
+          "type": "boolean",
+          "description": "Whether the schedule covers the full day."
+        },
+        "timeRangeEnd": {
+          "type": "string",
+          "description": "End time, HH:MM."
+        },
+        "timeRangeStart": {
+          "type": "string",
+          "description": "Start time, HH:MM."
+        }
+      },
+      "type": "object",
+      "required": [
+        "mode"
+      ]
+    },
+    "unifi:network:ContentFilteringScheduleMode": {
+      "type": "string",
+      "enum": [
+        {
+          "name": "Always",
+          "description": "Always active.",
+          "value": "ALWAYS"
+        },
+        {
+          "name": "EveryDay",
+          "description": "Active every day.",
+          "value": "EVERY_DAY"
+        },
+        {
+          "name": "EveryWeek",
+          "description": "Active on selected weekdays.",
+          "value": "EVERY_WEEK"
+        },
+        {
+          "name": "OneTimeOnly",
+          "description": "Active on a single date.",
+          "value": "ONE_TIME_ONLY"
+        },
+        {
+          "name": "Custom",
+          "description": "Custom recurring schedule.",
+          "value": "CUSTOM"
+        }
+      ]
+    },
     "unifi:network:DeviceDot1x": {
       "properties": {
         "fallbackNetworkId": {
@@ -3994,6 +4067,134 @@
           "type": "string",
           "description": "StoragePoolId pins the storage pool. Omit to use the appliance's first pool.",
           "replaceOnChanges": true
+        }
+      },
+      "requiredInputs": [
+        "name"
+      ]
+    },
+    "unifi:network:ContentFiltering": {
+      "description": "A UniFi Network v2 content-filter policy. Import using its controller ID. Updates preserve unmodeled controller fields. Delete removes the entire policy; protect imported security policies or use retainOnDelete. Do not manage the same policy with multiple resources or writers.",
+      "properties": {
+        "allowList": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Domains allowed by this policy, using controller domain syntax (for example pinggy-free.link). Entries apply according to UniFi's domain matching rules. An empty list clears the allowlist."
+        },
+        "blockList": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Additional domains blocked by this policy. An empty list clears the blocklist."
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Controller category identifiers, including FAMILY and ADVERTISEMENT. Additional categories depend on firmware and subscriptions. An empty list clears category filtering."
+        },
+        "clientMacs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Client MAC addresses to filter."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the policy is active. Defaults to true.",
+          "default": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Policy display name."
+        },
+        "networkIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Controller network IDs to filter. Set networks, client MACs, or both; an empty scope is rejected."
+        },
+        "policyId": {
+          "type": "string",
+          "description": "Controller-assigned content-filter policy ID."
+        },
+        "safeSearch": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Search providers with enforced safe search: GOOGLE, YOUTUBE, BING, or other controller-supported identifiers."
+        },
+        "schedule": {
+          "$ref": "#/types/unifi:network:ContentFilteringSchedule",
+          "description": "Activation schedule. Defaults to ALWAYS. Times use the controller's timezone. Unknown schedule fields are preserved during updates."
+        }
+      },
+      "required": [
+        "name",
+        "policyId"
+      ],
+      "inputProperties": {
+        "allowList": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Domains allowed by this policy, using controller domain syntax (for example pinggy-free.link). Entries apply according to UniFi's domain matching rules. An empty list clears the allowlist."
+        },
+        "blockList": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Additional domains blocked by this policy. An empty list clears the blocklist."
+        },
+        "categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Controller category identifiers, including FAMILY and ADVERTISEMENT. Additional categories depend on firmware and subscriptions. An empty list clears category filtering."
+        },
+        "clientMacs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Client MAC addresses to filter."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the policy is active. Defaults to true.",
+          "default": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Policy display name."
+        },
+        "networkIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Controller network IDs to filter. Set networks, client MACs, or both; an empty scope is rejected."
+        },
+        "safeSearch": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Search providers with enforced safe search: GOOGLE, YOUTUBE, BING, or other controller-supported identifiers."
+        },
+        "schedule": {
+          "$ref": "#/types/unifi:network:ContentFilteringSchedule",
+          "description": "Activation schedule. Defaults to ALWAYS. Times use the controller's timezone. Unknown schedule fields are preserved during updates."
         }
       },
       "requiredInputs": [

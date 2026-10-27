@@ -79,6 +79,7 @@ func TestProviderSchemaBuilds(t *testing.T) {
 		"unifi:network:UserGroup",
 		"unifi:network:DnsRecord",
 		"unifi:network:DynamicDns",
+		"unifi:network:ContentFiltering",
 		"unifi:protect:Camera",
 		"unifi:protect:AlarmAutomation",
 	}

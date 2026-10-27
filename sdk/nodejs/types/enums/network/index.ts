@@ -2,6 +2,31 @@
 // *** Do not edit by hand unless you're certain you know what you are doing! ***
 
 
+export const ContentFilteringScheduleMode = {
+    /**
+     * Always active.
+     */
+    Always: "ALWAYS",
+    /**
+     * Active every day.
+     */
+    EveryDay: "EVERY_DAY",
+    /**
+     * Active on selected weekdays.
+     */
+    EveryWeek: "EVERY_WEEK",
+    /**
+     * Active on a single date.
+     */
+    OneTimeOnly: "ONE_TIME_ONLY",
+    /**
+     * Custom recurring schedule.
+     */
+    Custom: "CUSTOM",
+} as const;
+
+export type ContentFilteringScheduleMode = (typeof ContentFilteringScheduleMode)[keyof typeof ContentFilteringScheduleMode];
+
 export const DeviceDot1xCtrl = {
     /**
      * 802.1X authentication.

@@ -40,11 +40,59 @@ resource covers WPA3/PMF/MLO/band/fast-roaming/MAC-filter/schedules/PPSKs).
 | `unifi:network:UserGroup` | A bandwidth-limit user group | full CRUD + `Read` (import) |
 | `unifi:network:DynamicDns` | Gateway DDNS updater (Cloudflare and other providers) | full CRUD + `Read` (import) |
 | `unifi:network:DnsRecord` | A controller local DNS record | full CRUD + `Read` (import) |
+| `unifi:network:ContentFiltering` | Network/client content-filter policy, domain exceptions, safe search and schedule | full CRUD + `Read` (import) |
 | `unifi:protect:Camera` | Settings of an **existing** Protect camera | adoption: Create/Update patch, Read, Delete is a no-op |
 | `unifi:protect:CameraStream` | One camera RTSPS quality | Create + Read/import + Delete; inputs replace-only |
 | `unifi:protect:AlarmAutomation` | An Alarm Manager rule (conditions → webhook actions) | full CRUD + `Read` (import) — **private API**, see below |
 | `unifi:drive:Share` | A UniFi Drive shared drive on a UNAS appliance | Create + `Read` (import) + Delete; inputs are replace-only — **private API**, see below |
 | `unifi:drive:NfsExport` | An NFS access grant (share → client) on UniFi Drive | full CRUD + `Read` (import) — **private API**, see below |
+
+### Content filtering
+
+`network.ContentFiltering` manages one Network v2 content-filter policy, including
+its network/client scope, categories, allowlist, blocklist, safe search, and
+schedule. It uses the same authenticated Network client and site configuration
+as other Network resources. Category identifiers remain strings because the
+available categories vary with firmware and subscriptions.
+
+Import an existing policy before editing it; do not create a second overlapping
+policy to add a domain exception. Use the same configured provider for import
+and in the program. With `gateway` already registered in the stack:
+
+```sh
+pulumi import unifi:network:ContentFiltering default-filter <policy-id> \
+    --provider 'gateway=<provider-urn>'
+```
+
+Using the same provider identity avoids replacements caused by differing
+provider configuration or defaults during adoption.
+
+Keep the imported scope, categories, and schedule in the program, then add the
+domain to `allowList`. For example, an existing always-on LAN policy might be:
+
+```typescript
+new unifi.network.ContentFiltering("default-filter", {
+    name: "Default",
+    enabled: true,
+    networkIds: ["your-existing-network-id"],
+    categories: ["FAMILY", "ADVERTISEMENT"],
+    allowList: ["pinggy-free.link"],
+    schedule: { mode: "ALWAYS" },
+}, { provider: gateway, protect: true });
+```
+
+An explicit empty list clears that list; omitted lists default to empty.
+An omitted schedule defaults to `ALWAYS`. Updates fetch the current policy and
+apply the input delta, preserving unknown fields (including nested schedule
+fields) and concurrent edits to unchanged settings. Use `pulumi refresh` before
+previewing to surface and reconcile drift in managed fields. Writes are not
+transactional across separate processes: use one owner/writer per policy.
+
+Deleting this resource deletes the entire filtering policy. Keep `protect: true`
+on imported security policies; use `retainOnDelete` when removing Pulumi
+ownership should leave a policy in place. Allowlisting does not install a CA or
+change TLS verification, SSL inspection, IDS/IPS, or global block-page settings.
+The v2 API is an unofficial controller API and may change across firmware.
 
 ### Adoption-model resources (`Device`, `Camera`)
 

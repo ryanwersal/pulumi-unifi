@@ -9,6 +9,41 @@ import * as enums from "../types/enums";
 import * as utilities from "../utilities";
 
 export namespace network {
+    export interface ContentFilteringScheduleArgs {
+        /**
+         * Single activation date, YYYY-MM-DD.
+         */
+        date?: pulumi.Input<string | undefined>;
+        /**
+         * Last activation date, YYYY-MM-DD.
+         */
+        dateEnd?: pulumi.Input<string | undefined>;
+        /**
+         * First activation date, YYYY-MM-DD.
+         */
+        dateStart?: pulumi.Input<string | undefined>;
+        /**
+         * Schedule mode: ALWAYS, EVERY_DAY, EVERY_WEEK, ONE_TIME_ONLY, or CUSTOM.
+         */
+        mode: pulumi.Input<enums.network.ContentFilteringScheduleMode>;
+        /**
+         * Recurring weekdays: mon, tue, wed, thu, fri, sat, sun.
+         */
+        repeatOnDays?: pulumi.Input<pulumi.Input<string>[] | undefined>;
+        /**
+         * Whether the schedule covers the full day.
+         */
+        timeAllDay?: pulumi.Input<boolean | undefined>;
+        /**
+         * End time, HH:MM.
+         */
+        timeRangeEnd?: pulumi.Input<string | undefined>;
+        /**
+         * Start time, HH:MM.
+         */
+        timeRangeStart?: pulumi.Input<string | undefined>;
+    }
+
     export interface DeviceDot1xArgs {
         /**
          * FallbackNetworkId is the fallback network for failed 802.1X auth (the network's `_id`).

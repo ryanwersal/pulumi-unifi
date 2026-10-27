@@ -5,6 +5,11 @@ import * as pulumi from "@pulumi/pulumi";
 import * as utilities from "../utilities";
 
 // Export members:
+export { ContentFilteringArgs } from "./contentFiltering";
+export type ContentFiltering = import("./contentFiltering").ContentFiltering;
+export const ContentFiltering: typeof import("./contentFiltering").ContentFiltering = null as any;
+utilities.lazyLoad(exports, ["ContentFiltering"], () => require("./contentFiltering"));
+
 export { DeviceArgs } from "./device";
 export type Device = import("./device").Device;
 export const Device: typeof import("./device").Device = null as any;
@@ -78,6 +83,8 @@ const _module = {
     version: utilities.getVersion(),
     construct: (name: string, type: string, urn: string): pulumi.Resource => {
         switch (type) {
+            case "unifi:network:ContentFiltering":
+                return new ContentFiltering(name, <any>undefined, { urn })
             case "unifi:network:Device":
                 return new Device(name, <any>undefined, { urn })
             case "unifi:network:DnsRecord":

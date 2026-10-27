@@ -25,6 +25,7 @@
         "drive/nfsExport.ts",
         "drive/share.ts",
         "index.ts",
+        "network/contentFiltering.ts",
         "network/device.ts",
         "network/dnsRecord.ts",
         "network/dynamicDns.ts",
