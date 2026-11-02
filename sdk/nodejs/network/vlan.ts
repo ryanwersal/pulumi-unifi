@@ -60,7 +60,7 @@ export class Vlan extends pulumi.CustomResource {
     /**
      * Enabled controls whether the network is active. Defaults to true.
      */
-    declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    declare public readonly enabled: pulumi.Output<boolean>;
     /**
      * GatewayType: default | switch.
      */
@@ -80,7 +80,7 @@ export class Vlan extends pulumi.CustomResource {
     /**
      * InternetAccessEnabled controls whether clients may reach the internet. Defaults to true.
      */
-    declare public readonly internetAccessEnabled: pulumi.Output<boolean | undefined>;
+    declare public readonly internetAccessEnabled: pulumi.Output<boolean>;
     /**
      * Ipv6 groups the IPv6 addressing / RA / prefix-delegation settings.
      */
@@ -120,7 +120,7 @@ export class Vlan extends pulumi.CustomResource {
     /**
      * Purpose: corporate | guest | vlan-only | wan | remote-user-vpn | site-vpn | vpn-client. Defaults to "corporate".
      */
-    declare public readonly purpose: pulumi.Output<enums.network.VlanPurpose | undefined>;
+    declare public readonly purpose: pulumi.Output<enums.network.VlanPurpose>;
     /**
      * SettingPreference: auto | manual. Controls whether device-specific overrides apply.
      */

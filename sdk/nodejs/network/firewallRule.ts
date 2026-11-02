@@ -52,7 +52,7 @@ export class FirewallRule extends pulumi.CustomResource {
     /**
      * Enabled controls whether the rule is active. Defaults to true.
      */
-    declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    declare public readonly enabled: pulumi.Output<boolean>;
     /**
      * FirewallRuleId is the controller-assigned identifier (the UniFi `_id`).
      */

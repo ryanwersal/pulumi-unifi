@@ -52,7 +52,7 @@ export class PortForward extends pulumi.CustomResource {
     /**
      * Enabled controls whether the rule is active. Defaults to true.
      */
-    declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    declare public readonly enabled: pulumi.Output<boolean>;
     /**
      * Fwd is the internal IPv4 address to forward traffic to.
      */
@@ -80,11 +80,11 @@ export class PortForward extends pulumi.CustomResource {
     /**
      * Proto selects the matched protocol: tcp_udp | tcp | udp. Defaults to "tcp_udp".
      */
-    declare public readonly proto: pulumi.Output<enums.network.PortForwardProtocol | undefined>;
+    declare public readonly proto: pulumi.Output<enums.network.PortForwardProtocol>;
     /**
      * Src restricts the source address: a single IPv4, range, CIDR, negation (!addr), or "any". Defaults to "any".
      */
-    declare public readonly src: pulumi.Output<string | undefined>;
+    declare public readonly src: pulumi.Output<string>;
     /**
      * SrcFirewallGroupId references a firewall group used to restrict the source (when srcLimitingType=firewall_group).
      */

@@ -44,7 +44,7 @@ export class NfsExport extends pulumi.CustomResource {
     /**
      * Permission is the access level: "rw" (default) or "ro".
      */
-    declare public readonly permission: pulumi.Output<enums.drive.NfsPermission | undefined>;
+    declare public readonly permission: pulumi.Output<enums.drive.NfsPermission>;
     /**
      * ShareId is the drive to export (the shareId of a unifi:drive:Share).
      */

@@ -44,7 +44,7 @@ export class DnsRecord extends pulumi.CustomResource {
     /**
      * Enabled controls whether the record is active. Defaults to true.
      */
-    declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    declare public readonly enabled: pulumi.Output<boolean>;
     /**
      * Key is the hostname/record name the record answers for, e.g. "host.example.com".
      */

@@ -90,8 +90,9 @@ func New() (p.Provider, error) {
 	// The infer framework strips internal metadata from new inputs, but with
 	// engines sending OldInputs it does not strip the old side. That makes a
 	// version-only upgrade appear to replace the provider and all its resources.
-	// Normalize both sides; actual controller/config changes retain infer's
-	// replacement semantics.
+	// Normalize state as well as both input maps: newer infer versions diff
+	// the engine-managed version from state separately. Actual controller/config
+	// changes retain infer's replacement semantics.
 	diffConfig := provider.DiffConfig
 	provider.DiffConfig = func(ctx context.Context, req p.DiffRequest) (p.DiffResponse, error) {
 		clean := func(m property.Map) property.Map {
@@ -102,6 +103,7 @@ func New() (p.Provider, error) {
 			}
 			return m
 		}
+		req.State = clean(req.State)
 		req.OldInputs = clean(req.OldInputs)
 		req.Inputs = clean(req.Inputs)
 		return diffConfig(ctx, req)

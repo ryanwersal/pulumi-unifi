@@ -48,7 +48,7 @@ export class FirewallGroup extends pulumi.CustomResource {
     /**
      * GroupType selects the kind of group: address-group | port-group | ipv6-address-group.
      */
-    declare public readonly groupType: pulumi.Output<enums.network.FirewallGroupType | undefined>;
+    declare public readonly groupType: pulumi.Output<enums.network.FirewallGroupType>;
     /**
      * Name of the firewall group (1-64 characters).
      */

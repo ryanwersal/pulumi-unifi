@@ -49,7 +49,7 @@ export class DynamicDns extends pulumi.CustomResource {
     /**
      * Logical WAN interface: wan for Internet 1, wan2 for Internet 2, and so on.
      */
-    declare public readonly interface: pulumi.Output<string | undefined>;
+    declare public readonly interface: pulumi.Output<string>;
     /**
      * Provider login. For Cloudflare, use the zone name (for example example.com), not an email address.
      */

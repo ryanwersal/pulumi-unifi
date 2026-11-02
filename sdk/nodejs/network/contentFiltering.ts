@@ -56,7 +56,7 @@ export class ContentFiltering extends pulumi.CustomResource {
     /**
      * Whether the policy is active. Defaults to true.
      */
-    declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    declare public readonly enabled: pulumi.Output<boolean>;
     /**
      * Policy display name.
      */

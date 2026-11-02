@@ -64,7 +64,7 @@ export class PortProfile extends pulumi.CustomResource {
     /**
      * OpMode is the operation mode. Only "switch" is supported. Defaults to "switch".
      */
-    declare public readonly opMode: pulumi.Output<enums.network.PortProfileOpMode | undefined>;
+    declare public readonly opMode: pulumi.Output<enums.network.PortProfileOpMode>;
     /**
      * PoeMode controls Power-over-Ethernet: auto | off (the values go-unifi accepts for a port profile). Per-port passthrough/pasv24 modes are set via a Device port override's poeMode, not here.
      */
@@ -96,7 +96,7 @@ export class PortProfile extends pulumi.CustomResource {
     /**
      * StpPortMode enables Spanning Tree Protocol on the port. Defaults to true.
      */
-    declare public readonly stpPortMode: pulumi.Output<boolean | undefined>;
+    declare public readonly stpPortMode: pulumi.Output<boolean>;
     /**
      * Vlan groups the VLAN / forwarding settings.
      */

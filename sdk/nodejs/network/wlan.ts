@@ -56,7 +56,7 @@ export class Wlan extends pulumi.CustomResource {
     /**
      * Enabled controls whether the SSID is broadcast. Defaults to true.
      */
-    declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    declare public readonly enabled: pulumi.Output<boolean>;
     /**
      * HideSsid hides the SSID from broadcast. Defaults to false.
      */
@@ -132,7 +132,7 @@ export class Wlan extends pulumi.CustomResource {
     /**
      * Security: open | wpapsk | wpaeap | wep | osen. Defaults to "wpapsk".
      */
-    declare public readonly security: pulumi.Output<enums.network.WlanSecurity | undefined>;
+    declare public readonly security: pulumi.Output<enums.network.WlanSecurity>;
     /**
      * UapsdEnabled enables Unscheduled Automatic Power Save Delivery.
      */

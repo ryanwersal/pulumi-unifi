@@ -56,7 +56,7 @@ export class FirewallZonePolicy extends pulumi.CustomResource {
     /**
      * Enabled controls whether the policy is active. Defaults to true.
      */
-    declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    declare public readonly enabled: pulumi.Output<boolean>;
     /**
      * FirewallZonePolicyId is the controller-assigned identifier (the UniFi `_id`).
      */

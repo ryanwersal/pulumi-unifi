@@ -30,7 +30,7 @@ export class Provider extends pulumi.ProviderResource {
     /**
      * UniFi site name (defaults to "default").
      */
-    declare public readonly site: pulumi.Output<string | undefined>;
+    declare public readonly site: pulumi.Output<string>;
     /**
      * Password for unasUsername.
      */

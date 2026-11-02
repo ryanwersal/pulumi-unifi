@@ -50,6 +50,9 @@ func TestProviderUpgradePreservesResources(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
+		if _, ok := resp.DetailedDiff["version"]; ok {
+			t.Fatalf("engine-managed version must not appear in config diff: %v", resp)
+		}
 		if changed {
 			if len(resp.Replaces) != 1 || resp.Replaces[0] != "url" {
 				t.Fatalf("controller change must replace: %v", resp)

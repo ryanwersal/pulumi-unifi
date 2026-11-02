@@ -44,7 +44,7 @@ export class StaticRoute extends pulumi.CustomResource {
     /**
      * Enabled controls whether the route is active. Defaults to true.
      */
-    declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    declare public readonly enabled: pulumi.Output<boolean>;
     /**
      * GatewayDevice is the MAC address of the gateway device that hosts the route.
      */

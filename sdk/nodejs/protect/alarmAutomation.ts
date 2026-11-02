@@ -52,7 +52,7 @@ export class AlarmAutomation extends pulumi.CustomResource {
     /**
      * Enabled controls whether the rule fires. Defaults to true.
      */
-    declare public readonly enabled: pulumi.Output<boolean | undefined>;
+    declare public readonly enabled: pulumi.Output<boolean>;
     /**
      * Name is the rule's display name.
      */

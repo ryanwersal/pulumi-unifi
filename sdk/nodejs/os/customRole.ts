@@ -37,7 +37,7 @@ export class CustomRole extends pulumi.CustomResource {
     /**
      * Access access: "admin" or "none".
      */
-    declare public readonly accessRole: pulumi.Output<string | undefined>;
+    declare public readonly accessRole: pulumi.Output<string>;
     /**
      * Role name.
      */
@@ -45,11 +45,11 @@ export class CustomRole extends pulumi.CustomResource {
     /**
      * Network access: "admin", "hotspot", "view", "site_admin", or "none".
      */
-    declare public readonly networkRole: pulumi.Output<string | undefined>;
+    declare public readonly networkRole: pulumi.Output<string>;
     /**
      * Protect access: "admin", "live", "view", or "none".
      */
-    declare public readonly protectRole: pulumi.Output<string | undefined>;
+    declare public readonly protectRole: pulumi.Output<string>;
     /**
      * Console-assigned role identifier.
      */
@@ -57,7 +57,7 @@ export class CustomRole extends pulumi.CustomResource {
     /**
      * Talk access: "admin", "view", or "none".
      */
-    declare public readonly talkRole: pulumi.Output<string | undefined>;
+    declare public readonly talkRole: pulumi.Output<string>;
 
     /**
      * Create a CustomRole resource with the given unique name, arguments, and options.
