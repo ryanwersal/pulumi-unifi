@@ -127,7 +127,10 @@ run = "go run golang.org/x/vuln/cmd/govulncheck@v1.1.4 ./... || echo '::warning:
 
 [tasks.ci]
 description = "Deterministic gate, run locally AND in CI: tidy, fmt, vet, lint, test, sdk freshness, build"
-depends = ["tidy-check", "fmt-check", "vet", "lint", "test", "sdk:check"]
+depends = ["tidy-check", "fmt-check", "vet", "lint", "test"]
+# SDK generation removes sdk/nodejs (including node_modules). Wait for Go
+# directory traversal to finish before regenerating and checking the SDK.
+run = "mise run sdk:check"
 
 [tasks.check]
 description = "Alias for the CI gate (ci)"
