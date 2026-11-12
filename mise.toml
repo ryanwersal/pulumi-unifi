@@ -3,7 +3,7 @@
 
 [tools]
 # Pinned for reproducible builds. Bump deliberately.
-go = "1.26.4"
+go = "1.26.6"
 pulumi = "3.241.0"
 golangci-lint = "2.11.3"
 goreleaser = "2.15.3"
