@@ -6,7 +6,9 @@ require (
 	github.com/ClifHouck/unified v0.3.2
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/filipowm/go-unifi v1.11.2
-	github.com/pulumi/pulumi-go-provider v1.8.0
+	// v1.6+ marks default-populated outputs as schema-required, changing the
+	// generated Node.js SDK contract. Keep the latest compatible release.
+	github.com/pulumi/pulumi-go-provider v1.5.0
 	github.com/pulumi/pulumi/sdk/v3 v3.272.0
 	github.com/sirupsen/logrus v1.10.2
 	google.golang.org/protobuf v1.36.12
