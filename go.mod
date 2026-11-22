@@ -8,7 +8,7 @@ require (
 	github.com/filipowm/go-unifi v1.11.2
 	// v1.6+ marks default-populated outputs as schema-required, changing the
 	// generated Node.js SDK contract. Keep the latest compatible release.
-	github.com/pulumi/pulumi-go-provider v1.8.0
+	github.com/pulumi/pulumi-go-provider v1.5.0
 	github.com/pulumi/pulumi/sdk/v3 v3.277.0
 	github.com/sirupsen/logrus v1.10.2
 	google.golang.org/protobuf v1.36.12
@@ -46,7 +46,7 @@ require (
 	github.com/go-git/gcfg/v2 v2.0.3 // indirect
 	github.com/go-git/go-billy/v6 v6.0.0-beta.1 // indirect
 	github.com/go-git/go-git/v6 v6.0.0-beta.1 // indirect
-	github.com/go-jose/go-jose/v4 v4.1.9 // indirect
+	github.com/go-jose/go-jose/v4 v4.1.6 // indirect
 	github.com/go-logr/logr v1.4.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/locales v0.14.2 // indirect
